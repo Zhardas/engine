@@ -8,7 +8,7 @@ LRESULT CALLBACK OurWindowProcedure(HWND han_Wind, UINT uint_Message, WPARAM par
     switch (uint_Message) {
         case WM_KEYDOWN:
         case WM_CLOSE: {
-            p_Game->isRunning = 0;
+            p_Game->StopRunning();
             break;
         };
     }
@@ -40,13 +40,17 @@ HWND NewWindow(LPCTSTR str_Title, int int_XPos, int int_YPos, int int_Width, int
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPreviousInstance, LPSTR lpcmdline, int nCmdShow) {
+
+
+
+
+
+    p_Game = new Game();
+    HWND han_Window = NewWindow("Zhardas's DX9 Playground!", 100, 100, p_Game->g_width, p_Game->g_height);
+    p_Game->InitGraphics(han_Window);
+
     MSG msg_Message;
-
-    HWND han_Window = NewWindow("DirectX C++ Tutorial", 100, 100, 500, 500);
-
-    p_Game = new Game(han_Window);
-
-    while (p_Game->isRunning) {
+    while (p_Game->isRunning()) {
         if (PeekMessage(&msg_Message, han_Window, 0, 0, PM_REMOVE)) {
             DispatchMessage(&msg_Message);
         }
