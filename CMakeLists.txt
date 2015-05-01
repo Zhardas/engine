@@ -15,4 +15,4 @@ set(SOURCE_FILES WinStart.cpp)
 add_executable(Headache ${SOURCE_FILES} Game.cpp Game.h Graphics/Renderer.cpp Graphics/Renderer.h Z.h Graphics/TextureManager.cpp Graphics/TextureManager.h Objects/Drawable.cpp Objects/Drawable.h Helper/Types/Size.cpp Helper/Types/Size.h Helper/Types/Position.cpp Helper/Types/Position.h Objects/TexturedQuad.cpp Objects/TexturedQuad.h Scene/Scene.cpp Scene/Scene.h)
 target_link_libraries(Headache d3d9 d3dx9)
 
-install(DIRECTORY resources/ DESTINATION resources)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${DESTINATION}/)

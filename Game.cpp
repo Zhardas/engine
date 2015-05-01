@@ -4,7 +4,9 @@
 Game::Game() {
     g_width = 1280;
     g_height = 720;
-    updateTimer = time(NULL);
+    update_chrono_start = std::chrono::high_resolution_clock::now();
+    update_time_start = std::time(NULL);
+    update_chrono_accumulator = std::chrono::microseconds(0);
 }
 
 LPDIRECT3DDEVICE9 Game::InitializeDevice(HWND hWnd) {
@@ -45,14 +47,29 @@ void Game::SetDeviceOptions() {
 }
 
 void Game::Loop() {
-    time_t new_time = time(NULL);
-    if(difftime(new_time, updateTimer) > 0.166666f){ // Update 60x/sec
-        updateTimer = new_time;
+    auto current = std::chrono::high_resolution_clock::now();
+
+    const auto frameTime = current - update_chrono_start;
+    update_chrono_accumulator += std::chrono::duration_cast<std::chrono::microseconds>(frameTime);
+    while ( update_chrono_accumulator >= update_chrono_delta)
+    {
         p_scene->Update();
-        std::cout << "Scene update!\n";
-    }else{
+        update_tick++;
+        update_chrono_accumulator -= std::chrono::duration_cast<std::chrono::microseconds>(update_chrono_delta);
     }
+
     p_renderer->DrawScene(p_scene);
+    render_tick++;
+
+    update_chrono_start = current;
+    std::time_t update_time_current = std::time(NULL);
+    if(update_time_current - update_time_start >= 1) {
+        update_time_start = update_time_current;
+        //std::cout << "UPS: " << update_tick << "\n";
+        //std::cout << "FPS: " << render_tick << "\n";
+        update_tick = 0;
+        render_tick = 0;
+    }
 }
 
 void Game::InitGraphics(HWND hWindow) {

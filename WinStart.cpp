@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <c++/iostream>
 
 #include "Game.h"
 
@@ -46,7 +47,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPreviousInstance, LPSTR lpcmd
 
 
     p_Game = new Game();
-    HWND han_Window = NewWindow("Zhardas's DX9 Playground!", 100, 100, p_Game->g_width, p_Game->g_height);
+    HWND han_Window = NewWindow("Zhardas's DX9 Playground!", 100, 100, (int) p_Game->g_width, (int) p_Game->g_height);
     p_Game->InitGraphics(han_Window);
 
     MSG msg_Message;

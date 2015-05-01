@@ -112,7 +112,7 @@ LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateDynamicVertexBuffer(std::list<Textured
         TexturedQuad *temp = *it;
         float x_shift = temp->size().width / 2;
         float y_shift = temp->size().height / 2;
-        
+
         cv_Vertices[index * 4] = {temp->position().x - x_shift, temp->position().y - y_shift, 0.0f, 0.0f, 1.0f};
         cv_Vertices[index * 4 + 1] = {temp->position().x - x_shift, temp->position().y +
                                                                     y_shift, 0.0f, 0.0f, 0.0f};
