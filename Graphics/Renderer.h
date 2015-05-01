@@ -6,7 +6,10 @@ class Renderer;
 #include <windows.h>
 #include <d3dx9.h>
 #include <d3d9.h>
-#include "Game.h"
+#include <Scene/Scene.h>
+#include <Objects/TexturedQuad.h>
+#include <Game.h>
+#include <list>
 
 class Renderer {
     struct v_3c {
@@ -28,19 +31,26 @@ class Renderer {
         float tu, tv;
     };
 
-    Game *p_Game;
-    LPDIRECT3DVERTEXBUFFER9 vb;
+    Game* p_Game;
+    LPDIRECT3DVERTEXBUFFER9 vb_static_background;
+    LPDIRECT3DVERTEXBUFFER9 vb_static_ui;
+    LPDIRECT3DVERTEXBUFFER9 vb_dynamic;
+
 
     void SetUpCamera(LPDIRECT3DDEVICE9 p_dx_Device);
 
-    void DrawScene(LPDIRECT3DDEVICE9 pDevice9);
-
-    LPDIRECT3DVERTEXBUFFER9 TestFunction();
+    LPDIRECT3DVERTEXBUFFER9 GenerateStaticVertexBuffer(std::list<TexturedQuad *> *pList);
+    LPDIRECT3DVERTEXBUFFER9 GenerateDynamicVertexBuffer(std::list<TexturedQuad *> *pList);
+    void Draw(TexturedQuad *pQuad, UINT index);
 
 public:
-    Renderer(Game *p_Game);
+    Renderer(Game *p_game);
 
-    void Draw();
+    void DrawScene(Scene* scene);
+
+    void Reload();
+
+
 };
 
 

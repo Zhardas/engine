@@ -4,7 +4,7 @@
 Game::Game() {
     g_width = 1280;
     g_height = 720;
-    timer = time(NULL);
+    updateTimer = time(NULL);
 }
 
 LPDIRECT3DDEVICE9 Game::InitializeDevice(HWND hWnd) {
@@ -35,38 +35,36 @@ LPDIRECT3DDEVICE9 Game::InitializeDevice(HWND hWnd) {
 }
 
 void Game::SetDeviceOptions() {
-    p_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-    p_Device->SetRenderState(D3DRS_LIGHTING, false);
-    p_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+    p_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+    p_device->SetRenderState(D3DRS_LIGHTING, (DWORD) false);
+    p_device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 
-    p_Device->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
-    p_Device->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-    p_Device->SetTextureStageState(0,D3DTSS_COLORARG2,D3DTA_DIFFUSE);   //Ignored
+    p_device->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
+    p_device->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+    p_device->SetTextureStageState(0,D3DTSS_COLORARG2,D3DTA_DIFFUSE);   //Ignored
 }
 
 void Game::Loop() {
     time_t new_time = time(NULL);
-    if(difftime(new_time, timer) > 1.0f){
-        timer = new_time;
-        std::cout << tick << "\n";
-        tick = 0;
+    if(difftime(new_time, updateTimer) > 0.166666f){ // Update 60x/sec
+        updateTimer = new_time;
+        p_scene->Update();
+        std::cout << "Scene update!\n";
     }else{
-        tick++;
     }
-    p_renderer->Draw();
+    p_renderer->DrawScene(p_scene);
 }
 
 void Game::InitGraphics(HWND hWindow) {
-    p_Device = InitializeDevice(hWindow);
+    p_device = InitializeDevice(hWindow);
     p_renderer = new Renderer(this);
-    if (p_Device == nullptr)return;
+    if (p_device == nullptr)return;
     SetDeviceOptions();
 
     p_TextureManager = new TextureManager(this);
 
-    running_ = true;
-}
+    p_scene = new Scene(p_renderer);
+    p_scene->Update();
 
-void Game::StopRunning() {
-    running_ = false;
+    running_ = true;
 }

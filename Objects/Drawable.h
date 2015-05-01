@@ -1,7 +1,4 @@
-//
-// Created by Owner on 30.04.2015.
-//
-
+class Drawable;
 #ifndef HEADACHE_DRAWABLE_H
 #define HEADACHE_DRAWABLE_H
 
@@ -10,13 +7,15 @@
 
 class Drawable {
 private:
-    Size size_;
-    Position position_;
+protected:
+    Size size_ = Size(0.1f, 0.1f);
+    Position position_ = Position(0.0f, 0.0f);
 public:
+    Drawable();
     virtual Size size() = 0;
-    virtual void set_size(Size /* new size */) = 0;
+    virtual void set_size(Size* /* new size */) = 0;
     virtual Position position() = 0;
-    virtual void set_position(Position /* new position */) = 0;
+    virtual void set_position(Position* /* new position */) = 0;
 };
 
 

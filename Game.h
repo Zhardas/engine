@@ -14,12 +14,11 @@ class Game {
 private:
     Renderer* p_renderer;
     bool running_;
-    time_t timer;
-    long tick;
+    time_t updateTimer;
 public:
     Game();
 
-    LPDIRECT3DDEVICE9 p_Device;
+    LPDIRECT3DDEVICE9 p_device;
 
     LPDIRECT3DDEVICE9 InitializeDevice(HWND hWnd);
 
@@ -29,13 +28,13 @@ public:
 
     FLOAT g_width;
     FLOAT g_height;
+    Scene* p_scene;
 
     void InitGraphics(HWND hWindow);
 
     TextureManager* p_TextureManager;
     bool isRunning() {return running_;};
-
-    void StopRunning();
+    void StopRunning(){running_ =  false;};
 };
 
 

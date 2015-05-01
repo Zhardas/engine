@@ -14,7 +14,7 @@ IDirect3DBaseTexture9* TextureManager::GetTexture(LPCSTR texture_name){
         return textures->at(texture_name);
     }else{
         IDirect3DTexture9* texture=NULL;
-        HRESULT result = D3DXCreateTextureFromFile(p_Game->p_Device, path.str().c_str(), &texture);
+        HRESULT result = D3DXCreateTextureFromFile(p_Game->p_device, path.str().c_str(), &texture);
         switch (result){
             case D3D_OK:
                 std::cout << "Success!\n";
