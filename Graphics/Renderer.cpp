@@ -99,7 +99,7 @@ void Renderer::Reload() {
 }
 
 void Renderer::Draw(TexturedQuad *pQuad, UINT index) {
-    p_Game->p_device->SetTexture(0, p_Game->p_TextureManager->GetTexture(pQuad->GetTexture().c_str()));
+    p_Game->p_device->SetTexture(0, p_Game->p_texture_manager->GetTexture(pQuad->GetTexture().c_str()));
     p_Game->p_device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4*index, 2);
 }
 

@@ -7,13 +7,14 @@ class Game;
 #include "Graphics/TextureManager.h"
 #include <ctime>
 #include <chrono>
+#include "Input/Input.h"
 
 #define VERSION_MAJOR @Headache_VERSION_MAJOR@
 #define VERSION_MINOR @Headache_VERSION_MINOR@
 
 class Game {
 private:
-    Renderer* p_renderer;
+
     bool running_;
     std::chrono::high_resolution_clock::time_point update_chrono_start;
     std::chrono::duration<int64_t, std::micro> update_chrono_accumulator = std::chrono::microseconds(0);
@@ -22,25 +23,22 @@ private:
     long update_tick = 0;
     long render_tick = 0;
 public:
-    Game();
-
     LPDIRECT3DDEVICE9 p_device;
-
-    LPDIRECT3DDEVICE9 InitializeDevice(HWND hWnd);
-
-    void SetDeviceOptions();
-
-    void Loop();
-
     FLOAT g_width;
     FLOAT g_height;
+
     Scene* p_scene;
+    Renderer* p_renderer;
+    TextureManager* p_texture_manager;
+    Input* p_input;
 
-    void InitGraphics(HWND hWindow);
-
-    TextureManager* p_TextureManager;
+    Game();
+    void SetDeviceOptions();
+    void Loop();
+    void Initialize(HINSTANCE hInstance, HWND hWindow);
     bool isRunning() {return running_;};
     void StopRunning(){running_ =  false;};
+    LPDIRECT3DDEVICE9 InitializeDevice(HWND hWnd);
 };
 
 

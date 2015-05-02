@@ -48,9 +48,13 @@ void Game::SetDeviceOptions() {
 
 void Game::Loop() {
     auto current = std::chrono::high_resolution_clock::now();
+    auto frameTime = current - update_chrono_start;
 
-    const auto frameTime = current - update_chrono_start;
     update_chrono_accumulator += std::chrono::duration_cast<std::chrono::microseconds>(frameTime);
+
+    if( update_chrono_accumulator >= update_chrono_delta){
+        p_input->Update();
+    }
     while ( update_chrono_accumulator >= update_chrono_delta)
     {
         p_scene->Update();
@@ -72,15 +76,19 @@ void Game::Loop() {
     }
 }
 
-void Game::InitGraphics(HWND hWindow) {
+void Game::Initialize
+        (HINSTANCE hInstance, HWND hWindow) {
     p_device = InitializeDevice(hWindow);
     p_renderer = new Renderer(this);
     if (p_device == nullptr)return;
     SetDeviceOptions();
 
-    p_TextureManager = new TextureManager(this);
+    p_texture_manager = new TextureManager(this);
 
-    p_scene = new Scene(p_renderer);
+    p_input = new Input(this);
+    p_input->Initialize(hInstance, hWindow);
+
+    p_scene = new Scene(this);
     p_scene->Update();
 
     running_ = true;

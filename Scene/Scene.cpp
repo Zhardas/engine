@@ -1,7 +1,7 @@
 #include "Scene.h"
 TexturedQuad * t;
-Scene::Scene(Renderer* p_renderer) {
-    this->p_renderer = p_renderer;
+Scene::Scene(Game* p_game) {
+    this->p_game = p_game;
     backgroundDrawableList = new std::list<TexturedQuad *>();
     dynamicDrawableList = new std::list<TexturedQuad*>();
     uiDrawableList = new std::list<TexturedQuad *>();
@@ -44,10 +44,10 @@ Scene::Scene(Renderer* p_renderer) {
 
 void Scene::Update(){
     if(!loaded){
-        p_renderer->Reload();
+        p_game->p_renderer->Reload();
         loaded = true;
     }
-    t->set_position(new Position(t->position().x, t->position().y+0.1f));
+    t->set_position(p_game->p_input->GetMousePosition());
     //for (std::list<TexturedQuad*>::iterator it=backgroundDrawableList.begin(); it !=backgroundDrawableList.end() ; ++it){
     //
     //}

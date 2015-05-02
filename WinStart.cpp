@@ -1,7 +1,4 @@
-#include <windows.h>
-#include <c++/iostream>
-
-#include "Game.h"
+#include <Z.h>
 
 Game *p_Game;
 
@@ -41,24 +38,19 @@ HWND NewWindow(LPCTSTR str_Title, int int_XPos, int int_YPos, int int_Width, int
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPreviousInstance, LPSTR lpcmdline, int nCmdShow) {
-
-
-
-
-
     p_Game = new Game();
-    HWND han_Window = NewWindow("Zhardas's DX9 Playground!", 100, 100, (int) p_Game->g_width, (int) p_Game->g_height);
-    p_Game->InitGraphics(han_Window);
+    HWND hWindow = NewWindow("Zhardas's DX9 Playground!", 100, 100, (int) p_Game->g_width, (int) p_Game->g_height);
+    p_Game->Initialize(hInstance, hWindow);
 
     MSG msg_Message;
     while (p_Game->isRunning()) {
-        if (PeekMessage(&msg_Message, han_Window, 0, 0, PM_REMOVE)) {
+        if (PeekMessage(&msg_Message, hWindow, 0, 0, PM_REMOVE)) {
             DispatchMessage(&msg_Message);
         }
         p_Game->Loop();
     }
 
-    DestroyWindow(han_Window);
+    DestroyWindow(hWindow);
 
     return 0;
 }
