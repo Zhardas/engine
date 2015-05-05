@@ -12,10 +12,10 @@ protected:
     Position position_ = Position(0.0f, 0.0f);
 public:
     Drawable();
-    virtual Size size() = 0;
-    virtual void set_size(Size* /* new size */) = 0;
-    virtual Position position() = 0;
-    virtual void set_position(Position* /* new position */) = 0;
+    virtual Size GetSize() = 0;
+    virtual void SetSize(Size * /* new GetSize */) = 0;
+    virtual Position GetPosition() = 0;
+    virtual void SetPosition(Position * /* new GetPosition */) = 0;
 };
 
 

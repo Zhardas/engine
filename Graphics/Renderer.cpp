@@ -7,16 +7,15 @@ Renderer::Renderer(Game *p_game) {
 }
 
 void Renderer::SetUpCamera(LPDIRECT3DDEVICE9 p_dx_Device) {
-    D3DXVECTOR3 m_EyePos(0, 0, -100);
-    D3DXVECTOR3 m_TargetPos(0, 0, 0);
-    D3DXVECTOR3 m_UpVector(0, 1, 0);
-    D3DXMATRIXA16 m_View;
-    D3DXMatrixLookAtLH(&m_View, &m_EyePos, &m_TargetPos, &m_UpVector);
-    p_dx_Device->SetTransform(D3DTS_VIEW, &m_View);
+    D3DXMATRIX matOrtho;
+    D3DXMATRIX matIdentity;
 
-    D3DXMATRIX m_Projection;
-    D3DXMatrixPerspectiveFovLH(&m_Projection, D3DX_PI / 4, p_Game->g_width / p_Game->g_height, 1, 100);
-    p_dx_Device->SetTransform(D3DTS_PROJECTION, &m_Projection);
+    //Setup orthographic projection matrix
+    D3DXMatrixOrthoLH (&matOrtho, p_Game->g_width, p_Game->g_height, 0.0f, 10.0f);
+    D3DXMatrixIdentity (&matIdentity);
+    p_dx_Device->SetTransform (D3DTS_PROJECTION, &matOrtho);
+    p_dx_Device->SetTransform (D3DTS_WORLD, &matIdentity);
+    p_dx_Device->SetTransform (D3DTS_VIEW, &matIdentity);
 }
 
 
@@ -65,15 +64,15 @@ LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateStaticVertexBuffer(std::list<TexturedQ
     v_3t cv_Vertices[4 * pList->size()];
     for (std::list<TexturedQuad *>::iterator it = pList->begin(); it != pList->end(); ++it) {
         TexturedQuad *temp = *it;
-        float x_shift = temp->size().width / 2;
-        float y_shift = temp->size().height / 2;
+        float x_shift = temp->GetSize().width / 2;
+        float y_shift = temp->GetSize().height / 2;
 
-        cv_Vertices[index * 4] = {temp->position().x - x_shift, temp->position().y - y_shift, 0.0f, 0.0f, 1.0f};
-        cv_Vertices[index * 4 + 1] = {temp->position().x - x_shift, temp->position().y +
+        cv_Vertices[index * 4] = {temp->GetPosition().x - x_shift, temp->GetPosition().y - y_shift, 0.0f, 0.0f, 1.0f};
+        cv_Vertices[index * 4 + 1] = {temp->GetPosition().x - x_shift, temp->GetPosition().y +
                                                                     y_shift, 0.0f, 0.0f, 0.0f};
-        cv_Vertices[index * 4 + 2] = {temp->position().x + x_shift, temp->position().y -
+        cv_Vertices[index * 4 + 2] = {temp->GetPosition().x + x_shift, temp->GetPosition().y -
                                                                     y_shift, 0.0f, 1.0f, 1.0f};
-        cv_Vertices[index * 4 + 3] = {temp->position().x + x_shift, temp->position().y +
+        cv_Vertices[index * 4 + 3] = {temp->GetPosition().x + x_shift, temp->GetPosition().y +
                                                                     y_shift, 0.0f, 1.0f, 0.0f};
         index++;
     }
@@ -110,15 +109,15 @@ LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateDynamicVertexBuffer(std::list<Textured
     v_3t cv_Vertices[4 * pList->size()];
     for (std::list<TexturedQuad *>::iterator it = pList->begin(); it != pList->end(); ++it) {
         TexturedQuad *temp = *it;
-        float x_shift = temp->size().width / 2;
-        float y_shift = temp->size().height / 2;
+        float x_shift = temp->GetSize().width / 2;
+        float y_shift = temp->GetSize().height / 2;
 
-        cv_Vertices[index * 4] = {temp->position().x - x_shift, temp->position().y - y_shift, 0.0f, 0.0f, 1.0f};
-        cv_Vertices[index * 4 + 1] = {temp->position().x - x_shift, temp->position().y +
+        cv_Vertices[index * 4] = {temp->GetPosition().x - x_shift, temp->GetPosition().y - y_shift, 0.0f, 0.0f, 1.0f};
+        cv_Vertices[index * 4 + 1] = {temp->GetPosition().x - x_shift, temp->GetPosition().y +
                                                                     y_shift, 0.0f, 0.0f, 0.0f};
-        cv_Vertices[index * 4 + 2] = {temp->position().x + x_shift, temp->position().y -
+        cv_Vertices[index * 4 + 2] = {temp->GetPosition().x + x_shift, temp->GetPosition().y -
                                                                     y_shift, 0.0f, 1.0f, 1.0f};
-        cv_Vertices[index * 4 + 3] = {temp->position().x + x_shift, temp->position().y +
+        cv_Vertices[index * 4 + 3] = {temp->GetPosition().x + x_shift, temp->GetPosition().y +
                                                                     y_shift, 0.0f, 1.0f, 0.0f};
         index++;
     }

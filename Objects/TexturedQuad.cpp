@@ -8,22 +8,23 @@ std::string TexturedQuad::GetTexture() {
     return _texture;
 }
 
-Size TexturedQuad::size() {
+Size TexturedQuad::GetSize() {
     return size_;
 }
 
-Position TexturedQuad::position() {
+Position TexturedQuad::GetPosition() {
     return position_;
 }
 
-void TexturedQuad::set_size(Size *size) {
+void TexturedQuad::SetSize(Size *size) {
     size_.width = size->width;
     size_.height = size->height;
 }
 
-void TexturedQuad::set_position(Position *position) {
-    position_.x = position->x;
-    position_.y = position->y;
+void TexturedQuad::SetPosition(Position *position) {
+
+    position_.x = position->x - Game::GetInstance()->g_width/2;
+    position_.y = -position->y + Game::GetInstance()->g_height/2;
 }
 
 TexturedQuad::TexturedQuad() {

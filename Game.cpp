@@ -93,3 +93,11 @@ void Game::Initialize
 
     running_ = true;
 }
+
+Game *Game::GetInstance() {
+    static Game* instance;
+    if(instance == nullptr){
+        instance = new Game();
+    }
+    return instance;
+}

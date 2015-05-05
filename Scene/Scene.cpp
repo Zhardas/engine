@@ -10,22 +10,13 @@ Scene::Scene(Game* p_game) {
 
 
     t = new TexturedQuad();
-    t->set_position(new Position(0.0f, 0.0f));
-    t->set_size(new Size(10.0f, 10.0f));
+    t->SetPosition(new Position(0.0f, 0.0f));
+    t->SetSize(new Size(100.0f, 100.0f));
     t->SetTexture("default.png");
     t->OnMouseUp = [=](const uint8_t& key, Position* pos){
         switch (key){
             case Z_MOUSELEFT:{
-                std::cout << "Left mouse button up at: " << pos->x << "-" << pos->y << "\n";
-                t->set_position(new Position(pos->x, pos->y));
-                break;
-            };
-            case Z_MOUSEMIDDLE:{
-                std::cout << "MIDDLE MOUSE BUTTON UP! \n";
-                break;
-            };
-            case Z_MOUSERIGHT:{
-                std::cout << "RIGHT MOUSE BUTTON UP! \n";
+                t->SetPosition(new Position(pos->x, pos->y));
                 break;
             };
             default:{
@@ -33,25 +24,24 @@ Scene::Scene(Game* p_game) {
             }
         }
     };
-
     TexturedQuad * t2 = new TexturedQuad();
-    t2->set_position(new Position(10.0f, 0.0f));
-    t2->set_size(new Size(10.0f, 10.f));
+    t2->SetPosition(new Position(10.0f, 0.0f));
+    t2->SetSize(new Size(10.0f, 10.f));
     t2->SetTexture("default.png");
 
     TexturedQuad * t3 = new TexturedQuad();
-    t3->set_position(new Position(10.0f, -10.0f));
-    t3->set_size(new Size(10.0f, 10.0f));
+    t3->SetPosition(new Position(10.0f, -10.0f));
+    t3->SetSize(new Size(10.0f, 10.0f));
     t3->SetTexture("default.png");
 
     TexturedQuad * t4 = new TexturedQuad();
-    t4->set_position(new Position(0.0f, -10.0f));
-    t4->set_size(new Size(10.0f, 10.0f));
+    t4->SetPosition(new Position(0.0f, -10.0f));
+    t4->SetSize(new Size(10.0f, 10.0f));
     t4->SetTexture("default2.png");
 
     TexturedQuad * t5 = new TexturedQuad();
-    t5->set_position(new Position(-10.0f, 0.0f));
-    t5->set_size(new Size(10.0f, 10.0f));
+    t5->SetPosition(new Position(-10.0f, 0.0f));
+    t5->SetSize(new Size(10.0f, 10.0f));
     t5->SetTexture("default2.png");
 
 
@@ -69,7 +59,7 @@ void Scene::Update(){
         p_game->p_renderer->Reload();
         loaded = true;
     }
-    //t->set_position(p_game->p_input->GetMousePosition());
+    //t->SetPosition(p_game->p_input->GetMousePosition());
     //for (std::list<TexturedQuad*>::iterator it=backgroundDrawableList.begin(); it !=backgroundDrawableList.end() ; ++it){
     //
     //}

@@ -82,8 +82,10 @@ HWND NewWindow(LPCTSTR str_Title, int int_XPos, int int_YPos, int int_Width, int
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPreviousInstance, LPSTR lpcmdline, int nCmdShow) {
-    p_Game = new Game();
-    HWND hWindow = NewWindow("Zhardas's DX9 Playground!", 100, 100, (int) p_Game->g_width, (int) p_Game->g_height);
+    p_Game = Game::GetInstance();
+    RECT wnd_size = {0, 0, (int)p_Game->g_width, (int)p_Game->g_height};
+    AdjustWindowRectEx(&wnd_size, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE, FALSE, WS_EX_CONTROLPARENT);
+    HWND hWindow = NewWindow("Zhardas's DX9 Playground!", 0, 0, wnd_size.right-wnd_size.left, wnd_size.bottom-wnd_size.top);
     p_Game->Initialize(hInstance, hWindow);
 
     MSG msg_Message;
@@ -97,4 +99,4 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPreviousInstance, LPSTR lpcmd
     DestroyWindow(hWindow);
 
     return 0;
-}
+};

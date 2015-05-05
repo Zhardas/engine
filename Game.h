@@ -33,6 +33,7 @@ public:
     //Input* p_input;
 
     Game();
+    static Game* GetInstance();
     void SetDeviceOptions();
     void Loop();
     void Initialize(HINSTANCE hInstance, HWND hWindow);

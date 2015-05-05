@@ -3,6 +3,7 @@ class TexturedQuad;
 #define HEADACHE_STATICDRAWABLE_H
 
 #include "Drawable.h"
+#include <Game.h>
 #include <string>
 #include <c++/functional>
 
@@ -13,10 +14,10 @@ public:
     TexturedQuad();
     void SetTexture(std::string texture);
     std::string GetTexture();
-    Size size();
-    void set_size(Size* /* new size */);
-    Position position();
-    void set_position(Position* /* new position */);
+    Size GetSize();
+    void SetSize(Size * /* new GetSize */);
+    Position GetPosition();
+    void SetPosition(Position * /* new GetPosition */);
 
     std::function<void (const uint8_t&, Position*)> OnMouseUp;
     std::function<void (const uint8_t&, Position*)> OnMouseDown;
