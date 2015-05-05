@@ -4,6 +4,7 @@ class TexturedQuad;
 
 #include "Drawable.h"
 #include <string>
+#include <c++/functional>
 
 class TexturedQuad : Drawable{
 private:
@@ -16,6 +17,11 @@ public:
     void set_size(Size* /* new size */);
     Position position();
     void set_position(Position* /* new position */);
+
+    std::function<void (const uint8_t&, Position*)> OnMouseUp;
+    std::function<void (const uint8_t&, Position*)> OnMouseDown;
+    std::function<void (const uint8_t&)> OnKeyUp;
+    std::function<void (const uint8_t&)> OnKeyDown;
 };
 
 

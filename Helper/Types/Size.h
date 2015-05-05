@@ -1,7 +1,4 @@
-//
-// Created by Owner on 30.04.2015.
-//
-
+class Size;
 #ifndef HEADACHE_SIZE_H
 #define HEADACHE_SIZE_H
 

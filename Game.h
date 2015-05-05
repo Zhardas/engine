@@ -30,7 +30,7 @@ public:
     Scene* p_scene;
     Renderer* p_renderer;
     TextureManager* p_texture_manager;
-    Input* p_input;
+    //Input* p_input;
 
     Game();
     void SetDeviceOptions();

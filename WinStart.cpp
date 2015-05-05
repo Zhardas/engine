@@ -1,16 +1,60 @@
 #include <Z.h>
+#include <windowsx.h>
 
 Game *p_Game;
 
 LRESULT CALLBACK OurWindowProcedure(HWND han_Wind, UINT uint_Message, WPARAM parameter1, LPARAM parameter2) {
     switch (uint_Message) {
-        case WM_KEYDOWN:
         case WM_CLOSE: {
             p_Game->StopRunning();
             break;
         };
+        default: {
+            if (uint_Message >= WM_MOUSEFIRST && uint_Message <= WM_MOUSELAST){
+                switch (uint_Message){
+                    case WM_LBUTTONUP:{
+                        p_Game->p_scene->DoEvnt(MOUSE_UP, Z_MOUSELEFT, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        break;
+                    };
+                    case WM_MBUTTONUP: {
+                        p_Game->p_scene->DoEvnt(MOUSE_UP, Z_MOUSEMIDDLE, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        break;
+                    };
+                    case WM_RBUTTONUP:{
+                        p_Game->p_scene->DoEvnt(MOUSE_UP, Z_MOUSERIGHT, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        break;
+                    };
+                    case WM_LBUTTONDOWN: {
+                        p_Game->p_scene->DoEvnt(MOUSE_DOWN, Z_MOUSELEFT, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        break;
+                    };
+                    case WM_MBUTTONDOWN: {
+                        p_Game->p_scene->DoEvnt(MOUSE_DOWN, Z_MOUSEMIDDLE, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        break;
+                    };
+                    case WM_RBUTTONDOWN: {
+                        p_Game->p_scene->DoEvnt(MOUSE_DOWN, Z_MOUSERIGHT, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        break;
+                    };
+                    default:
+                        break;
+                }
+            }
+            else if (uint_Message >= WM_KEYFIRST && uint_Message <= WM_KEYLAST) {
+                switch (uint_Message) {
+                    case WM_KEYUP: {
+                        p_Game->p_scene->DoEvnt(KEYBOARD_UP, (uint8_t) parameter1, nullptr);
+                    };
+                    case WM_KEYDOWN: {
+                        p_Game->p_scene->DoEvnt(KEYBOARD_DOWN, (uint8_t) parameter1, nullptr);
+                    };
+                    default:
+                        break;
+                }
+            }
+            break;
+        };
     }
-
     return DefWindowProc(han_Wind, uint_Message, parameter1, parameter2);
 }
 

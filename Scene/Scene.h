@@ -6,6 +6,8 @@ class Scene;
 #include <Graphics/Renderer.h>
 #include <Game.h>
 #include <list>
+#include <Helper/input.h>
+#include <algorithm>
 
 class Scene {
 private:
@@ -21,6 +23,7 @@ public:
     std::list<TexturedQuad*>* GetBackgroundDrawables(){return backgroundDrawableList;};
     std::list<TexturedQuad*>* GetDynamicDrawables(){return dynamicDrawableList;};
     std::list<TexturedQuad*>* GetUIDrawables(){return uiDrawableList;};
+    void DoEvnt(Event event, uint8_t key, Position* parameter);
 };
 
 

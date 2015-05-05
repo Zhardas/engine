@@ -28,7 +28,7 @@ add_executable(Headache
     Objects/TexturedQuad.cpp
     Objects/TexturedQuad.h
     Scene/Scene.cpp
-    Scene/Scene.h Input/Input.cpp Input/Input.h)
+    Scene/Scene.h Input/Input.cpp Input/Input.h Helper/input.h)
 
 target_link_libraries(Headache d3d9 d3dx9 dinput8 dxguid)
 

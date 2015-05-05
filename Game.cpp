@@ -52,9 +52,9 @@ void Game::Loop() {
 
     update_chrono_accumulator += std::chrono::duration_cast<std::chrono::microseconds>(frameTime);
 
-    if( update_chrono_accumulator >= update_chrono_delta){
-        p_input->Update();
-    }
+    //if( update_chrono_accumulator >= update_chrono_delta){
+    //    p_input->Update();
+    //}
     while ( update_chrono_accumulator >= update_chrono_delta)
     {
         p_scene->Update();
@@ -85,8 +85,8 @@ void Game::Initialize
 
     p_texture_manager = new TextureManager(this);
 
-    p_input = new Input(this);
-    p_input->Initialize(hInstance, hWindow);
+    //p_input = new Input(this);
+    //p_input->Initialize(hInstance, hWindow);
 
     p_scene = new Scene(this);
     p_scene->Update();

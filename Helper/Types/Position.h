@@ -1,7 +1,4 @@
-//
-// Created by Owner on 30.04.2015.
-//
-
+class Position;
 #ifndef HEADACHE_POSITION_H
 #define HEADACHE_POSITION_H
 
