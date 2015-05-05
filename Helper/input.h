@@ -1,10 +1,7 @@
 #ifndef Z_INPUT
 #define Z_INPUT
-enum Event { MOUSE_UP, MOUSE_DOWN, KEYBOARD_UP, KEYBOARD_DOWN };
-
-#define Z_MOUSELEFT     0x0001
-#define Z_MOUSEMIDDLE   0x0010
-#define Z_MOUSERIGHT    0x0002
+enum Event { MOUSE_UP, MOUSE_DOWN, MOUSE_MOVE, KEYBOARD_UP, KEYBOARD_DOWN };
+enum MouseButton { MOUSE_LEFT, MOUSE_MIDDLE, MOUSE_RIGHT};
 
 #define Z_0	0x30
 #define Z_1	0x31

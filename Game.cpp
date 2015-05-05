@@ -4,6 +4,7 @@
 Game::Game() {
     g_width = 1280;
     g_height = 720;
+    g_mouse_position = new Position(0,0);
     update_chrono_start = std::chrono::high_resolution_clock::now();
     update_time_start = std::time(NULL);
     update_chrono_accumulator = std::chrono::microseconds(0);

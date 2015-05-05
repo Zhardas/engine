@@ -21,6 +21,7 @@ public:
 
     std::function<void (const uint8_t&, Position*)> OnMouseUp;
     std::function<void (const uint8_t&, Position*)> OnMouseDown;
+    std::function<void (Position*)> OnMouseMove;
     std::function<void (const uint8_t&)> OnKeyUp;
     std::function<void (const uint8_t&)> OnKeyDown;
 };

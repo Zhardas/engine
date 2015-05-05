@@ -26,6 +26,7 @@ public:
     LPDIRECT3DDEVICE9 p_device;
     FLOAT g_width;
     FLOAT g_height;
+    Position* g_mouse_position;
 
     Scene* p_scene;
     Renderer* p_renderer;

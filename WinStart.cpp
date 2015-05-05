@@ -12,28 +12,33 @@ LRESULT CALLBACK OurWindowProcedure(HWND han_Wind, UINT uint_Message, WPARAM par
         default: {
             if (uint_Message >= WM_MOUSEFIRST && uint_Message <= WM_MOUSELAST){
                 switch (uint_Message){
+                    case WM_MOUSEMOVE: {
+                        p_Game->g_mouse_position = new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2));
+                        p_Game->p_scene->DoEvnt(MOUSE_MOVE, MOUSE_LEFT, p_Game->g_mouse_position);
+                        break;
+                    };
                     case WM_LBUTTONUP:{
-                        p_Game->p_scene->DoEvnt(MOUSE_UP, Z_MOUSELEFT, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        p_Game->p_scene->DoEvnt(MOUSE_UP, MOUSE_LEFT, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
                         break;
                     };
                     case WM_MBUTTONUP: {
-                        p_Game->p_scene->DoEvnt(MOUSE_UP, Z_MOUSEMIDDLE, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        p_Game->p_scene->DoEvnt(MOUSE_UP, MOUSE_MIDDLE, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
                         break;
                     };
                     case WM_RBUTTONUP:{
-                        p_Game->p_scene->DoEvnt(MOUSE_UP, Z_MOUSERIGHT, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        p_Game->p_scene->DoEvnt(MOUSE_UP, MOUSE_RIGHT, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
                         break;
                     };
                     case WM_LBUTTONDOWN: {
-                        p_Game->p_scene->DoEvnt(MOUSE_DOWN, Z_MOUSELEFT, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        p_Game->p_scene->DoEvnt(MOUSE_DOWN, MOUSE_LEFT, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
                         break;
                     };
                     case WM_MBUTTONDOWN: {
-                        p_Game->p_scene->DoEvnt(MOUSE_DOWN, Z_MOUSEMIDDLE, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        p_Game->p_scene->DoEvnt(MOUSE_DOWN, MOUSE_MIDDLE, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
                         break;
                     };
                     case WM_RBUTTONDOWN: {
-                        p_Game->p_scene->DoEvnt(MOUSE_DOWN, Z_MOUSERIGHT, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        p_Game->p_scene->DoEvnt(MOUSE_DOWN, MOUSE_RIGHT, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
                         break;
                     };
                     default:
