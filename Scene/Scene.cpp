@@ -1,58 +1,50 @@
 #include <Helper/input.h>
-#include <c++/iostream>
+#include <iostream>
 #include "Scene.h"
-TexturedQuad * t;
+
 Scene::Scene(Game* p_game) {
+    loaded = false;
+
     this->p_game = p_game;
     backgroundDrawableList = new std::list<TexturedQuad *>();
     dynamicDrawableList = new std::list<TexturedQuad*>();
     uiDrawableList = new std::list<TexturedQuad *>();
 
 
-    t = new TexturedQuad();
-    t->SetPosition(new Position(0.0f, 0.0f));
-    t->SetSize(new Size(100.0f, 100.0f));
+    TexturedQuad* t = new TexturedQuad();
+    t->SetPosition(0,0);
+    t->SetSize(100, 100);
     t->SetTexture("default.png");
-    t->OnMouseUp = [=](const uint8_t& key, Position* pos){
-        switch (key){
-            case MOUSE_LEFT:{
-                std::cout << "test\n";
-                break;
-            };
-            default:{
-                break;
-            }
-        }
-    };
+    //t->OnMouseUp = [=](const uint8_t& key, Position* pos){};
     t->OnMouseMove = [=](Position* pos){
         t->SetPosition(new Position(pos->x, pos->y));
     };
 
-    TexturedQuad * t2 = new TexturedQuad();
-    t2->SetPosition(new Position(10.0f, 0.0f));
-    t2->SetSize(new Size(10.0f, 10.f));
+    TexturedQuad* t2 = new TexturedQuad();
+    t2->SetPosition(10, 0);
+    t2->SetSize(10, 10);
     t2->SetTexture("default.png");
 
-    TexturedQuad * t3 = new TexturedQuad();
-    t3->SetPosition(new Position(10.0f, -10.0f));
-    t3->SetSize(new Size(10.0f, 10.0f));
+    TexturedQuad* t3 = new TexturedQuad();
+    t3->SetPosition(10, -10);
+    t3->SetSize(10, 10);
     t3->SetTexture("default.png");
 
-    TexturedQuad * t4 = new TexturedQuad();
-    t4->SetPosition(new Position(0.0f, -10.0f));
-    t4->SetSize(new Size(10.0f, 10.0f));
+    TexturedQuad* t4 = new TexturedQuad();
+    t4->SetPosition(0, -10);
+    t4->SetSize(10, 10);
     t4->SetTexture("default2.png");
 
-    TexturedQuad * t5 = new TexturedQuad();
-    t5->SetPosition(new Position(-10.0f, 0.0f));
-    t5->SetSize(new Size(10.0f, 10.0f));
+    TexturedQuad* t5 = new TexturedQuad();
+    t5->SetPosition(-10, 0);
+    t5->SetSize(10, 10);
     t5->SetTexture("default2.png");
 
 
-    //backgroundDrawableList->push_back(t);
-    //backgroundDrawableList->push_back(t2);
-    //backgroundDrawableList->push_back(t3);
-    //backgroundDrawableList->push_back(t4);
+    backgroundDrawableList->push_back(t);
+    backgroundDrawableList->push_back(t2);
+    backgroundDrawableList->push_back(t3);
+    backgroundDrawableList->push_back(t4);
     backgroundDrawableList->push_back(t5);
     uiDrawableList->push_back(t3);
     dynamicDrawableList->push_back(t);
@@ -60,7 +52,7 @@ Scene::Scene(Game* p_game) {
 
 void Scene::Update(){
     if(!loaded){
-        p_game->p_renderer->Reload();
+        p_game->g_renderer->Reload();
         loaded = true;
     }
 }

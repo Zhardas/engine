@@ -1,44 +1,42 @@
 #include <Z.h>
-#include <windowsx.h>
-
-Game *p_Game;
 
 LRESULT CALLBACK OurWindowProcedure(HWND han_Wind, UINT uint_Message, WPARAM parameter1, LPARAM parameter2) {
     switch (uint_Message) {
         case WM_CLOSE: {
-            p_Game->StopRunning();
+            g_game->StopRunning();
             break;
         };
         default: {
             if (uint_Message >= WM_MOUSEFIRST && uint_Message <= WM_MOUSELAST){
+                Position pos = {GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)};
                 switch (uint_Message){
                     case WM_MOUSEMOVE: {
-                        p_Game->g_mouse_position = new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2));
-                        p_Game->p_scene->DoEvnt(MOUSE_MOVE, MOUSE_LEFT, p_Game->g_mouse_position);
+                        g_game->g_mouse_position = &pos;
+                        g_game->g_scene->DoEvnt(MOUSE_MOVE, MOUSE_LEFT, &pos);
                         break;
                     };
                     case WM_LBUTTONUP:{
-                        p_Game->p_scene->DoEvnt(MOUSE_UP, MOUSE_LEFT, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        g_game->g_scene->DoEvnt(MOUSE_UP, MOUSE_LEFT, &pos);
                         break;
                     };
                     case WM_MBUTTONUP: {
-                        p_Game->p_scene->DoEvnt(MOUSE_UP, MOUSE_MIDDLE, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        g_game->g_scene->DoEvnt(MOUSE_UP, MOUSE_MIDDLE, &pos);
                         break;
                     };
                     case WM_RBUTTONUP:{
-                        p_Game->p_scene->DoEvnt(MOUSE_UP, MOUSE_RIGHT, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        g_game->g_scene->DoEvnt(MOUSE_UP, MOUSE_RIGHT, &pos);
                         break;
                     };
                     case WM_LBUTTONDOWN: {
-                        p_Game->p_scene->DoEvnt(MOUSE_DOWN, MOUSE_LEFT, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        g_game->g_scene->DoEvnt(MOUSE_DOWN, MOUSE_LEFT, &pos);
                         break;
                     };
                     case WM_MBUTTONDOWN: {
-                        p_Game->p_scene->DoEvnt(MOUSE_DOWN, MOUSE_MIDDLE, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        g_game->g_scene->DoEvnt(MOUSE_DOWN, MOUSE_MIDDLE, &pos);
                         break;
                     };
                     case WM_RBUTTONDOWN: {
-                        p_Game->p_scene->DoEvnt(MOUSE_DOWN, MOUSE_RIGHT, new Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2)));
+                        g_game->g_scene->DoEvnt(MOUSE_DOWN, MOUSE_RIGHT, &pos);
                         break;
                     };
                     default:
@@ -48,10 +46,12 @@ LRESULT CALLBACK OurWindowProcedure(HWND han_Wind, UINT uint_Message, WPARAM par
             else if (uint_Message >= WM_KEYFIRST && uint_Message <= WM_KEYLAST) {
                 switch (uint_Message) {
                     case WM_KEYUP: {
-                        p_Game->p_scene->DoEvnt(KEYBOARD_UP, (uint8_t) parameter1, nullptr);
+                        g_game->g_scene->DoEvnt(KEYBOARD_UP, static_cast<uint8_t>(parameter1), nullptr);
+                        break;
                     };
                     case WM_KEYDOWN: {
-                        p_Game->p_scene->DoEvnt(KEYBOARD_DOWN, (uint8_t) parameter1, nullptr);
+                        g_game->g_scene->DoEvnt(KEYBOARD_DOWN, static_cast<uint8_t>(parameter1), nullptr);
+                        break;
                     };
                     default:
                         break;
@@ -86,22 +86,22 @@ HWND NewWindow(LPCTSTR str_Title, int int_XPos, int int_YPos, int int_Width, int
                           int_Width, int_Height, NULL, NULL, GetModuleHandle(NULL), NULL);
 }
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPreviousInstance, LPSTR lpcmdline, int nCmdShow) {
-    p_Game = Game::GetInstance();
-    RECT wnd_size = {0, 0, (int)p_Game->g_width, (int)p_Game->g_height};
+int WINAPI WinMain(HINSTANCE,HINSTANCE,LPSTR,int) {
+    g_game = Game::GetInstance();
+    RECT wnd_size = {0, 0, g_game->g_width, g_game->g_height};
     AdjustWindowRectEx(&wnd_size, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE, FALSE, WS_EX_CONTROLPARENT);
     HWND hWindow = NewWindow("Zhardas's DX9 Playground!", 0, 0, wnd_size.right-wnd_size.left, wnd_size.bottom-wnd_size.top);
-    p_Game->Initialize(hInstance, hWindow);
+    g_game->Initialize(hWindow);
 
     MSG msg_Message;
-    while (p_Game->isRunning()) {
+    while (g_game->isRunning()) {
         if (PeekMessage(&msg_Message, hWindow, 0, 0, PM_REMOVE)) {
             DispatchMessage(&msg_Message);
         }
-        p_Game->Loop();
+        g_game->Loop();
     }
 
     DestroyWindow(hWindow);
 
     return 0;
-};
+}

@@ -5,19 +5,21 @@ class TexturedQuad;
 #include "Drawable.h"
 #include <Game.h>
 #include <string>
-#include <c++/functional>
+#include <functional>
 
 class TexturedQuad : Drawable{
 private:
-    std::string _texture = "default.png";
+    std::string d_texture;
 public:
     TexturedQuad();
     void SetTexture(std::string texture);
     std::string GetTexture();
-    Size GetSize();
+    Size* GetSize();
     void SetSize(Size * /* new GetSize */);
-    Position GetPosition();
+    void SetSize(int width, int height);
+    Position* GetPosition();
     void SetPosition(Position * /* new GetPosition */);
+    void SetPosition(int x, int y);
 
     std::function<void (const uint8_t&, Position*)> OnMouseUp;
     std::function<void (const uint8_t&, Position*)> OnMouseDown;

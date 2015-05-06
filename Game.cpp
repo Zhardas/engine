@@ -1,7 +1,12 @@
-#include <c++/iostream>
 #include "Game.h"
 
 Game::Game() {
+    update_chrono_accumulator = std::chrono::microseconds(0);
+    update_chrono_delta = std::chrono::duration<long,std::ratio<1,120>>(1);
+
+    update_tick = 0;
+    render_tick = 0;
+
     g_width = 1280;
     g_height = 720;
     g_mouse_position = new Position(0,0);
@@ -38,13 +43,13 @@ LPDIRECT3DDEVICE9 Game::InitializeDevice(HWND hWnd) {
 }
 
 void Game::SetDeviceOptions() {
-    p_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-    p_device->SetRenderState(D3DRS_LIGHTING, (DWORD) false);
-    p_device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+    g_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+    g_device->SetRenderState(D3DRS_LIGHTING, static_cast<DWORD>(false));
+    g_device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 
-    p_device->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
-    p_device->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-    p_device->SetTextureStageState(0,D3DTSS_COLORARG2,D3DTA_DIFFUSE);   //Ignored
+    g_device->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
+    g_device->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+    g_device->SetTextureStageState(0,D3DTSS_COLORARG2,D3DTA_DIFFUSE);   //Ignored
 }
 
 void Game::Loop() {
@@ -58,12 +63,12 @@ void Game::Loop() {
     //}
     while ( update_chrono_accumulator >= update_chrono_delta)
     {
-        p_scene->Update();
+        g_scene->Update();
         update_tick++;
         update_chrono_accumulator -= std::chrono::duration_cast<std::chrono::microseconds>(update_chrono_delta);
     }
 
-    p_renderer->DrawScene(p_scene);
+    g_renderer->DrawScene(g_scene);
     render_tick++;
 
     update_chrono_start = current;
@@ -77,20 +82,19 @@ void Game::Loop() {
     }
 }
 
-void Game::Initialize
-        (HINSTANCE hInstance, HWND hWindow) {
-    p_device = InitializeDevice(hWindow);
-    p_renderer = new Renderer(this);
-    if (p_device == nullptr)return;
+void Game::Initialize(HWND hWindow) {
+    g_device = InitializeDevice(hWindow);
+    g_renderer = new Renderer(this);
+    if (g_device == nullptr)return;
     SetDeviceOptions();
 
-    p_texture_manager = new TextureManager(this);
+    g_texture_manager = new TextureManager(this);
 
     //p_input = new Input(this);
     //p_input->Initialize(hInstance, hWindow);
 
-    p_scene = new Scene(this);
-    p_scene->Update();
+    g_scene = new Scene(this);
+    g_scene->Update();
 
     running_ = true;
 }

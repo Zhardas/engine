@@ -1,32 +1,39 @@
 #include "TexturedQuad.h"
 
 void TexturedQuad::SetTexture(std::string texture) {
-    _texture = texture;
+    d_texture = texture;
 }
 
 std::string TexturedQuad::GetTexture() {
-    return _texture;
+    return d_texture;
 }
 
-Size TexturedQuad::GetSize() {
-    return size_;
+Size* TexturedQuad::GetSize() {
+    return d_size;
 }
 
-Position TexturedQuad::GetPosition() {
-    return position_;
+Position* TexturedQuad::GetPosition() {
+    return d_position;
 }
 
 void TexturedQuad::SetSize(Size *size) {
-    size_.width = size->width;
-    size_.height = size->height;
+    SetSize(size->width, size->height);
 }
 
 void TexturedQuad::SetPosition(Position *position) {
-
-    position_.x = position->x - Game::GetInstance()->g_width/2;
-    position_.y = -position->y + Game::GetInstance()->g_height/2;
+    SetPosition(position->x, position->y);
 }
 
 TexturedQuad::TexturedQuad() {
+    d_texture = "default.png";
+}
 
+void TexturedQuad::SetPosition(int x, int y) {
+    d_position->x = x - Game::GetInstance()->g_width/2;
+    d_position->y = -y + Game::GetInstance()->g_height/2;
+}
+
+void TexturedQuad::SetSize(int width, int height) {
+    d_size->width = width;
+    d_size->height = height;
 }

@@ -1,4 +1,3 @@
-#include <c++/iostream>
 #include "Input.h"
 
 Input::Input(Game* game) {
@@ -8,8 +7,8 @@ Input::Input(Game* game) {
     p_keyboard = 0;
     p_mouse = 0;
 
-    p_mouse_x = (int)(p_game->g_width/2);
-    p_mouse_y = (int)(p_game->g_height/2);
+    p_mouse_x = p_game->g_width/2;
+    p_mouse_y = p_game->g_height/2;
 }
 
 void Input::Update() {
@@ -85,8 +84,8 @@ void Input::ProcessInput() {
     if(p_mouse_x < 0)  { p_mouse_x = 0; }
     if(p_mouse_y < 0)  { p_mouse_y = 0; }
 
-    if(p_mouse_x > p_game->g_width)  { p_mouse_x = (int) p_game->g_width; }
-    if(p_mouse_y > p_game->g_height) { p_mouse_y = (int) p_game->g_height; }
+    if(p_mouse_x > p_game->g_width)  { p_mouse_x = p_game->g_width; }
+    if(p_mouse_y > p_game->g_height) { p_mouse_y = p_game->g_height; }
 
     return;
 }

@@ -5,7 +5,7 @@ project(Headache)
 set (Headache_VERSION_MAJOR 2)
 set (Headache_VERSION_MINOR 0)
 
-include_directories ("${PROJECT_SOURCE_DIR}/lib/directx9/Include")
+include_directories (SYSTEM "${PROJECT_SOURCE_DIR}/lib/dx/include/")
 include_directories ("${PROJECT_SOURCE_DIR}")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
@@ -28,7 +28,10 @@ add_executable(Headache
     Objects/TexturedQuad.cpp
     Objects/TexturedQuad.h
     Scene/Scene.cpp
-    Scene/Scene.h Input/Input.cpp Input/Input.h Helper/input.h)
+    Scene/Scene.h
+    Helper/input.h
+    Audio/AudioManager.h
+    Audio/AudioManager.cpp Helper/types.h)
 
 target_link_libraries(Headache d3d9 d3dx9 dinput8 dxguid)
 

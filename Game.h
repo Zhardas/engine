@@ -7,7 +7,8 @@ class Game;
 #include "Graphics/TextureManager.h"
 #include <ctime>
 #include <chrono>
-#include "Input/Input.h"
+#include <iostream>
+#include "Helper/types.h"
 
 #define VERSION_MAJOR @Headache_VERSION_MAJOR@
 #define VERSION_MINOR @Headache_VERSION_MINOR@
@@ -17,29 +18,29 @@ private:
 
     bool running_;
     std::chrono::high_resolution_clock::time_point update_chrono_start;
-    std::chrono::duration<int64_t, std::micro> update_chrono_accumulator = std::chrono::microseconds(0);
-    std::chrono::duration<long, std::ratio<1, 120>> update_chrono_delta = std::chrono::duration<long,std::ratio<1,120>>(1);
+    std::chrono::duration<int64_t, std::micro> update_chrono_accumulator;
+    std::chrono::duration<long, std::ratio<1, 120> > update_chrono_delta;
     std::time_t update_time_start;
-    long update_tick = 0;
-    long render_tick = 0;
+    long update_tick;
+    long render_tick;
 public:
-    LPDIRECT3DDEVICE9 p_device;
-    FLOAT g_width;
-    FLOAT g_height;
+    LPDIRECT3DDEVICE9 g_device;
+    int g_width;
+    int g_height;
     Position* g_mouse_position;
 
-    Scene* p_scene;
-    Renderer* p_renderer;
-    TextureManager* p_texture_manager;
+    Scene* g_scene;
+    Renderer* g_renderer;
+    TextureManager* g_texture_manager;
     //Input* p_input;
 
     Game();
     static Game* GetInstance();
     void SetDeviceOptions();
     void Loop();
-    void Initialize(HINSTANCE hInstance, HWND hWindow);
-    bool isRunning() {return running_;};
-    void StopRunning(){running_ =  false;};
+    void Initialize(HWND hWindow);
+    bool isRunning() {return running_;}
+    void StopRunning(){running_ =  false;}
     LPDIRECT3DDEVICE9 InitializeDevice(HWND hWnd);
 };
 

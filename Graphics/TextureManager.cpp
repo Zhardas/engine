@@ -1,8 +1,7 @@
-#include <c++/iostream>
 #include "TextureManager.h"
 
-TextureManager::TextureManager(Game* p_Game) {
-    this->p_Game = p_Game;
+TextureManager::TextureManager(Game* parent) {
+    g_game = parent;
     textures = new std::map<std::string, IDirect3DBaseTexture9*>();
 }
 
@@ -14,10 +13,9 @@ IDirect3DBaseTexture9* TextureManager::GetTexture(LPCSTR texture_name){
         return textures->at(texture_name);
     }else{
         IDirect3DTexture9* texture=NULL;
-        HRESULT result = D3DXCreateTextureFromFile(p_Game->p_device, path.str().c_str(), &texture);
+        HRESULT result = D3DXCreateTextureFromFile(g_game->g_device, path.str().c_str(), &texture);
         switch (result){
             case D3D_OK:
-                std::cout << "Success!\n";
                 break;
             case D3DERR_NOTAVAILABLE:
             std::cout <<"Not available!\n";
@@ -35,7 +33,7 @@ IDirect3DBaseTexture9* TextureManager::GetTexture(LPCSTR texture_name){
                 std::cout <<"Out of memory!!\n";
                 break;
             default:
-                std::cout <<"Something went really wrong initializing texture!\n";
+                std::cout <<"Something went really wrong with texture initialization!\n";
                 break;
         }
         textures->insert(std::pair<std::string, IDirect3DBaseTexture9*>(texture_name, texture));

@@ -6,13 +6,14 @@
 #include <d3d9.h>
 #include "Game.h"
 #include <sstream>
+#include <iostream>
 
 class TextureManager {
 private:
-    Game* p_Game;
+    Game*g_game;
     std::map<std::string, IDirect3DBaseTexture9*>* textures;
 public:
-    TextureManager(Game* p_Game);
+    TextureManager(Game* parent);
     IDirect3DBaseTexture9 * GetTexture(LPCSTR texture_name);
 };
 

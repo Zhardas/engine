@@ -1,4 +1,5 @@
-class Input;
+
+a class Input;
 #ifndef HEADACHE_INPUT_H
 #define HEADACHE_INPUT_H
 
@@ -6,9 +7,10 @@ class Input;
 #define DIRECTINPUT_VERSION 0x0800
 #endif // DIRECTINPUT_VERSION
 
-#include <dinput.h>
+#include <dx/dinput.h>
 #include <Helper/Types/Position.h>
 #include <Game.h>
+#include <iostream>
 
 class Input {
 private:
