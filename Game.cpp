@@ -93,8 +93,14 @@ void Game::Initialize(HWND hWindow) {
     g_audio = new AudioManager();
     std::cout << "Initializing audio: " << g_audio->InitializeAudio() << "\n";
 
-    std::cout << "Loading .ogg file: " << g_audio->LoadSound("BloodyTears.ogg") << "\n";
-    g_audio->Play(true);
+    Audio* testAudio = g_audio->Generate();
+    testAudio->LoadSound("BloodyTears.ogg");
+    testAudio->AlterVolume(0.1f);
+    testAudio->Play(false);
+
+    Audio* testAudio2 = g_audio->Generate();
+    testAudio2->LoadSound("0770.ogg");
+    testAudio2->Play(true);
 
     //p_input = new Input(this);
     //p_input->Initialize(hInstance, hWindow);

@@ -11,11 +11,11 @@ void Renderer::SetUpCamera(LPDIRECT3DDEVICE9 p_dx_Device) {
     D3DXMATRIX matIdentity;
 
     //Setup orthographic projection matrix
-    D3DXMatrixOrthoLH (&matOrtho, p_Game->g_width, p_Game->g_height, 0.0f, 10.0f);
-    D3DXMatrixIdentity (&matIdentity);
-    p_dx_Device->SetTransform (D3DTS_PROJECTION, &matOrtho);
-    p_dx_Device->SetTransform (D3DTS_WORLD, &matIdentity);
-    p_dx_Device->SetTransform (D3DTS_VIEW, &matIdentity);
+    D3DXMatrixOrthoLH(&matOrtho, p_Game->g_width, p_Game->g_height, 0.0f, 10.0f);
+    D3DXMatrixIdentity(&matIdentity);
+    p_dx_Device->SetTransform(D3DTS_PROJECTION, &matOrtho);
+    p_dx_Device->SetTransform(D3DTS_WORLD, &matIdentity);
+    p_dx_Device->SetTransform(D3DTS_VIEW, &matIdentity);
 }
 
 
@@ -24,40 +24,49 @@ void Renderer::DrawScene(Scene *scene) {
     pDevice9->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(0, 72, 31, 39), 1.0f, 0);
     pDevice9->BeginScene();
 
-    p_Game->g_device->SetStreamSource(0, vb_static_background, 0, sizeof(v_3t));
-    std::list<TexturedQuad*> *bgList = scene->GetBackgroundDrawables();
     UINT index = 0;
-    for (std::list<TexturedQuad *>::iterator it = bgList->begin(); it != bgList->end(); ++it) {
-        TexturedQuad *temp = *it;
-        Draw(temp, index);
-        index++;
+
+    if (vb_static_background != NULL) {
+        p_Game->g_device->SetStreamSource(0, vb_static_background, 0, sizeof(v_3t));
+        std::list<TexturedQuad *> *bgList = scene->GetBackgroundDrawables();
+        for (std::list<TexturedQuad *>::iterator it = bgList->begin(); it != bgList->end(); ++it) {
+            TexturedQuad *temp = *it;
+            Draw(temp, index);
+            index++;
+        }
     }
 
 
-    std::list<TexturedQuad*> *dynamicList = scene->GetDynamicDrawables();
+    std::list<TexturedQuad *> *dynamicList = scene->GetDynamicDrawables();
     vb_dynamic = GenerateDynamicVertexBuffer(dynamicList);
-    p_Game->g_device->SetStreamSource(0, vb_dynamic, 0, sizeof(v_3t));
-    index = 0;
-    for (std::list<TexturedQuad *>::iterator it = dynamicList->begin(); it != dynamicList->end(); ++it) {
-        TexturedQuad *temp = *it;
-        Draw(temp, index);
-        index++;
+    if (vb_dynamic != NULL) {
+        p_Game->g_device->SetStreamSource(0, vb_dynamic, 0, sizeof(v_3t));
+        index = 0;
+        for (std::list<TexturedQuad *>::iterator it = dynamicList->begin(); it != dynamicList->end(); ++it) {
+            TexturedQuad *temp = *it;
+            Draw(temp, index);
+            index++;
+        }
     }
 
-    p_Game->g_device->SetStreamSource(0, vb_static_ui, 0, sizeof(v_3t));
-    std::list<TexturedQuad*> *uiList = scene->GetUIDrawables();
-    index = 0;
-    for (std::list<TexturedQuad*>::iterator it = uiList->begin(); it != uiList->end(); ++it) {
-        TexturedQuad *temp = *it;
-        Draw(temp, index);
-        index++;
+    if (vb_static_ui != NULL) {
+        std::list<TexturedQuad *> *uiList = scene->GetUIDrawables();
+        p_Game->g_device->SetStreamSource(0, vb_static_ui, 0, sizeof(v_3t));
+        index = 0;
+        for (std::list<TexturedQuad *>::iterator it = uiList->begin(); it != uiList->end(); ++it) {
+            TexturedQuad *temp = *it;
+            Draw(temp, index);
+            index++;
+        }
     }
-
     pDevice9->EndScene();
     pDevice9->Present(NULL, NULL, NULL, NULL);
 }
 
-LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateStaticVertexBuffer(std::list<TexturedQuad *> *pList){
+LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateStaticVertexBuffer(std::list<TexturedQuad *> *pList) {
+    if (pList->size() <= 0) {
+        return NULL;
+    }
     LPDIRECT3DVERTEXBUFFER9 p_dx_VertexBuffer = nullptr;
     UINT index = 0;
 
@@ -69,11 +78,11 @@ LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateStaticVertexBuffer(std::list<TexturedQ
 
         cv_Vertices[index * 4] = {temp->GetPosition()->x - x_shift, temp->GetPosition()->y - y_shift, 0.0f, 0.0f, 1.0f};
         cv_Vertices[index * 4 + 1] = {temp->GetPosition()->x - x_shift, temp->GetPosition()->y +
-                                                                    y_shift, 0.0f, 0.0f, 0.0f};
+                                                                        y_shift, 0.0f, 0.0f, 0.0f};
         cv_Vertices[index * 4 + 2] = {temp->GetPosition()->x + x_shift, temp->GetPosition()->y -
-                                                                    y_shift, 0.0f, 1.0f, 1.0f};
+                                                                        y_shift, 0.0f, 1.0f, 1.0f};
         cv_Vertices[index * 4 + 3] = {temp->GetPosition()->x + x_shift, temp->GetPosition()->y +
-                                                                    y_shift, 0.0f, 1.0f, 0.0f};
+                                                                        y_shift, 0.0f, 1.0f, 0.0f};
         index++;
     }
     if (FAILED(p_Game->g_device->CreateVertexBuffer(4 * index * sizeof(v_3t), D3DUSAGE_WRITEONLY,
@@ -99,10 +108,13 @@ void Renderer::Reload() {
 
 void Renderer::Draw(TexturedQuad *pQuad, UINT index) {
     p_Game->g_device->SetTexture(0, p_Game->g_texture_manager->GetTexture(pQuad->GetTexture().c_str()));
-    p_Game->g_device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4*index, 2);
+    p_Game->g_device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4 * index, 2);
 }
 
 LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateDynamicVertexBuffer(std::list<TexturedQuad *> *pList) {
+    if (pList->size() <= 0) {
+        return NULL;
+    }
     LPDIRECT3DVERTEXBUFFER9 p_dx_VertexBuffer = nullptr;
     UINT index = 0;
 
@@ -114,11 +126,11 @@ LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateDynamicVertexBuffer(std::list<Textured
 
         cv_Vertices[index * 4] = {temp->GetPosition()->x - x_shift, temp->GetPosition()->y - y_shift, 0.0f, 0.0f, 1.0f};
         cv_Vertices[index * 4 + 1] = {temp->GetPosition()->x - x_shift, temp->GetPosition()->y +
-                                                                    y_shift, 0.0f, 0.0f, 0.0f};
+                                                                        y_shift, 0.0f, 0.0f, 0.0f};
         cv_Vertices[index * 4 + 2] = {temp->GetPosition()->x + x_shift, temp->GetPosition()->y -
-                                                                    y_shift, 0.0f, 1.0f, 1.0f};
+                                                                        y_shift, 0.0f, 1.0f, 1.0f};
         cv_Vertices[index * 4 + 3] = {temp->GetPosition()->x + x_shift, temp->GetPosition()->y +
-                                                                    y_shift, 0.0f, 1.0f, 0.0f};
+                                                                        y_shift, 0.0f, 1.0f, 0.0f};
         index++;
     }
     if (FAILED(p_Game->g_device->CreateVertexBuffer(4 * index * sizeof(v_3t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY,

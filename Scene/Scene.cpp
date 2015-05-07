@@ -41,12 +41,12 @@ Scene::Scene(Game* p_game) {
     t5->SetTexture("default2.png");
 
 
-    backgroundDrawableList->push_back(t);
-    backgroundDrawableList->push_back(t2);
-    backgroundDrawableList->push_back(t3);
-    backgroundDrawableList->push_back(t4);
-    backgroundDrawableList->push_back(t5);
-    uiDrawableList->push_back(t3);
+    //backgroundDrawableList->push_back(t);
+    //backgroundDrawableList->push_back(t2);
+    //backgroundDrawableList->push_back(t3);
+    //backgroundDrawableList->push_back(t4);
+    //backgroundDrawableList->push_back(t5);
+    //uiDrawableList->push_back(t3);
     dynamicDrawableList->push_back(t);
 }
 
