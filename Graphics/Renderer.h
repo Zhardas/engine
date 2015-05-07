@@ -30,23 +30,29 @@ class Renderer {
         // texture twice.
         float tu, tv;
     };
+    struct color {
+        byte r, g, b;
+    };
 
-    Game* p_Game;
+    Game *g_game;
     LPDIRECT3DVERTEXBUFFER9 vb_static_background;
     LPDIRECT3DVERTEXBUFFER9 vb_static_ui;
     LPDIRECT3DVERTEXBUFFER9 vb_dynamic;
 
-
     void SetUpCamera(LPDIRECT3DDEVICE9 p_dx_Device);
 
     LPDIRECT3DVERTEXBUFFER9 GenerateStaticVertexBuffer(std::list<TexturedQuad *> *pList);
+
     LPDIRECT3DVERTEXBUFFER9 GenerateDynamicVertexBuffer(std::list<TexturedQuad *> *pList);
+
     void Draw(TexturedQuad *pQuad, UINT index);
 
 public:
-    Renderer(Game *p_game);
+    color clear_color = {72, 31, 39};
 
-    void DrawScene(Scene* scene);
+    Renderer();
+
+    void DrawScene(Scene *scene);
 
     void Reload();
 

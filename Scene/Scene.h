@@ -1,4 +1,5 @@
 class Scene;
+
 #ifndef HEADACHE_SCENE_H
 #define HEADACHE_SCENE_H
 
@@ -12,18 +13,31 @@ class Scene;
 class Scene {
 private:
     bool loaded;
-    Game* p_game;
+    Game *g_game;
+    std::list<TexturedQuad *> *backgroundDrawableList;
+    std::list<TexturedQuad *> *dynamicDrawableList;
+    std::list<TexturedQuad *> *uiDrawableList;
 protected:
-    std::list<TexturedQuad*>* backgroundDrawableList;
-    std::list<TexturedQuad*>* dynamicDrawableList;
-    std::list<TexturedQuad*>* uiDrawableList;
+    enum layer_enum {
+        BACKGROUND, DYNAMIC, UI
+    };
+
+    void AddTexQuad(layer_enum layer, TexturedQuad *obj);
+
 public:
-    Scene(Game* p_game);
-    void Update();
-    std::list<TexturedQuad*>* GetBackgroundDrawables(){return backgroundDrawableList;}
-    std::list<TexturedQuad*>* GetDynamicDrawables(){return dynamicDrawableList;}
-    std::list<TexturedQuad*>* GetUIDrawables(){return uiDrawableList;}
-    void DoEvnt(Event event, uint8_t key, Position* parameter);
+    Scene();
+
+    virtual ~Scene();
+
+    virtual void Update();
+
+    std::list<TexturedQuad *> *GetBackgroundDrawables() { return backgroundDrawableList; }
+
+    std::list<TexturedQuad *> *GetDynamicDrawables() { return dynamicDrawableList; }
+
+    std::list<TexturedQuad *> *GetUIDrawables() { return uiDrawableList; }
+
+    void DoEvnt(Event event, uint8_t key, Position *parameter);
 };
 
 

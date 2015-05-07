@@ -2,14 +2,14 @@
 
 Game::Game() {
     update_chrono_accumulator = std::chrono::microseconds(0);
-    update_chrono_delta = std::chrono::duration<long,std::ratio<1,120>>(1);
+    update_chrono_delta = std::chrono::duration<long, std::ratio<1, 120>>(1);
 
     update_tick = 0;
     render_tick = 0;
 
     g_width = 1280;
     g_height = 720;
-    g_mouse_position = new Position(0,0);
+    g_mouse_position = new Position(0, 0);
     update_chrono_start = std::chrono::high_resolution_clock::now();
     update_time_start = std::time(NULL);
     update_chrono_accumulator = std::chrono::microseconds(0);
@@ -29,6 +29,9 @@ LPDIRECT3DDEVICE9 Game::InitializeDevice(HWND hWnd) {
     dx_PresParams.Windowed = TRUE;
     dx_PresParams.SwapEffect = D3DSWAPEFFECT_DISCARD;
     dx_PresParams.BackBufferFormat = D3DFMT_X8R8G8B8;
+    dx_PresParams.AutoDepthStencilFormat = D3DFMT_D16;
+    dx_PresParams.EnableAutoDepthStencil = true;
+    dx_PresParams.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
 
     if (FAILED(p_dx_Object->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING,
                                          &dx_PresParams, &p_dx_Device))) {
@@ -45,11 +48,26 @@ LPDIRECT3DDEVICE9 Game::InitializeDevice(HWND hWnd) {
 void Game::SetDeviceOptions() {
     g_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
     g_device->SetRenderState(D3DRS_LIGHTING, static_cast<DWORD>(false));
-    g_device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 
-    g_device->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
-    g_device->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-    g_device->SetTextureStageState(0,D3DTSS_COLORARG2,D3DTA_DIFFUSE);   //Ignored
+    g_device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    g_device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    g_device->SetRenderState(D3DRS_ALPHABLENDENABLE, static_cast<DWORD>(true));
+
+    g_device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    g_device->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+    g_device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    g_device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    g_device->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+    g_device->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+
+    //g_device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+    //g_device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+    //g_device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+
+    //g_device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
+    //g_device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
+    //g_device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_ANISOTROPIC);
+    //g_device->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, 16);
 }
 
 void Game::Loop() {
@@ -58,12 +76,11 @@ void Game::Loop() {
 
     update_chrono_accumulator += std::chrono::duration_cast<std::chrono::microseconds>(frameTime);
 
-    if( update_chrono_accumulator >= update_chrono_delta){
-    //    p_input->Update();
+    if (update_chrono_accumulator >= update_chrono_delta) {
+        //    p_input->Update();
         g_audio->Update();
     }
-    while ( update_chrono_accumulator >= update_chrono_delta)
-    {
+    while (update_chrono_accumulator >= update_chrono_delta) {
         g_scene->Update();
         update_tick++;
         update_chrono_accumulator -= std::chrono::duration_cast<std::chrono::microseconds>(update_chrono_delta);
@@ -74,7 +91,7 @@ void Game::Loop() {
 
     update_chrono_start = current;
     std::time_t update_time_current = std::time(NULL);
-    if(update_time_current - update_time_start >= 1) {
+    if (update_time_current - update_time_start >= 1) {
         update_time_start = update_time_current;
         //std::cout << "UPS: " << update_tick << "\n";
         //std::cout << "FPS: " << render_tick << "\n";
@@ -85,35 +102,23 @@ void Game::Loop() {
 
 void Game::Initialize(HWND hWindow) {
     g_device = InitializeDevice(hWindow);
-    g_renderer = new Renderer(this);
+    g_renderer = new Renderer();
     if (g_device == nullptr)return;
     SetDeviceOptions();
 
-    g_texture_manager = new TextureManager(this);
+    g_texture_manager = new TextureManager();
     g_audio = new AudioManager();
-    std::cout << "Initializing audio: " << g_audio->InitializeAudio() << "\n";
+    g_audio->InitializeAudio();
 
-    Audio* testAudio = g_audio->Generate();
-    testAudio->LoadSound("BloodyTears.ogg");
-    testAudio->AlterVolume(0.1f);
-    testAudio->Play(false);
-
-    Audio* testAudio2 = g_audio->Generate();
-    testAudio2->LoadSound("0770.ogg");
-    testAudio2->Play(true);
-
-    //p_input = new Input(this);
-    //p_input->Initialize(hInstance, hWindow);
-
-    g_scene = new Scene(this);
+    g_scene = new Scene();
     g_scene->Update();
 
     running_ = true;
 }
 
 Game *Game::GetInstance() {
-    static Game* instance;
-    if(instance == nullptr){
+    static Game *instance;
+    if (instance == nullptr) {
         instance = new Game();
     }
     return instance;

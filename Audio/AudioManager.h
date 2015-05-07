@@ -17,7 +17,7 @@ class AudioManager {
 private:
     IXAudio2 *pXAudio2;
     IXAudio2MasteringVoice *pMasteringVoice;
-    std::list<Audio*> lAudio;
+    std::list<Audio *> lAudio;
     UINT32 flags;
 
 public:
@@ -33,7 +33,7 @@ public:
 
     void GetVolume(float &fltVolume);
 
-    Audio* Generate();
+    Audio *Generate();
 };
 
 

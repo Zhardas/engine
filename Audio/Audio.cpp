@@ -4,7 +4,7 @@
 
 #include "Audio.h"
 
-Audio::Audio(IXAudio2* parent) {
+Audio::Audio(IXAudio2 *parent) {
     am_xaudio2 = parent;
 
 }
@@ -185,6 +185,7 @@ void Audio::GetVolume(float &fltVolume) {
     pSourceVoice->GetVolume(&fltVolume);
     //pMasteringVoice->GetVolume(&fltVolume);
 }
+
 void Audio::Pause() {
     if (pSourceVoice == NULL)
         return;
@@ -198,6 +199,7 @@ void Audio::Pause() {
         boolIsPaused = true;
     }
 }
+
 void Audio::Update() {
     if (pSourceVoice == NULL)
         return;

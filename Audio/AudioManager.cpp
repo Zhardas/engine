@@ -7,7 +7,7 @@ AudioManager::AudioManager() {
 
     flags = 0;
 
-    #ifdef DEBUG
+#ifdef DEBUG
         flags |= XAUDIO2_DEBUG_ENGINE;
     #endif
 
@@ -30,11 +30,8 @@ AudioManager::~AudioManager() {
 
 bool AudioManager::InitializeAudio() {
     HRESULT hr;
-    if (FAILED(hr = XAudio2Create(&pXAudio2, flags))) {
-        return false;
-    }
+    return FAILED(hr = XAudio2Create(&pXAudio2, flags)) ? false : !FAILED(hr = pXAudio2->CreateMasteringVoice(&pMasteringVoice));
 
-    return !FAILED(hr = pXAudio2->CreateMasteringVoice(&pMasteringVoice));
 }
 
 //Alter the volume up and down
@@ -54,13 +51,13 @@ void AudioManager::GetVolume(float &fltVolume) {
 }
 
 void AudioManager::Update() {
-    for(Audio* a : lAudio){
+    for (Audio *a : lAudio) {
         a->Update();
     }
 }
 
-Audio* AudioManager::Generate() {
-    Audio* audio = new Audio(pXAudio2);
+Audio *AudioManager::Generate() {
+    Audio *audio = new Audio(pXAudio2);
     lAudio.push_back(audio);
     return audio;
 }

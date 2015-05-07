@@ -1,5 +1,6 @@
 #ifndef HEADACHE_TEXTUREMANAGER_H
 #define HEADACHE_TEXTUREMANAGER_H
+
 #include <map>
 #include <string>
 #include <d3dx9.h>
@@ -10,11 +11,12 @@
 
 class TextureManager {
 private:
-    Game*g_game;
-    std::map<std::string, IDirect3DBaseTexture9*>* textures;
+    Game *g_game;
+    std::map<std::string, IDirect3DBaseTexture9 *> *textures;
 public:
-    TextureManager(Game* parent);
-    IDirect3DBaseTexture9 * GetTexture(LPCSTR texture_name);
+    TextureManager();
+
+    IDirect3DBaseTexture9 *GetTexture(LPCSTR texture_name);
 };
 
 #else

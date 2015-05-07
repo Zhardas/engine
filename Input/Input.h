@@ -1,4 +1,3 @@
-
 a class Input;
 #ifndef HEADACHE_INPUT_H
 #define HEADACHE_INPUT_H
@@ -23,17 +22,24 @@ private:
 
     int p_mouse_x, p_mouse_y;
 
-    Game* p_game;
+    Game *p_game;
 
     void ReadKeyboard();
+
     void ReadMouse();
+
     void ProcessInput();
+
 public:
-    Input(Game*);
+    Input(Game *);
+
     ~Input();
+
     void Update();
+
     void Initialize(HINSTANCE, HWND);
-    Position* GetMousePosition();
+
+    Position *GetMousePosition();
 };
 
 

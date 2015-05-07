@@ -28,21 +28,28 @@ public:
     LPDIRECT3DDEVICE9 g_device;
     int g_width;
     int g_height;
-    Position* g_mouse_position;
+    Position *g_mouse_position;
 
-    Scene* g_scene;
-    Renderer* g_renderer;
-    TextureManager* g_texture_manager;
-    AudioManager* g_audio;
+    Scene *g_scene;
+    Renderer *g_renderer;
+    TextureManager *g_texture_manager;
+    AudioManager *g_audio;
     //Input* p_input;
 
     Game();
-    static Game* GetInstance();
+
+    static Game *GetInstance();
+
     void SetDeviceOptions();
+
     void Loop();
+
     void Initialize(HWND hWindow);
-    bool isRunning() {return running_;}
-    void StopRunning(){running_ =  false;}
+
+    bool isRunning() { return running_; }
+
+    void StopRunning() { running_ = false; }
+
     LPDIRECT3DDEVICE9 InitializeDevice(HWND hWnd);
 };
 
