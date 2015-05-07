@@ -45,6 +45,8 @@ public:
     void Pause();
 
     void Update();
+
+    bool destroy_after_playback;
 };
 
 

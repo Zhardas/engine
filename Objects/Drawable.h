@@ -8,8 +8,8 @@ class Drawable;
 class Drawable {
 private:
 protected:
-    Size *d_size;
-    Size *d_scaledsize;
+    SizeF *d_size;
+    SizeF *d_scaledsize;
     Position *d_position;
     SizeF *d_scale;
 public:
@@ -17,21 +17,21 @@ public:
 
     virtual ~Drawable();
 
-    virtual Size *GetSize() = 0;
+    virtual SizeF *GetSize() = 0;
 
-    virtual void SetSize(Size * /* new GetSize */) = 0;
+    virtual void SetSize(SizeF * /* new GetSize */) = 0;
 
     virtual Position *GetPosition() = 0;
 
     virtual void SetPosition(Position * /* new GetPosition */) = 0;
 
-    virtual void SetPosition(int x, int y) = 0;
+    virtual void SetPosition(float x, float y) = 0;
 
     virtual SizeF *GetScale() { return d_scale; }
 
     virtual void SetScale(SizeF *scale);
 
-    virtual Size *GetScaledSize() { return d_scaledsize; }
+    virtual SizeF *GetScaledSize() { return d_scaledsize; }
 
 
 };

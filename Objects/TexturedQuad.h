@@ -11,6 +11,7 @@ class TexturedQuad;
 class TexturedQuad : Drawable {
 private:
     std::string d_texture;
+    DWORD d_color;
 public:
     TexturedQuad();
 
@@ -18,29 +19,32 @@ public:
 
     std::string GetTexture();
 
-    Size *GetSize();
+    SizeF *GetSize();
 
-    void SetSize(Size * /* new GetSize */);
+    void SetSize(SizeF * /* new GetSize */);
 
-    void SetSize(int width, int height);
+    void SetSize(float width, float height);
 
     Position *GetPosition();
 
     void SetPosition(Position * /* new GetPosition */);
 
-    void SetPosition(int x, int y);
+    void SetPosition(float x, float y);
 
     SizeF *GetScale();
 
     void SetScale(SizeF *scale);
 
-    Size *GetScaledSize();
+    SizeF *GetScaledSize();
 
     std::function<void(const uint8_t &, Position *)> OnMouseUp;
     std::function<void(const uint8_t &, Position *)> OnMouseDown;
     std::function<void(Position *)> OnMouseMove;
     std::function<void(const uint8_t &)> OnKeyUp;
     std::function<void(const uint8_t &)> OnKeyDown;
+
+    DWORD GetColorARGB();
+    void SetColorARGB(DWORD color);
 };
 
 

@@ -2,9 +2,9 @@
 
 Drawable::Drawable() {
     d_position = new Position(0, 0);
-    d_size = new Size(0, 0);
-    d_scaledsize = new Size(0, 0);
-    d_scale = new SizeF(1, 1);
+    d_size = new SizeF(0.0f, 0.0f);
+    d_scaledsize = new SizeF(0.0f, 0.0f);
+    d_scale = new SizeF(1.0f, 1.0f);
 }
 
 Drawable::~Drawable() {
@@ -16,6 +16,6 @@ Drawable::~Drawable() {
 
 void Drawable::SetScale(SizeF *scale) {
     d_scale = scale;
-    d_scaledsize = new Size(static_cast<int>(d_size->width * scale->width),
-                            static_cast<int>(d_size->width * scale->height));
+    d_scaledsize = new SizeF(d_size->width * scale->width,
+                            d_size->width * scale->height);
 }

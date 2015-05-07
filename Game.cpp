@@ -4,6 +4,8 @@ Game::Game() {
     update_chrono_accumulator = std::chrono::microseconds(0);
     update_chrono_delta = std::chrono::duration<long, std::ratio<1, 120>>(1);
 
+    srand(static_cast<unsigned int>(time(NULL)));
+
     update_tick = 0;
     render_tick = 0;
 

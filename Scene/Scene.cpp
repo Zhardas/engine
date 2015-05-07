@@ -98,3 +98,20 @@ void Scene::AddTexQuad(Scene::layer_enum layer, TexturedQuad *obj) {
         };
     }
 }
+
+void Scene::RemoveTexQuad(Scene::layer_enum layer, TexturedQuad *obj) {
+    switch (layer) {
+        case BACKGROUND: {
+            backgroundDrawableList->remove(obj);
+            return;
+        };
+        case DYNAMIC: {
+            dynamicDrawableList->remove(obj);
+            return;
+        };
+        case UI: {
+            uiDrawableList->remove(obj);
+            return;
+        };
+    }
+}

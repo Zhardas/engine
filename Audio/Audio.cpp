@@ -6,7 +6,7 @@
 
 Audio::Audio(IXAudio2 *parent) {
     am_xaudio2 = parent;
-
+    destroy_after_playback = false;
 }
 
 Audio::~Audio() {

@@ -30,6 +30,17 @@ class Renderer {
         // texture twice.
         float tu, tv;
     };
+    struct v_3ct {
+        float x, y, z;
+        DWORD color;
+        // tu and tv. They represent the
+        // orientation of the texture. Hence, we can control where the upper-left and lower-right is.
+
+        // A value of 0.0 is furthest left, or up. 1.0 is furthest right, or down. Hence, from 0.0 to
+        // 1.0 is a complete drawing of the texture. You can even specify 2.0, which will draw the
+        // texture twice.
+        float tu, tv;
+    };
     struct color {
         byte r, g, b;
     };
@@ -55,8 +66,6 @@ public:
     void DrawScene(Scene *scene);
 
     void Reload();
-
-
 };
 
 

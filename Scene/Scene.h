@@ -23,6 +23,7 @@ protected:
     };
 
     void AddTexQuad(layer_enum layer, TexturedQuad *obj);
+    void RemoveTexQuad(layer_enum layer, TexturedQuad *obj);
 
 public:
     Scene();

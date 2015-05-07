@@ -23,6 +23,8 @@ AudioManager::~AudioManager() {
 
     SafeRelease(pXAudio2);
 
+    while (!lAudio.empty()) delete lAudio.front(), lAudio.pop_front();
+
     CoUninitialize();
 
     //LogInfo("<li>Audio destroyed OK");
@@ -53,6 +55,10 @@ void AudioManager::GetVolume(float &fltVolume) {
 void AudioManager::Update() {
     for (Audio *a : lAudio) {
         a->Update();
+        if(a->destroy_after_playback && !a->IsPlaying()){
+            delete a;
+            lAudio.remove(a);
+        }
     }
 }
 

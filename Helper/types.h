@@ -1,13 +1,19 @@
 #ifndef HEADACHE_TYPES_H
 #define HEADACHE_TYPES_H
+#include <math.h>
 
 struct Position {
-    int x;
-    int y;
+    float x;
+    float y;
 
-    Position(int x, int y) {
+    Position(float x, float y) {
         this->x = x;
         this->y = y;
+    }
+    float Distance(Position* p){
+        auto a = fabsf(fmaxf(x, p->x) - fminf(x,p->x));
+        auto b = fabsf(fmaxf(y, p->y) - fminf(y,p->y));
+        return sqrtf(a*a+b*b);
     }
 };
 
