@@ -112,9 +112,6 @@ void Game::Initialize(HWND hWindow) {
     g_audio = new AudioManager();
     g_audio->InitializeAudio();
 
-    g_scene = new Scene();
-    g_scene->Update();
-
     running_ = true;
 }
 

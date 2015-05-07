@@ -2,6 +2,7 @@
 // Created by Owner on 7.05.2015.
 //
 
+#include <iostream>
 #include "Audio.h"
 
 Audio::Audio(IXAudio2 *parent) {
@@ -10,8 +11,10 @@ Audio::Audio(IXAudio2 *parent) {
 }
 
 Audio::~Audio() {
+    std::cout << "Audio class deconstructor called!\n";
     if (pSourceVoice != NULL) {
         pSourceVoice->Stop(0);
+        pSourceVoice->FlushSourceBuffers();
         pSourceVoice->DestroyVoice();
     }
     if (bFileOpened)
@@ -31,6 +34,7 @@ bool Audio::LoadSound(const char *szSoundFileName) {
     //If we already have a file open then kill the current voice setup
     if (bFileOpened) {
         pSourceVoice->Stop(0);
+        pSourceVoice->FlushSourceBuffers();
         pSourceVoice->DestroyVoice();
 
         ov_clear(&vf);
@@ -154,7 +158,8 @@ void Audio::Stop() {
     //unfortunately the March 2008 release of the SDK does not include this parameter in the xaudio files
     //and I have been unable to ascertain what its value is
     //pSourceVoice->Stop(XAUDIO2_FLUSH_BUFFERS);
-    pSourceVoice->Stop(0);
+    //pSourceVoice->Stop(0);
+    //pSourceVoice->FlushSourceBuffers();
 
     boolIsPaused = false;
     isRunning = false;
@@ -201,23 +206,26 @@ void Audio::Pause() {
 }
 
 void Audio::Update() {
-    if (pSourceVoice == NULL)
+    if (pSourceVoice == nullptr)
         return;
 
     if (!isRunning)
         return;
 
+    if (bDone && !bLoop) {
+        Stop();
+    }
+
     //Do we have any free buffers?
     XAUDIO2_VOICE_STATE state;
     pSourceVoice->GetState(&state);
+
     if (state.BuffersQueued < MAX_BUFFER_COUNT - 1) {
-        if (bDone && !bLoop) {
-            pSourceVoice->Stop(0);
-        }
 
         //Got to use this trick because otherwise all the bits wont play
-        if (bAlmostDone && !bLoop)
+        if (bAlmostDone && !bLoop) {
             bDone = true;
+        }
 
         memset(&buffers[currentDiskReadBuffer], 0, sizeof(buffers[currentDiskReadBuffer]));
 
@@ -255,8 +263,9 @@ void Audio::Update() {
 
         XAUDIO2_BUFFER buffer = {0};
         buffer.pAudioData = (BYTE *) &buffers[currentDiskReadBuffer];
-        if (bAlmostDone)
+        if (bAlmostDone) {
             buffer.Flags = 0;   //Tell the source voice not to expect any data after this buffer
+        }
         buffer.AudioBytes = STREAMING_BUFFER_SIZE;
 
         HRESULT hr;

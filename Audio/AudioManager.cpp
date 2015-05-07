@@ -53,12 +53,19 @@ void AudioManager::GetVolume(float &fltVolume) {
 }
 
 void AudioManager::Update() {
+    //TODO: Make this cleaner
+    bool bDel = false;
+    Audio* del;
     for (Audio *a : lAudio) {
         a->Update();
         if(a->destroy_after_playback && !a->IsPlaying()){
-            delete a;
-            lAudio.remove(a);
+            del = a;
+            bDel = true;
         }
+    }
+    if(bDel){
+        lAudio.remove(del);
+        delete del;
     }
 }
 

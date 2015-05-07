@@ -50,6 +50,8 @@ class Renderer {
     LPDIRECT3DVERTEXBUFFER9 vb_static_ui;
     LPDIRECT3DVERTEXBUFFER9 vb_dynamic;
 
+    bool firstReload;
+
     void SetUpCamera(LPDIRECT3DDEVICE9 p_dx_Device);
 
     LPDIRECT3DVERTEXBUFFER9 GenerateStaticVertexBuffer(std::list<TexturedQuad *> *pList);
