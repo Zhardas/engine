@@ -6,9 +6,14 @@ set (Headache_VERSION_MAJOR 2)
 set (Headache_VERSION_MINOR 0)
 
 include_directories (SYSTEM "${PROJECT_SOURCE_DIR}/lib/dx/include/")
+include_directories (SYSTEM "${PROJECT_SOURCE_DIR}/lib/vorbis/include/")
+include_directories (SYSTEM "${PROJECT_SOURCE_DIR}/lib/vorbis/lib/")
 include_directories ("${PROJECT_SOURCE_DIR}")
+link_directories(${PROJECT_SOURCE_DIR}/lib/dx/lib/x86/)
+link_directories(${PROJECT_SOURCE_DIR}/lib/vorbis/lib/)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
 
 add_executable(Headache
     WinStart.cpp
@@ -21,18 +26,18 @@ add_executable(Headache
     Graphics/TextureManager.h
     Objects/Drawable.cpp
     Objects/Drawable.h
-    Helper/Types/Size.cpp
-    Helper/Types/Size.h
-    Helper/Types/Position.cpp
-    Helper/Types/Position.h
     Objects/TexturedQuad.cpp
     Objects/TexturedQuad.h
     Scene/Scene.cpp
     Scene/Scene.h
     Helper/input.h
     Audio/AudioManager.h
-    Audio/AudioManager.cpp Helper/types.h)
+    Audio/AudioManager.cpp
+    Helper/types.h Audio/Audio.cpp Audio/Audio.h)
 
-target_link_libraries(Headache d3d9 d3dx9 dinput8 dxguid)
+target_link_libraries(Headache d3d9 d3dx9 dinput8 dxguid vorbis ogg vorbisfile)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${DESTINATION}/)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/lib/vorbis/lib/libvorbis.dll DESTINATION ${DESTINATION}/)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/lib/vorbis/lib/libvorbisfile.dll DESTINATION ${DESTINATION}/)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/lib/vorbis/lib/libogg.dll DESTINATION ${DESTINATION}/)

@@ -58,9 +58,10 @@ void Game::Loop() {
 
     update_chrono_accumulator += std::chrono::duration_cast<std::chrono::microseconds>(frameTime);
 
-    //if( update_chrono_accumulator >= update_chrono_delta){
+    if( update_chrono_accumulator >= update_chrono_delta){
     //    p_input->Update();
-    //}
+        g_audio->Update();
+    }
     while ( update_chrono_accumulator >= update_chrono_delta)
     {
         g_scene->Update();
@@ -89,6 +90,11 @@ void Game::Initialize(HWND hWindow) {
     SetDeviceOptions();
 
     g_texture_manager = new TextureManager(this);
+    g_audio = new AudioManager();
+    std::cout << "Initializing audio: " << g_audio->InitializeAudio() << "\n";
+
+    std::cout << "Loading .ogg file: " << g_audio->LoadSound("BloodyTears.ogg") << "\n";
+    g_audio->Play(true);
 
     //p_input = new Input(this);
     //p_input->Initialize(hInstance, hWindow);

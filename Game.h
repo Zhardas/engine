@@ -8,6 +8,7 @@ class Game;
 #include <ctime>
 #include <chrono>
 #include <iostream>
+#include <Audio/AudioManager.h>
 #include "Helper/types.h"
 
 #define VERSION_MAJOR @Headache_VERSION_MAJOR@
@@ -32,6 +33,7 @@ public:
     Scene* g_scene;
     Renderer* g_renderer;
     TextureManager* g_texture_manager;
+    AudioManager* g_audio;
     //Input* p_input;
 
     Game();
