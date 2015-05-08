@@ -11,7 +11,6 @@ Audio::Audio(IXAudio2 *parent) {
 }
 
 Audio::~Audio() {
-    std::cout << "Audio class deconstructor called!\n";
     if (pSourceVoice != NULL) {
         pSourceVoice->Stop(0);
         pSourceVoice->FlushSourceBuffers();
