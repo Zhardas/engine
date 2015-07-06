@@ -7,7 +7,7 @@ class Font {
 private:
     ID3DXFont * g_font;
 public:
-    Font(std::string facename, int height);
+    Font(std::string facename, int height, bool bold, bool italic);
     ~Font();
 
     ID3DXFont *GetFont() const {

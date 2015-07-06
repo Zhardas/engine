@@ -11,7 +11,8 @@ private:
     Size* position;
     Size* size;
 public:
-    Text(std::string font, int size);
+    byte Alpha = 255, Red = 255, Green = 255, Blue = 255;
+    Text(std::string font, int size, bool bold, bool italic);
     Font* font;
     void SetText(std::string text){this->text = text;};
     std::string GetText(){return text;}

@@ -67,7 +67,7 @@ void Renderer::DrawScene(Scene *scene) {
     for(std::list<Text*>::iterator it = text_list->begin(); it != text_list->end(); ++it){
         auto text_item = static_cast<Text*>(*it);
         RECT r = {text_item->GetPosition()->width,text_item->GetPosition()->height,text_item->GetPosition()->width+text_item->GetSize()->width,text_item->GetPosition()->height+text_item->GetSize()->height};
-        static_cast<Text*>(*it)->font->GetFont()->DrawText(NULL,static_cast<Text*>(*it)->GetText().c_str(),-1,&r,DT_CENTER,D3DCOLOR_ARGB(255,255,255,255));
+        static_cast<Text*>(*it)->font->GetFont()->DrawText(NULL,static_cast<Text*>(*it)->GetText().c_str(),-1,&r,DT_CENTER,D3DCOLOR_ARGB(text_item->Alpha,text_item->Red,text_item->Green,text_item->Blue));
     }
 
     pDevice9->EndScene();
