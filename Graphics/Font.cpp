@@ -1,6 +1,6 @@
 #include "Font.h"
 
-Font::Font(LPCSTR facename, int height) {
+Font::Font(std::string facename, int height) {
     g_font = NULL;
 
     D3DXCreateFont(
@@ -14,7 +14,7 @@ Font::Font(LPCSTR facename, int height) {
             OUT_DEFAULT_PRECIS, //OutputPrecision
             ANTIALIASED_QUALITY, //Quality
             DEFAULT_PITCH | FF_DONTCARE,//PitchAndFamily
-            facename,          //pFacename,
+            facename.c_str(),          //pFacename,
             &g_font);         //ppFont
 }
 

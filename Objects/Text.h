@@ -11,7 +11,7 @@ private:
     Size* position;
     Size* size;
 public:
-    Text();
+    Text(std::string font, int size);
     Font* font;
     void SetText(std::string text){this->text = text;};
     std::string GetText(){return text;}
