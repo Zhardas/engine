@@ -37,6 +37,10 @@ public:
 
     SizeF *GetScaledSize();
 
+    bool Contains(Position* pos){
+        return pos->x >= GetPosition()->x - GetScaledSize()->width/2 && pos->x <= GetPosition()->x + GetScaledSize()->width/2 && pos->y >= GetPosition()->y - GetScaledSize()->height/2 && pos->y <= GetPosition()->y + GetScaledSize()->height/2;
+    }
+
     std::function<void(const uint8_t &, Position *)> OnMouseUp;
     std::function<void(const uint8_t &, Position *)> OnMouseDown;
     std::function<void(Position *)> OnMouseMove;
