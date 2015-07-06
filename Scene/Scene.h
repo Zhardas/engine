@@ -9,6 +9,8 @@ class Scene;
 #include <list>
 #include <Helper/input.h>
 #include <algorithm>
+#include <Objects/Text.h>
+#include <Graphics/Font.h>
 
 class Scene {
 private:
@@ -17,6 +19,7 @@ private:
     std::list<TexturedQuad *> *backgroundDrawableList;
     std::list<TexturedQuad *> *dynamicDrawableList;
     std::list<TexturedQuad *> *uiDrawableList;
+    std::list<Text *> *textList;
 protected:
     enum layer_enum {
         BACKGROUND, DYNAMIC, UI
@@ -24,6 +27,8 @@ protected:
 
     void AddTexQuad(layer_enum layer, TexturedQuad *obj);
     void RemoveTexQuad(layer_enum layer, TexturedQuad *obj);
+    void AddText(Text* obj);
+    void RemoveText(Text* obj);
 
 public:
     Scene();
@@ -37,6 +42,8 @@ public:
     std::list<TexturedQuad *> *GetDynamicDrawables() { return dynamicDrawableList; }
 
     std::list<TexturedQuad *> *GetUIDrawables() { return uiDrawableList; }
+
+    std::list<Text *> *GetTextList() {return textList;}
 
     void DoEvnt(Event event, uint8_t key, Position *parameter);
 };

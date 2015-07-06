@@ -5,6 +5,7 @@ class Game;
 
 #include "Graphics/Renderer.h"
 #include "Graphics/TextureManager.h"
+#include "Graphics/Font.h"
 #include <ctime>
 #include <chrono>
 #include <iostream>

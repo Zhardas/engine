@@ -7,6 +7,7 @@ Scene::Scene() {
     backgroundDrawableList = new std::list<TexturedQuad *>();
     dynamicDrawableList = new std::list<TexturedQuad *>();
     uiDrawableList = new std::list<TexturedQuad *>();
+    textList = new std::list<Text *>();
 }
 
 Scene::~Scene() {
@@ -114,4 +115,11 @@ void Scene::RemoveTexQuad(Scene::layer_enum layer, TexturedQuad *obj) {
             return;
         };
     }
+}
+
+void Scene::AddText(Text *obj) {
+    textList->push_back(obj);
+}
+void Scene::RemoveText(Text *obj) {
+    textList->remove(obj);
 }

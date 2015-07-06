@@ -35,6 +35,10 @@ add_library(headache
     Audio/AudioManager.cpp
     Helper/types.h
     Audio/Audio.cpp
-    Audio/Audio.h)
+    Audio/Audio.h
+    Graphics/Font.cpp
+    Graphics/Font.h
+    Objects/Text.cpp
+    Objects/Text.h)
 
 target_link_libraries(headache d3d9 d3dx9 dinput8 dxguid vorbis ogg vorbisfile)
