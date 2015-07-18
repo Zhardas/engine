@@ -1,9 +1,8 @@
-#include "Renderer.h"
+#include <Graphics/Layers/TextLayer.h>
 
 Renderer::Renderer() {
     g_game = Game::GetInstance();
     SetUpCamera(g_game->g_device);
-    firstReload = true;
 }
 
 void Renderer::SetUpCamera(LPDIRECT3DDEVICE9 p_dx_Device) {
@@ -24,50 +23,65 @@ void Renderer::DrawScene(Scene *scene) {
     pDevice9->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(255, clear_color.r, clear_color.g, clear_color.b), 1.0f, 0);
     pDevice9->BeginScene();
 
-    UINT index = 0;
-    if (vb_static_background != NULL) {
-        g_game->g_device->SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
-        g_game->g_device->SetStreamSource(0, vb_static_background, 0, sizeof(v_3t));
-        std::list<TexturedQuad *> *bgList = scene->GetBackgroundDrawables();
-        for (std::list<TexturedQuad *>::iterator it = bgList->begin(); it != bgList->end(); ++it) {
-            Draw(*it, index);
-            index++;
+
+    for (Layer *layer : *scene->GetLayers()) {
+        UINT index = 0;
+        switch (layer->GetType()) {
+            case Layer::STATIC: {
+                DrawableLayer *cast_layer = static_cast<DrawableLayer *>(layer);
+                if (cast_layer->reload) {
+                    cast_layer->reload = false;
+                    if (cast_layer->vertex_buffer != NULL) {
+                        cast_layer->vertex_buffer->Release();
+                    }
+                    cast_layer->vertex_buffer = GenerateStaticVertexBuffer(cast_layer->drawableList);
+                }
+                if (cast_layer->vertex_buffer != NULL) {
+                    g_game->g_device->SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
+                    g_game->g_device->SetStreamSource(0, cast_layer->vertex_buffer, 0, sizeof(v_3t));
+                    for (TexturedQuad *obj : *cast_layer->drawableList) {
+                        Draw(obj, index);
+                        index++;
+                    }
+                }
+            }
+                break;
+            case Layer::DYNAMIC: {
+                DrawableLayer *cast_layer = static_cast<DrawableLayer *>(layer);
+                if (cast_layer->vertex_buffer != NULL) {
+                    cast_layer->vertex_buffer->Release();
+                }
+                cast_layer->vertex_buffer = GenerateDynamicVertexBuffer(cast_layer->drawableList);
+                if (cast_layer->vertex_buffer != NULL) {
+                    g_game->g_device->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+                    g_game->g_device->SetStreamSource(0, cast_layer->vertex_buffer, 0, sizeof(v_3ct));
+                    index = 0;
+                    for (TexturedQuad *obj : *cast_layer->drawableList) {
+                        Draw(obj, index);
+                        index++;
+                    }
+                    cast_layer->vertex_buffer->Release();
+                    delete cast_layer->vertex_buffer;
+                }
+            }
+                break;
+            case Layer::TEXT: {
+                TextLayer *cast_layer = static_cast<TextLayer *>(layer);
+                for (Text *text_item : *cast_layer->text_list) {
+                    RECT r = {text_item->GetPosition()->width, text_item->GetPosition()->height,
+                              text_item->GetPosition()->width + text_item->GetSize()->width,
+                              text_item->GetPosition()->height + text_item->GetSize()->height};
+                    text_item->font->GetFont()->DrawText(NULL,
+                                                         text_item->GetText().c_str(), -1,
+                                                         &r,
+                                                         DT_CENTER,
+                                                         D3DCOLOR_ARGB(text_item->Alpha, text_item->Red,
+                                                                       text_item->Green,
+                                                                       text_item->Blue));
+                }
+            }
+                break;
         }
-    }
-
-
-    std::list<TexturedQuad *> *dynamicList = scene->GetDynamicDrawables();
-    if (vb_dynamic != NULL) {
-        vb_dynamic->Release();
-    }
-    vb_dynamic = GenerateDynamicVertexBuffer(dynamicList);
-    if (vb_dynamic != NULL) {
-        g_game->g_device->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
-        g_game->g_device->SetStreamSource(0, vb_dynamic, 0, sizeof(v_3ct));
-        index = 0;
-        for (std::list<TexturedQuad *>::iterator it = dynamicList->begin(); it != dynamicList->end(); ++it) {
-            Draw(*it, index);
-            index++;
-        }
-        delete vb_dynamic;
-    }
-
-    if (vb_static_ui != NULL) {
-        std::list<TexturedQuad *> *uiList = scene->GetUIDrawables();
-        g_game->g_device->SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
-        g_game->g_device->SetStreamSource(0, vb_static_ui, 0, sizeof(v_3t));
-        index = 0;
-        for (std::list<TexturedQuad *>::iterator it = uiList->begin(); it != uiList->end(); ++it) {
-            Draw(*it, index);
-            index++;
-        }
-    }
-
-    auto text_list = scene->GetTextList();
-    for(std::list<Text*>::iterator it = text_list->begin(); it != text_list->end(); ++it){
-        auto text_item = static_cast<Text*>(*it);
-        RECT r = {text_item->GetPosition()->width,text_item->GetPosition()->height,text_item->GetPosition()->width+text_item->GetSize()->width,text_item->GetPosition()->height+text_item->GetSize()->height};
-        static_cast<Text*>(*it)->font->GetFont()->DrawText(NULL,static_cast<Text*>(*it)->GetText().c_str(),-1,&r,DT_CENTER,D3DCOLOR_ARGB(text_item->Alpha,text_item->Red,text_item->Green,text_item->Blue));
     }
 
     pDevice9->EndScene();
@@ -117,19 +131,6 @@ LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateStaticVertexBuffer(std::list<TexturedQ
         p_dx_VertexBuffer->Unlock();
     }
     return p_dx_VertexBuffer;
-}
-
-void Renderer::Reload() {
-    if (!firstReload) {
-        vb_static_background->Release();
-        vb_dynamic->Release();
-        vb_static_ui->Release();
-    } else {
-        vb_dynamic = GenerateDynamicVertexBuffer(g_game->g_scene->GetDynamicDrawables());
-    }
-    vb_static_background = GenerateStaticVertexBuffer(g_game->g_scene->GetBackgroundDrawables());
-    vb_static_ui = GenerateStaticVertexBuffer(g_game->g_scene->GetUIDrawables());
-    firstReload = false;
 }
 
 void Renderer::Draw(TexturedQuad *pQuad, UINT index) {

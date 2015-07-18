@@ -39,6 +39,12 @@ add_library(headache
     Graphics/Font.cpp
     Graphics/Font.h
     Objects/Text.cpp
-    Objects/Text.h)
+    Objects/Text.h
+    Graphics/Layers/Layer.cpp
+    Graphics/Layers/Layer.h
+    Graphics/Layers/DrawableLayer.cpp
+    Graphics/Layers/DrawableLayer.h
+    Graphics/Layers/TextLayer.cpp
+    Graphics/Layers/TextLayer.h)
 
 target_link_libraries(headache d3d9 d3dx9 dinput8 dxguid vorbis ogg vorbisfile)

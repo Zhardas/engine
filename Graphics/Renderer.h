@@ -10,6 +10,8 @@ class Renderer;
 #include <Objects/TexturedQuad.h>
 #include <Game.h>
 #include <list>
+#include <algorithm>
+#include <Graphics/Layers/DrawableLayer.h>
 
 class Renderer {
     struct v_3c {
@@ -46,11 +48,6 @@ class Renderer {
     };
 
     Game *g_game;
-    LPDIRECT3DVERTEXBUFFER9 vb_static_background;
-    LPDIRECT3DVERTEXBUFFER9 vb_static_ui;
-    LPDIRECT3DVERTEXBUFFER9 vb_dynamic;
-
-    bool firstReload;
 
     void SetUpCamera(LPDIRECT3DDEVICE9 p_dx_Device);
 
@@ -66,8 +63,6 @@ public:
     Renderer();
 
     void DrawScene(Scene *scene);
-
-    void Reload();
 };
 
 

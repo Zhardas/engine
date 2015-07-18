@@ -11,25 +11,15 @@ class Scene;
 #include <algorithm>
 #include <Objects/Text.h>
 #include <Graphics/Font.h>
+#include <Helper/input.h>
+#include <iostream>
+#include <Graphics/Layers/Layer.h>
 
 class Scene {
 private:
     bool loaded;
     Game *g_game;
-    std::list<TexturedQuad *> *backgroundDrawableList;
-    std::list<TexturedQuad *> *dynamicDrawableList;
-    std::list<TexturedQuad *> *uiDrawableList;
-    std::list<Text *> *textList;
-protected:
-    enum layer_enum {
-        BACKGROUND, DYNAMIC, UI
-    };
-
-    void AddTexQuad(layer_enum layer, TexturedQuad *obj);
-    void RemoveTexQuad(layer_enum layer, TexturedQuad *obj);
-    void AddText(Text* obj);
-    void RemoveText(Text* obj);
-
+    std::list<Layer *> *layers;
 public:
     Scene();
 
@@ -37,15 +27,17 @@ public:
 
     virtual void Update();
 
-    std::list<TexturedQuad *> *GetBackgroundDrawables() { return backgroundDrawableList; }
+    void EventCall(Event event, uint8_t key, Position *parameter);
 
-    std::list<TexturedQuad *> *GetDynamicDrawables() { return dynamicDrawableList; }
+    std::list<Layer *> *GetLayers() { return layers; };
 
-    std::list<TexturedQuad *> *GetUIDrawables() { return uiDrawableList; }
+    void AddLayer(Layer *layer) {
+        layers->push_back(layer);
+    }
 
-    std::list<Text *> *GetTextList() {return textList;}
-
-    void DoEvnt(Event event, uint8_t key, Position *parameter);
+    void RemoveLayer(Layer *layer) {
+        layers->remove(layer);
+    }
 };
 
 
