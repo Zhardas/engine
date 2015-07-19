@@ -23,7 +23,6 @@ void Renderer::DrawScene(Scene *scene) {
     pDevice9->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(255, clear_color.r, clear_color.g, clear_color.b), 1.0f, 0);
     pDevice9->BeginScene();
 
-
     for (Layer *layer : *scene->GetLayers()) {
         UINT index = 0;
         switch (layer->GetType()) {
@@ -40,28 +39,59 @@ void Renderer::DrawScene(Scene *scene) {
                     g_game->g_device->SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
                     g_game->g_device->SetStreamSource(0, cast_layer->vertex_buffer, 0, sizeof(v_3t));
                     for (TexturedQuad *obj : *cast_layer->drawableList) {
+                        // World transformation
+                        D3DXVECTOR2 pivot = {obj->GetSize()->width / 2, obj->GetSize()->height / 2};
+                        D3DXVECTOR2 scaling = {obj->GetScale()->width, obj->GetScale()->height};
+                        D3DXVECTOR2 moving = {obj->GetPosition()->x - Game::GetInstance()->g_width / 2,
+                                              obj->GetPosition()->y - Game::GetInstance()->g_height / 2};
+                        D3DXMATRIX matFinal;
+                        D3DXMatrixTransformation2D(&matFinal, &pivot, 1.0f, &scaling, &pivot, obj->GetRotation(),
+                                                   &moving);
+
+                        pDevice9->SetTransform(D3DTS_WORLD, &matFinal);
+
+                        // Draw
                         Draw(obj, index);
                         index++;
+
+                        // Reset world transformation
+                        D3DXMatrixIdentity(&matFinal);
+                        pDevice9->SetTransform(D3DTS_WORLD, &matFinal);
                     }
                 }
             }
                 break;
             case Layer::DYNAMIC: {
                 DrawableLayer *cast_layer = static_cast<DrawableLayer *>(layer);
-                if (cast_layer->vertex_buffer != NULL) {
-                    cast_layer->vertex_buffer->Release();
-                }
                 cast_layer->vertex_buffer = GenerateDynamicVertexBuffer(cast_layer->drawableList);
                 if (cast_layer->vertex_buffer != NULL) {
                     g_game->g_device->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
                     g_game->g_device->SetStreamSource(0, cast_layer->vertex_buffer, 0, sizeof(v_3ct));
                     index = 0;
                     for (TexturedQuad *obj : *cast_layer->drawableList) {
+                        // World transformation
+                        D3DXVECTOR2 pivot = {obj->GetSize()->width / 2, obj->GetSize()->height / 2};
+                        D3DXVECTOR2 scaling = {obj->GetScale()->width, obj->GetScale()->height};
+                        D3DXVECTOR2 moving = {obj->GetPosition()->x - Game::GetInstance()->g_width / 2,
+                                              obj->GetPosition()->y - Game::GetInstance()->g_height / 2};
+
+                        D3DXMATRIX matFinal;
+                        D3DXMatrixTransformation2D(&matFinal, &pivot, 1.0f, &scaling, &pivot, obj->GetRotation(),
+                                                   &moving);
+
+                        pDevice9->SetTransform(D3DTS_WORLD, &matFinal);
+
+                        // Draw
                         Draw(obj, index);
                         index++;
+
+                        // Reset world transformation
+                        D3DXMatrixIdentity(&matFinal);
+                        pDevice9->SetTransform(D3DTS_WORLD, &matFinal);
                     }
                     cast_layer->vertex_buffer->Release();
                     delete cast_layer->vertex_buffer;
+                    cast_layer->vertex_buffer = NULL;
                 }
             }
                 break;
@@ -88,33 +118,19 @@ void Renderer::DrawScene(Scene *scene) {
     pDevice9->Present(NULL, NULL, NULL, NULL);
 }
 
-LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateStaticVertexBuffer(std::list<TexturedQuad *> *pList) {
-    if (pList->size() <= 0) {
+LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateStaticVertexBuffer(std::list<TexturedQuad *> *object_list) {
+    if (object_list->size() <= 0) {
         return NULL;
     }
     LPDIRECT3DVERTEXBUFFER9 p_dx_VertexBuffer = nullptr;
     UINT index = 0;
 
-    v_3t cv_Vertices[4 * pList->size()];
-    for (std::list<TexturedQuad *>::iterator it = pList->begin(); it != pList->end(); ++it) {
-        TexturedQuad *temp = *it;
-        float x_shift = temp->GetScaledSize()->width / 2;
-        float y_shift = temp->GetScaledSize()->height / 2;
-
-        cv_Vertices[index * 4] = {temp->GetPosition()->x - x_shift - g_game->g_width / 2,
-                                  -temp->GetPosition()->y - y_shift + g_game->g_height / 2, 0.0f, 0.0f, 1.0f};
-        cv_Vertices[index * 4 + 1] = {temp->GetPosition()->x - x_shift - g_game->g_width / 2, -temp->GetPosition()->y +
-                                                                                              y_shift +
-                                                                                              g_game->g_height / 2,
-                                      0.0f, 0.0f, 0.0f};
-        cv_Vertices[index * 4 + 2] = {temp->GetPosition()->x + x_shift - g_game->g_width / 2, -temp->GetPosition()->y -
-                                                                                              y_shift +
-                                                                                              g_game->g_height / 2,
-                                      0.0f, 1.0f, 1.0f};
-        cv_Vertices[index * 4 + 3] = {temp->GetPosition()->x + x_shift - g_game->g_width / 2, -temp->GetPosition()->y +
-                                                                                              y_shift +
-                                                                                              g_game->g_height / 2,
-                                      0.0f, 1.0f, 0.0f};
+    v_3t cv_Vertices[4 * object_list->size()];
+    for (TexturedQuad *obj : *object_list) {
+        cv_Vertices[index * 4] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+        cv_Vertices[index * 4 + 1] = {0.0f, obj->GetSize()->height, 0.0f, 0.0f, 1.0f};
+        cv_Vertices[index * 4 + 2] = {obj->GetSize()->width, 0.0f, 0.0f, 1.0f, 0.0f};
+        cv_Vertices[index * 4 + 3] = {obj->GetSize()->width, obj->GetSize()->height, 0.0f, 1.0f, 1.0f};
         index++;
     }
     if (FAILED(g_game->g_device->CreateVertexBuffer(4 * index * sizeof(v_3t), D3DUSAGE_WRITEONLY,
@@ -138,38 +154,20 @@ void Renderer::Draw(TexturedQuad *pQuad, UINT index) {
     g_game->g_device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4 * index, 2);
 }
 
-LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateDynamicVertexBuffer(std::list<TexturedQuad *> *pList) {
-    if (pList->size() <= 0) {
+LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateDynamicVertexBuffer(std::list<TexturedQuad *> *object_list) {
+    if (object_list->size() <= 0) {
         return NULL;
     }
     LPDIRECT3DVERTEXBUFFER9 p_dx_VertexBuffer = nullptr;
     UINT index = 0;
 
-    v_3ct cv_Vertices[4 * pList->size()];
-    for (std::list<TexturedQuad *>::iterator it = pList->begin(); it != pList->end(); ++it) {
-        TexturedQuad *temp = *it;
-        float x_shift = temp->GetScaledSize()->width / 2;
-        float y_shift = temp->GetScaledSize()->height / 2;
-
-        cv_Vertices[index * 4] = {temp->GetPosition()->x - x_shift - g_game->g_width / 2, -temp->GetPosition()->y -
-                                                                                          y_shift +
-                                                                                          g_game->g_height / 2, 0.0f,
-                                  temp->GetColorARGB(), 0.0f, 1.0f};
-        cv_Vertices[index * 4 + 1] = {temp->GetPosition()->x - x_shift - g_game->g_width / 2, -temp->GetPosition()->y +
-                                                                                              y_shift +
-                                                                                              g_game->g_height / 2,
-                                      0.0f,
-                                      temp->GetColorARGB(), 0.0f, 0.0f};
-        cv_Vertices[index * 4 + 2] = {temp->GetPosition()->x + x_shift - g_game->g_width / 2, -temp->GetPosition()->y -
-                                                                                              y_shift +
-                                                                                              g_game->g_height / 2,
-                                      0.0f,
-                                      temp->GetColorARGB(), 1.0f, 1.0f};
-        cv_Vertices[index * 4 + 3] = {temp->GetPosition()->x + x_shift - g_game->g_width / 2, -temp->GetPosition()->y +
-                                                                                              y_shift +
-                                                                                              g_game->g_height / 2,
-                                      0.0f,
-                                      temp->GetColorARGB(), 1.0f, 0.0f};
+    v_3ct cv_Vertices[4 * object_list->size()];
+    for (TexturedQuad *obj : *object_list) {
+        cv_Vertices[index * 4] = {0.0f, 0.0f, 0.0f, obj->GetColorARGB(), 0.0f, 0.0f};
+        cv_Vertices[index * 4 + 1] = {0.0f, obj->GetSize()->height, 0.0f, obj->GetColorARGB(), 0.0f, 1.0f};
+        cv_Vertices[index * 4 + 2] = {obj->GetSize()->width, 0.0f, 0.0f, obj->GetColorARGB(), 1.0f, 0.0f};
+        cv_Vertices[index * 4 + 3] = {obj->GetSize()->width, obj->GetSize()->height, 0.0f, obj->GetColorARGB(), 1.0f,
+                                      1.0f};
         index++;
     }
     if (FAILED(g_game->g_device->CreateVertexBuffer(4 * index * sizeof(v_3ct), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY,

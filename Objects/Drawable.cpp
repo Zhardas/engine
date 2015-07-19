@@ -5,6 +5,7 @@ Drawable::Drawable() {
     d_size = new SizeF(0.0f, 0.0f);
     d_scaledsize = new SizeF(0.0f, 0.0f);
     d_scale = new SizeF(1.0f, 1.0f);
+    d_rotation = 0.0f;
 }
 
 Drawable::~Drawable() {
@@ -17,5 +18,5 @@ Drawable::~Drawable() {
 void Drawable::SetScale(SizeF *scale) {
     d_scale = scale;
     d_scaledsize = new SizeF(d_size->width * scale->width,
-                            d_size->width * scale->height);
+                             d_size->width * scale->height);
 }

@@ -12,6 +12,7 @@ protected:
     SizeF *d_scaledsize;
     Position *d_position;
     SizeF *d_scale;
+    float d_rotation;
 public:
     Drawable();
 
@@ -33,8 +34,19 @@ public:
 
     virtual SizeF *GetScaledSize() { return d_scaledsize; }
 
-    virtual bool Contains(Position* pos){
-        return pos->x >= GetPosition()->x - GetScaledSize()->width/2 && pos->x <= GetPosition()->x + GetScaledSize()->width/2 && pos->y >= GetPosition()->y - GetScaledSize()->height/2 && pos->y <= GetPosition()->y + GetScaledSize()->height/2;
+    virtual void SetRotation(float rot){
+        d_rotation = rot;
+    }
+
+    virtual float GetRotation(){
+        return d_rotation;
+    }
+
+    virtual bool Contains(Position *pos) {
+        return pos->x >= GetPosition()->x - GetScaledSize()->width / 2 &&
+               pos->x <= GetPosition()->x + GetScaledSize()->width / 2 &&
+               pos->y >= GetPosition()->y - GetScaledSize()->height / 2 &&
+               pos->y <= GetPosition()->y + GetScaledSize()->height / 2;
     }
 };
 
