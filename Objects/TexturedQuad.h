@@ -12,41 +12,79 @@ class TexturedQuad : Drawable {
 private:
     std::string d_texture;
     DWORD d_color;
+
+    void CalcScaling() {
+        d_size_scaled = SizeF(d_size.width * d_scale.width, d_size.height * d_scale.height);
+    }
+
 public:
     TexturedQuad();
 
-    void SetTexture(std::string texture);
+    void SetTexture(std::string texture) {
+        d_texture = texture;
+    }
 
-    std::string GetTexture();
+    std::string GetTexture() {
+        return d_texture;
+    }
 
-    SizeF *GetSize();
+    SizeF GetSize() {
+        return d_size;
+    }
 
-    void SetSize(SizeF * /* new GetSize */);
+    void SetSize(SizeF size) {
+        d_size.width = size.width;
+        d_size.height = size.height;
+        CalcScaling();
+    }
 
-    void SetSize(float width, float height);
+    void SetSize(float width, float height) {
+        d_size.width = width;
+        d_size.height = height;
+        CalcScaling();
+    }
 
-    Position *GetPosition();
+    Position GetPosition() {
+        return d_position;
+    }
 
-    void SetPosition(Position * /* new GetPosition */);
+    void SetPosition(Position position) {
+        d_position.x = position.x;
+        d_position.y = position.y;
+    }
 
-    void SetPosition(float x, float y);
+    void SetPosition(float x, float y) {
+        d_position.x = x;
+        d_position.y = y;
+    }
 
-    SizeF *GetScale();
+    SizeF GetScale() {
+        return d_scale;
+    }
 
-    void SetScale(SizeF *scale);
+    void SetScale(SizeF scale) {
+        d_scale.width = scale.width;
+        d_scale.height = scale.height;
+        CalcScaling();
+    }
 
-    SizeF *GetScaledSize();
+    SizeF GetScaledSize() {
+        return d_size_scaled;
+    }
 
-    void SetRotation(float rot){
+    void SetRotation(float rot) {
         Drawable::SetRotation(rot);
     }
 
-    float GetRotation(){
+    float GetRotation() {
         return Drawable::GetRotation();
     }
 
-    bool Contains(Position* pos){
-        return pos->x >= GetPosition()->x - GetScaledSize()->width/2 && pos->x <= GetPosition()->x + GetScaledSize()->width/2 && pos->y >= GetPosition()->y - GetScaledSize()->height/2 && pos->y <= GetPosition()->y + GetScaledSize()->height/2;
+    bool Contains(Position *pos) {
+        return pos->x >= d_position.x - d_size_scaled.width / 2 &&
+               pos->x <= d_position.x + d_size_scaled.width / 2 &&
+               pos->y >= d_position.y - d_size_scaled.height / 2 &&
+               pos->y <= d_position.y + d_size_scaled.height / 2;
     }
 
     std::function<void(const uint8_t &, Position *)> OnMouseUp;
@@ -55,8 +93,13 @@ public:
     std::function<void(const uint8_t &)> OnKeyUp;
     std::function<void(const uint8_t &)> OnKeyDown;
 
-    DWORD GetColorARGB();
-    void SetColorARGB(DWORD color);
+    DWORD GetColorARGB() {
+        return d_color;
+    }
+
+    void SetColorARGB(DWORD color) {
+        d_color = color;
+    }
 };
 
 

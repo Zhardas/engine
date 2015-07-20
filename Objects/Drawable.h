@@ -8,45 +8,49 @@ class Drawable;
 class Drawable {
 private:
 protected:
-    SizeF *d_size;
-    SizeF *d_scaledsize;
-    Position *d_position;
-    SizeF *d_scale;
-    float d_rotation;
+    SizeF d_size = SizeF(32.0f, 32.0f);
+    SizeF d_size_scaled = SizeF(32.0f, 32.0f);
+    Position d_position = Position(0, 0);
+    SizeF d_scale = SizeF(1.0f, 1.0f);
+    float d_rotation = 0.0f;
 public:
     Drawable();
 
-    virtual ~Drawable();
+    virtual SizeF GetSize() = 0;
 
-    virtual SizeF *GetSize() = 0;
+    virtual void SetSize(SizeF size) = 0;
 
-    virtual void SetSize(SizeF * /* new GetSize */) = 0;
+    virtual Position GetPosition() = 0;
 
-    virtual Position *GetPosition() = 0;
-
-    virtual void SetPosition(Position * /* new GetPosition */) = 0;
+    virtual void SetPosition(Position position) = 0;
 
     virtual void SetPosition(float x, float y) = 0;
 
-    virtual SizeF *GetScale() { return d_scale; }
+    virtual SizeF GetScale() { return d_scale; }
 
-    virtual void SetScale(SizeF *scale);
+    virtual void SetScale(SizeF scale) {
+        d_scale.width = scale.width;
+        d_scale.height = scale.height;
+        d_size_scaled.width = d_size.width * scale.width;
+        d_size_scaled.height = d_size.width * scale.height;
 
-    virtual SizeF *GetScaledSize() { return d_scaledsize; }
+    }
 
-    virtual void SetRotation(float rot){
+    virtual SizeF GetScaledSize() { return d_size_scaled; }
+
+    virtual void SetRotation(float rot) {
         d_rotation = rot;
     }
 
-    virtual float GetRotation(){
+    virtual float GetRotation() {
         return d_rotation;
     }
 
-    virtual bool Contains(Position *pos) {
-        return pos->x >= GetPosition()->x - GetScaledSize()->width / 2 &&
-               pos->x <= GetPosition()->x + GetScaledSize()->width / 2 &&
-               pos->y >= GetPosition()->y - GetScaledSize()->height / 2 &&
-               pos->y <= GetPosition()->y + GetScaledSize()->height / 2;
+    virtual bool Contains(Position pos) {
+        return pos.x >= GetPosition().x - d_size_scaled.width / 2 &&
+               pos.x <= GetPosition().x + d_size_scaled.width / 2 &&
+               pos.y >= GetPosition().y - d_size_scaled.height / 2 &&
+               pos.y <= GetPosition().y + d_size_scaled.height / 2;
     }
 };
 

@@ -40,10 +40,10 @@ void Renderer::DrawScene(Scene *scene) {
                     g_game->g_device->SetStreamSource(0, cast_layer->vertex_buffer, 0, sizeof(v_3t));
                     for (TexturedQuad *obj : *cast_layer->drawableList) {
                         // World transformation
-                        D3DXVECTOR2 pivot = {obj->GetSize()->width / 2, obj->GetSize()->height / 2};
-                        D3DXVECTOR2 scaling = {obj->GetScale()->width, obj->GetScale()->height};
-                        D3DXVECTOR2 moving = {obj->GetPosition()->x - Game::GetInstance()->g_width / 2,
-                                              obj->GetPosition()->y - Game::GetInstance()->g_height / 2};
+                        D3DXVECTOR2 pivot = {obj->GetSize().width / 2, obj->GetSize().height / 2};
+                        D3DXVECTOR2 scaling = {obj->GetScale().width, obj->GetScale().height};
+                        D3DXVECTOR2 moving = {obj->GetPosition().x - Game::GetInstance()->g_width / 2,
+                                              obj->GetPosition().y - Game::GetInstance()->g_height / 2};
                         D3DXMATRIX matFinal;
                         D3DXMatrixTransformation2D(&matFinal, &pivot, 1.0f, &scaling, &pivot, obj->GetRotation(),
                                                    &moving);
@@ -70,10 +70,10 @@ void Renderer::DrawScene(Scene *scene) {
                     index = 0;
                     for (TexturedQuad *obj : *cast_layer->drawableList) {
                         // World transformation
-                        D3DXVECTOR2 pivot = {obj->GetSize()->width / 2, obj->GetSize()->height / 2};
-                        D3DXVECTOR2 scaling = {obj->GetScale()->width, obj->GetScale()->height};
-                        D3DXVECTOR2 moving = {obj->GetPosition()->x - Game::GetInstance()->g_width / 2,
-                                              obj->GetPosition()->y - Game::GetInstance()->g_height / 2};
+                        D3DXVECTOR2 pivot = {obj->GetSize().width / 2, obj->GetSize().height / 2};
+                        D3DXVECTOR2 scaling = {obj->GetScale().width, obj->GetScale().height};
+                        D3DXVECTOR2 moving = {obj->GetPosition().x - Game::GetInstance()->g_width / 2,
+                                              obj->GetPosition().y - Game::GetInstance()->g_height / 2};
 
                         D3DXMATRIX matFinal;
                         D3DXMatrixTransformation2D(&matFinal, &pivot, 1.0f, &scaling, &pivot, obj->GetRotation(),
@@ -128,9 +128,9 @@ LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateStaticVertexBuffer(std::list<TexturedQ
     v_3t cv_Vertices[4 * object_list->size()];
     for (TexturedQuad *obj : *object_list) {
         cv_Vertices[index * 4] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-        cv_Vertices[index * 4 + 1] = {0.0f, obj->GetSize()->height, 0.0f, 0.0f, 1.0f};
-        cv_Vertices[index * 4 + 2] = {obj->GetSize()->width, 0.0f, 0.0f, 1.0f, 0.0f};
-        cv_Vertices[index * 4 + 3] = {obj->GetSize()->width, obj->GetSize()->height, 0.0f, 1.0f, 1.0f};
+        cv_Vertices[index * 4 + 1] = {0.0f, obj->GetSize().height, 0.0f, 0.0f, 1.0f};
+        cv_Vertices[index * 4 + 2] = {obj->GetSize().width, 0.0f, 0.0f, 1.0f, 0.0f};
+        cv_Vertices[index * 4 + 3] = {obj->GetSize().width, obj->GetSize().height, 0.0f, 1.0f, 1.0f};
         index++;
     }
     if (FAILED(g_game->g_device->CreateVertexBuffer(4 * index * sizeof(v_3t), D3DUSAGE_WRITEONLY,
@@ -164,9 +164,9 @@ LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateDynamicVertexBuffer(std::list<Textured
     v_3ct cv_Vertices[4 * object_list->size()];
     for (TexturedQuad *obj : *object_list) {
         cv_Vertices[index * 4] = {0.0f, 0.0f, 0.0f, obj->GetColorARGB(), 0.0f, 0.0f};
-        cv_Vertices[index * 4 + 1] = {0.0f, obj->GetSize()->height, 0.0f, obj->GetColorARGB(), 0.0f, 1.0f};
-        cv_Vertices[index * 4 + 2] = {obj->GetSize()->width, 0.0f, 0.0f, obj->GetColorARGB(), 1.0f, 0.0f};
-        cv_Vertices[index * 4 + 3] = {obj->GetSize()->width, obj->GetSize()->height, 0.0f, obj->GetColorARGB(), 1.0f,
+        cv_Vertices[index * 4 + 1] = {0.0f, obj->GetSize().height, 0.0f, obj->GetColorARGB(), 0.0f, 1.0f};
+        cv_Vertices[index * 4 + 2] = {obj->GetSize().width, 0.0f, 0.0f, obj->GetColorARGB(), 1.0f, 0.0f};
+        cv_Vertices[index * 4 + 3] = {obj->GetSize().width, obj->GetSize().height, 0.0f, obj->GetColorARGB(), 1.0f,
                                       1.0f};
         index++;
     }
