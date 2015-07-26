@@ -4,6 +4,7 @@
 Scene::Scene() {
     g_game = Game::GetInstance();
     layers = new std::list<Layer*>();
+    camera = new Camera();
 }
 
 Scene::~Scene() {

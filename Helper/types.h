@@ -22,6 +22,36 @@ struct Position {
     }
 };
 
+struct Position3 {
+    float x;
+    float y;
+    float z;
+
+    Position3(){
+        this->x = 0.0f;
+        this->y = 0.0f;
+        this->z = 0.0f;
+    }
+
+    Position3(float x, float y, float z) {
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
+    float Distance(Position* p){
+        auto a = fabsf(fmaxf(x, p->x) - fminf(x,p->x));
+        auto b = fabsf(fmaxf(y, p->y) - fminf(y,p->y));
+        return sqrtf(a*a+b*b);
+    }
+
+    float Distance(Position3* p){
+        auto a = fabsf(fmaxf(x, p->x) - fminf(x,p->x));
+        auto b = fabsf(fmaxf(y, p->y) - fminf(y,p->y));
+        auto c = fabsf(fmaxf(z, p->z) - fminf(z,p->z));
+        return sqrtf(a*a+b*b+c*c);
+    }
+};
+
 struct Size {
     int width;
     int height;

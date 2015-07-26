@@ -23,6 +23,15 @@ void Renderer::DrawScene(Scene *scene) {
     pDevice9->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(255, clear_color.r, clear_color.g, clear_color.b), 1.0f, 0);
     pDevice9->BeginScene();
 
+    // Move camera
+    auto cam_pos = scene->GetCamera()->position;
+    D3DXMATRIX view_matrix;
+    D3DXMatrixIdentity(&view_matrix);
+    view_matrix(3, 0) = -cam_pos.x;
+    view_matrix(3, 1) = -cam_pos.y;
+    view_matrix(3, 2) = cam_pos.z; // ???
+    pDevice9->SetTransform(D3DTS_VIEW, &view_matrix);
+
     for (Layer *layer : *scene->GetLayers()) {
         UINT index = 0;
         switch (layer->GetType()) {

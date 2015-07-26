@@ -14,12 +14,15 @@ class Scene;
 #include <Helper/input.h>
 #include <iostream>
 #include <Graphics/Layers/Layer.h>
+#include <Objects/Camera.h>
 
 class Scene {
 private:
     bool loaded;
     Game *g_game;
     std::list<Layer *> *layers;
+protected:
+    Camera *camera;
 public:
     Scene();
 
@@ -37,6 +40,10 @@ public:
 
     void RemoveLayer(Layer *layer) {
         layers->remove(layer);
+    }
+
+    Camera *GetCamera() {
+        return camera;
     }
 };
 

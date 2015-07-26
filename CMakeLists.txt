@@ -45,6 +45,6 @@ add_library(headache
     Graphics/Layers/DrawableLayer.cpp
     Graphics/Layers/DrawableLayer.h
     Graphics/Layers/TextLayer.cpp
-    Graphics/Layers/TextLayer.h)
+    Graphics/Layers/TextLayer.h Objects/Camera.cpp Objects/Camera.h)
 
 target_link_libraries(headache d3d9 d3dx9 dinput8 dxguid vorbis ogg vorbisfile)
