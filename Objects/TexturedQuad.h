@@ -10,13 +10,13 @@ class TexturedQuad;
 
 class TexturedQuad : Drawable {
 private:
-    std::string d_texture;
-    DWORD d_color;
-
     void CalcScaling() {
         d_size_scaled = SizeF(d_size.width * d_scale.width, d_size.height * d_scale.height);
     }
 
+protected:
+    std::string d_texture;
+    DWORD d_color;
 public:
     TexturedQuad();
 
@@ -80,18 +80,15 @@ public:
         return Drawable::GetRotation();
     }
 
-    bool Contains(Position *pos) {
-        return pos->x >= d_position.x - d_size_scaled.width / 2 &&
-               pos->x <= d_position.x + d_size_scaled.width / 2 &&
-               pos->y >= d_position.y - d_size_scaled.height / 2 &&
-               pos->y <= d_position.y + d_size_scaled.height / 2;
+    bool Contains(Position pos) {
+        return Drawable::Contains(pos);
     }
 
-    std::function<void(const uint8_t &, Position *)> OnMouseUp;
-    std::function<void(const uint8_t &, Position *)> OnMouseDown;
-    std::function<void(Position *)> OnMouseMove;
-    std::function<void(const uint8_t &)> OnKeyUp;
-    std::function<void(const uint8_t &)> OnKeyDown;
+    std::function<bool(const uint8_t &, Position *)> OnMouseUp;
+    std::function<bool(const uint8_t &, Position *)> OnMouseDown;
+    std::function<bool(Position *)> OnMouseMove;
+    std::function<bool(const uint8_t &)> OnKeyUp;
+    std::function<bool(const uint8_t &)> OnKeyDown;
 
     DWORD GetColorARGB() {
         return d_color;

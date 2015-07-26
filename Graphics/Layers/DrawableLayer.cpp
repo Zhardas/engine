@@ -6,26 +6,47 @@ DrawableLayer::DrawableLayer(Type type) {
     vertex_buffer = NULL;
 }
 
-void DrawableLayer::EventCall(Event event, unsigned char key, Position *parameter) {
-    if (event == MOUSE_UP) {
-        for_each(drawableList->begin(), drawableList->end(), [&](TexturedQuad *obj) {
-            if (obj->OnMouseUp != NULL)obj->OnMouseUp(key, parameter);
-        });
-    } else if (event == MOUSE_DOWN) {
-        for_each(drawableList->begin(), drawableList->end(), [&](TexturedQuad *obj) {
-            if (obj->OnMouseDown != NULL)obj->OnMouseDown(key, parameter);
-        });
-    } else if (event == MOUSE_MOVE) {
-        for_each(drawableList->begin(), drawableList->end(), [&](TexturedQuad *obj) {
-            if (obj->OnMouseMove != NULL)obj->OnMouseMove(parameter);
-        });
-    } else if (event == KEYBOARD_UP) {
-        for_each(drawableList->begin(), drawableList->end(), [&](TexturedQuad *obj) {
-            if (obj->OnKeyUp != NULL)obj->OnKeyUp(key);
-        });
-    } else if (event == KEYBOARD_DOWN) {
-        for_each(drawableList->begin(), drawableList->end(), [&](TexturedQuad *obj) {
-            if (obj->OnKeyDown != NULL)obj->OnKeyDown(key);
-        });
+bool DrawableLayer::EventCall(Event event, unsigned char key, Position *parameter) {
+    for (std::list<TexturedQuad*>::reverse_iterator rit=drawableList->rbegin(); rit!=drawableList->rend(); ++rit) {
+        auto obj = static_cast<TexturedQuad *>(*rit);
+        switch (event){
+            case MOUSE_UP:
+            {
+                if (obj->OnMouseUp != NULL) {
+                    if (obj->OnMouseUp(key, parameter)) {
+                        return true;
+                    }
+                }
+            }
+            case MOUSE_DOWN:{
+                if (obj->OnMouseDown != NULL) {
+                    if (obj->OnMouseDown(key, parameter)) {
+                        return true;
+                    }
+                }
+            }
+            case MOUSE_MOVE:{
+                if (obj->OnMouseMove != NULL) {
+                    if (obj->OnMouseMove(parameter)) {
+                        return true;
+                    }
+                }
+            }
+            case KEYBOARD_UP:{
+                if (obj->OnKeyUp != NULL) {
+                    if (obj->OnKeyUp(key)) {
+                        return true;
+                    }
+                }
+            }
+            case KEYBOARD_DOWN:{
+                if (obj->OnKeyDown != NULL) {
+                    if (obj->OnKeyDown(key)) {
+                        return true;
+                    }
+                }
+            }
+        }
     }
+    return false;
 }

@@ -47,10 +47,10 @@ public:
     }
 
     virtual bool Contains(Position pos) {
-        return pos.x >= GetPosition().x - d_size_scaled.width / 2 &&
-               pos.x <= GetPosition().x + d_size_scaled.width / 2 &&
-               pos.y >= GetPosition().y - d_size_scaled.height / 2 &&
-               pos.y <= GetPosition().y + d_size_scaled.height / 2;
+        return pos.x >= GetPosition().x - (d_size_scaled.width - d_size.width) / 2 &&
+               pos.x <= GetPosition().x + d_size.width + (d_size_scaled.width - d_size.width) / 2 &&
+               pos.y >= GetPosition().y - (d_size_scaled.height - d_size.height) / 2 &&
+               pos.y <= GetPosition().y + d_size.height + (d_size_scaled.height - d_size.height) / 2;
     }
 };
 

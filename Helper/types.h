@@ -20,6 +20,11 @@ struct Position {
         auto b = fabsf(fmaxf(y, p->y) - fminf(y,p->y));
         return sqrtf(a*a+b*b);
     }
+    Position& operator+=(const Position& arg){
+        this->x += arg.x;
+        this->y += arg.y;
+        return *this;
+    }
 };
 
 struct Position3 {

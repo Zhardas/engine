@@ -14,7 +14,7 @@ public:
     };
     Layer();
     virtual Type GetType() = 0;
-    virtual void EventCall(Event event, unsigned char key, Position *parameter) = 0;
+    virtual bool EventCall(Event event, unsigned char key, Position *parameter) = 0;
 };
 
 

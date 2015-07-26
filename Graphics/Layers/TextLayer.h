@@ -24,8 +24,9 @@ public:
         text_list->remove(text);
     }
 
-    virtual void EventCall(Event event, unsigned char key, Position *parameter){
-
+    virtual bool EventCall(Event event, unsigned char key, Position *parameter){
+        // TODO: Text events
+        return false;
     };
 };
 

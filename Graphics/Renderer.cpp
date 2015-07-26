@@ -138,10 +138,10 @@ LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateStaticVertexBuffer(std::list<TexturedQ
 
     v_3t cv_Vertices[4 * object_list->size()];
     for (TexturedQuad *obj : *object_list) {
-        cv_Vertices[index * 4] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-        cv_Vertices[index * 4 + 1] = {0.0f, obj->GetSize().height, 0.0f, 0.0f, 1.0f};
-        cv_Vertices[index * 4 + 2] = {obj->GetSize().width, 0.0f, 0.0f, 1.0f, 0.0f};
-        cv_Vertices[index * 4 + 3] = {obj->GetSize().width, obj->GetSize().height, 0.0f, 1.0f, 1.0f};
+        cv_Vertices[index * 4] = {0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+        cv_Vertices[index * 4 + 1] = {0.0f, obj->GetSize().height, 0.0f, 0.0f, 0.0f};
+        cv_Vertices[index * 4 + 2] = {obj->GetSize().width, 0.0f, 0.0f, 1.0f, 1.0f};
+        cv_Vertices[index * 4 + 3] = {obj->GetSize().width, obj->GetSize().height, 0.0f, 1.0f, 0.0f};
         index++;
     }
     if (FAILED(g_game->g_device->CreateVertexBuffer(4 * index * sizeof(v_3t), D3DUSAGE_WRITEONLY,
@@ -174,11 +174,11 @@ LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateDynamicVertexBuffer(std::list<Textured
 
     v_3ct cv_Vertices[4 * object_list->size()];
     for (TexturedQuad *obj : *object_list) {
-        cv_Vertices[index * 4] = {0.0f, 0.0f, 0.0f, obj->GetColorARGB(), 0.0f, 0.0f};
-        cv_Vertices[index * 4 + 1] = {0.0f, obj->GetSize().height, 0.0f, obj->GetColorARGB(), 0.0f, 1.0f};
-        cv_Vertices[index * 4 + 2] = {obj->GetSize().width, 0.0f, 0.0f, obj->GetColorARGB(), 1.0f, 0.0f};
+        cv_Vertices[index * 4] = {0.0f, 0.0f, 0.0f, obj->GetColorARGB(), 0.0f, 1.0f};
+        cv_Vertices[index * 4 + 1] = {0.0f, obj->GetSize().height, 0.0f, obj->GetColorARGB(), 0.0f, 0.0f};
+        cv_Vertices[index * 4 + 2] = {obj->GetSize().width, 0.0f, 0.0f, obj->GetColorARGB(), 1.0f, 1.0f};
         cv_Vertices[index * 4 + 3] = {obj->GetSize().width, obj->GetSize().height, 0.0f, obj->GetColorARGB(), 1.0f,
-                                      1.0f};
+                                      0.0f};
         index++;
     }
     if (FAILED(g_game->g_device->CreateVertexBuffer(4 * index * sizeof(v_3ct), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY,

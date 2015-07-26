@@ -30,7 +30,7 @@ public:
         drawableList->remove(obj);
     }
 
-    void EventCall(Event event, unsigned char key, Position *parameter);
+    bool EventCall(Event event, unsigned char key, Position *parameter);
 };
 
 #endif //PLAYGROUND_DYNAMICLAYER_H

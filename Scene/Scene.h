@@ -18,7 +18,6 @@ class Scene;
 
 class Scene {
 private:
-    bool loaded;
     Game *g_game;
     std::list<Layer *> *layers;
 protected:
