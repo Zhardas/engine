@@ -1,4 +1,5 @@
 class Text;
+
 #ifndef PLAYGROUND_TEXT_H
 #define PLAYGROUND_TEXT_H
 
@@ -8,26 +9,41 @@ class Text;
 class Text {
 private:
     std::string text;
-    Size* position;
-    Size* size;
+    Position position;
+    Size size;
 public:
     byte Alpha = 255, Red = 255, Green = 255, Blue = 255;
+
     Text(std::string font, int size, bool bold, bool italic);
-    Font* font;
-    void SetText(std::string text){this->text = text;};
-    std::string GetText(){return text;}
-    Size* GetPosition() const{return position;}
-    void SetPosition(Size *position){
-        delete Text::position;
-        Text::position = position;
+
+    Font *font;
+
+    void SetText(std::string text) { this->text = text; };
+
+    std::string GetText() { return text; }
+
+    Position GetPosition() { return position; }
+
+    void SetPosition(int x, int y) {
+        position.x = x;
+        position.y = y;
     }
-    Size *GetSize() const {
+
+    void SetPosition(Position size) {
+        position.x = size.x;
+        position.y = size.y;
+    }
+
+    Size GetSize() const {
         return size;
     }
-    void SetSize(Size *size) {
-        delete Text::size;
-        Text::size = size;
+
+    void SetSize(Size size) {
+        this->size.height = size.height;
+        this->size.width = size.width;
     }
+
+    void SetSize();
 };
 
 

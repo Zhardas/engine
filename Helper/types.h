@@ -6,6 +6,11 @@ struct Position {
     float x;
     float y;
 
+    Position(){
+        this->x = 0.0f;
+        this->y = 0.0f;
+    }
+
     Position(float x, float y) {
         this->x = x;
         this->y = y;
@@ -21,6 +26,11 @@ struct Size {
     int width;
     int height;
 
+    Size(){
+        this->width = 100;
+        this->height = 100;
+    }
+
     Size(int width, int height) {
         this->width = width;
         this->height = height;
@@ -30,6 +40,11 @@ struct Size {
 struct SizeF {
     float width;
     float height;
+
+    SizeF(){
+        this->width = 100.0f;
+        this->height = 100.0f;
+    }
 
     SizeF(float width, float height) {
         this->width = width;

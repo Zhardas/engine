@@ -9,9 +9,9 @@ void Renderer::SetUpCamera(LPDIRECT3DDEVICE9 p_dx_Device) {
     D3DXMATRIX matOrtho;
     D3DXMATRIX matIdentity;
 
-    //Setup orthographic projection matrix
-    D3DXMatrixOrthoLH(&matOrtho, g_game->g_width, g_game->g_height, 0.0f, 10.0f);
+    D3DXMatrixOrthoLH(&matOrtho, g_game->g_width, g_game->g_height, 0.0f, 1.0f);
     D3DXMatrixIdentity(&matIdentity);
+
     p_dx_Device->SetTransform(D3DTS_PROJECTION, &matOrtho);
     p_dx_Device->SetTransform(D3DTS_WORLD, &matIdentity);
     p_dx_Device->SetTransform(D3DTS_VIEW, &matIdentity);
@@ -98,9 +98,11 @@ void Renderer::DrawScene(Scene *scene) {
             case Layer::TEXT: {
                 TextLayer *cast_layer = static_cast<TextLayer *>(layer);
                 for (Text *text_item : *cast_layer->text_list) {
-                    RECT r = {text_item->GetPosition()->width, text_item->GetPosition()->height,
-                              text_item->GetPosition()->width + text_item->GetSize()->width,
-                              text_item->GetPosition()->height + text_item->GetSize()->height};
+                    Position pos = text_item->GetPosition();
+                    Size size = text_item->GetSize();
+                    RECT r = {(LONG) pos.x, (LONG) pos.y,
+                              (LONG) (pos.x + size.width),
+                              (LONG) (pos.y + size.height)};
                     text_item->font->GetFont()->DrawText(NULL,
                                                          text_item->GetText().c_str(), -1,
                                                          &r,
