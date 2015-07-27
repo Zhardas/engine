@@ -7,45 +7,49 @@ DrawableLayer::DrawableLayer(Type type) {
 }
 
 bool DrawableLayer::EventCall(Event event, unsigned char key, Position *parameter) {
-    for (std::list<TexturedQuad*>::reverse_iterator rit=drawableList->rbegin(); rit!=drawableList->rend(); ++rit) {
+    for (std::list<TexturedQuad *>::reverse_iterator rit = drawableList->rbegin(); rit != drawableList->rend(); ++rit) {
         auto obj = static_cast<TexturedQuad *>(*rit);
-        switch (event){
-            case MOUSE_UP:
-            {
+        switch (event) {
+            case MOUSE_UP: {
                 if (obj->OnMouseUp != NULL) {
                     if (obj->OnMouseUp(key, parameter)) {
                         return true;
                     }
                 }
             }
-            case MOUSE_DOWN:{
+                break;
+            case MOUSE_DOWN: {
                 if (obj->OnMouseDown != NULL) {
                     if (obj->OnMouseDown(key, parameter)) {
                         return true;
                     }
                 }
             }
-            case MOUSE_MOVE:{
+                break;
+            case MOUSE_MOVE: {
                 if (obj->OnMouseMove != NULL) {
                     if (obj->OnMouseMove(parameter)) {
                         return true;
                     }
                 }
             }
-            case KEYBOARD_UP:{
+                break;
+            case KEYBOARD_UP: {
                 if (obj->OnKeyUp != NULL) {
                     if (obj->OnKeyUp(key)) {
                         return true;
                     }
                 }
             }
-            case KEYBOARD_DOWN:{
+                break;
+            case KEYBOARD_DOWN: {
                 if (obj->OnKeyDown != NULL) {
                     if (obj->OnKeyDown(key)) {
                         return true;
                     }
                 }
             }
+                break;
         }
     }
     return false;
