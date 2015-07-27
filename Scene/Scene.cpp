@@ -16,9 +16,12 @@ void Scene::Update() {
 }
 
 void Scene::EventCall(Event event, uint8_t key, Position *parameter) {
-    Position pos = *parameter;
-    pos.x+=camera->position.x;
-    pos.y+=camera->position.y;
+    Position pos;
+    if (event == Event::MOUSE_DOWN || event == Event::MOUSE_UP || event == Event::MOUSE_MOVE) {
+        pos = *parameter;
+        pos.x += camera->position.x;
+        pos.y += camera->position.y;
+    }
     for (std::list<Layer *>::reverse_iterator rit = layers->rbegin(); rit != layers->rend(); ++rit) {
         auto layer = static_cast<Layer *>(*rit);
         if (layer->EventCall(event, key, &pos)) {
