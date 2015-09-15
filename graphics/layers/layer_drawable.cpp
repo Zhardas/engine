@@ -1,13 +1,13 @@
-#include "DrawableLayer.h"
+#include "layer_drawable.h"
 
 DrawableLayer::DrawableLayer(Type type) {
-    this->type = type;
-    drawableList = new std::list<TexturedQuad *>();
-    vertex_buffer = NULL;
+    this->type_ = type;
+    drawable_list_ = new std::list<TexturedQuad *>();
+    vertex_buffer_ = NULL;
 }
 
 bool DrawableLayer::EventCall(Event event, unsigned char key, Position *parameter) {
-    for (std::list<TexturedQuad *>::reverse_iterator rit = drawableList->rbegin(); rit != drawableList->rend(); ++rit) {
+    for (std::list<TexturedQuad *>::reverse_iterator rit = drawable_list_->rbegin(); rit != drawable_list_->rend(); ++rit) {
         auto obj = static_cast<TexturedQuad *>(*rit);
         switch (event) {
             case MOUSE_UP: {

@@ -1,11 +1,11 @@
 #include <iostream>
-#include "AudioManager.h"
+#include "audio_manager.h"
 
 AudioManager::AudioManager() {
-    pXAudio2 = NULL;
-    pMasteringVoice = NULL;
+    device_ = NULL;
+    mastering_voice_ = NULL;
 
-    flags = 0;
+    flags_ = 0;
 
 #ifdef DEBUG
         flags |= XAUDIO2_DEBUG_ENGINE;
@@ -18,12 +18,12 @@ AudioManager::AudioManager() {
 
 AudioManager::~AudioManager() {
 
-    if (pMasteringVoice != NULL)
-        pMasteringVoice->DestroyVoice();
+    if (mastering_voice_ != NULL)
+        mastering_voice_->DestroyVoice();
 
-    SafeRelease(pXAudio2);
+    SafeRelease(device_);
 
-    while (!lAudio.empty()) delete lAudio.front(), lAudio.pop_front();
+    while (!audio_list.empty()) delete audio_list.front(), audio_list.pop_front();
 
     CoUninitialize();
 
@@ -32,45 +32,45 @@ AudioManager::~AudioManager() {
 
 bool AudioManager::InitializeAudio() {
     HRESULT hr;
-    return FAILED(hr = XAudio2Create(&pXAudio2, flags)) ? false : !FAILED(hr = pXAudio2->CreateMasteringVoice(&pMasteringVoice));
+    return FAILED(hr = XAudio2Create(&device_, flags_)) ? false : !FAILED(hr = device_->CreateMasteringVoice(&mastering_voice_));
 
 }
 
 //Alter the volume up and down
 void AudioManager::AlterVolume(float fltVolume) {
-    if (pMasteringVoice == NULL)
+    if (mastering_voice_ == NULL)
         return;
 
-    pMasteringVoice->SetVolume(fltVolume);    //Playback device volume
+    mastering_voice_->SetVolume(fltVolume);    //Playback device volume
 }
 
 //Return the current volume
 void AudioManager::GetVolume(float &fltVolume) {
-    if (pMasteringVoice == NULL)
+    if (mastering_voice_ == NULL)
         return;
 
-    pMasteringVoice->GetVolume(&fltVolume);
+    mastering_voice_->GetVolume(&fltVolume);
 }
 
 void AudioManager::Update() {
     //TODO: Make this cleaner
     bool bDel = false;
     Audio* del;
-    for (Audio *a : lAudio) {
+    for (Audio *a : audio_list) {
         a->Update();
-        if(a->destroy_after_playback && !a->IsPlaying()){
+        if(a->destroy_after_playback_ && !a->IsPlaying()){
             del = a;
             bDel = true;
         }
     }
     if(bDel){
-        lAudio.remove(del);
+        audio_list.remove(del);
         delete del;
     }
 }
 
 Audio *AudioManager::Generate() {
-    Audio *audio = new Audio(pXAudio2);
-    lAudio.push_back(audio);
+    Audio *audio = new Audio(device_);
+    audio_list.push_back(audio);
     return audio;
 }

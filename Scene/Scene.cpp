@@ -1,14 +1,12 @@
-#include <stdint.h>
-#include "Scene.h"
+#include "scene.h"
 
 Scene::Scene() {
-    g_game = Game::GetInstance();
-    layers = new std::list<Layer *>();
-    camera = new Camera();
+    layers_ = new std::list<Layer *>();
+    camera_ = new Camera();
 }
 
 Scene::~Scene() {
-    while (!layers->empty()) delete layers->front(), layers->pop_front();
+    while (!layers_->empty()) delete layers_->front(), layers_->pop_front();
 }
 
 void Scene::Update() {
@@ -19,10 +17,10 @@ void Scene::EventCall(Event event, uint8_t key, Position *parameter) {
     Position pos;
     if (event == Event::MOUSE_DOWN || event == Event::MOUSE_UP || event == Event::MOUSE_MOVE) {
         pos = *parameter;
-        pos.x += camera->position.x;
-        pos.y += camera->position.y;
+        pos.x += camera_->position_.x;
+        pos.y += camera_->position_.y;
     }
-    for (std::list<Layer *>::reverse_iterator rit = layers->rbegin(); rit != layers->rend(); ++rit) {
+    for (std::list<Layer *>::reverse_iterator rit = layers_->rbegin(); rit != layers_->rend(); ++rit) {
         auto layer = static_cast<Layer *>(*rit);
         if (layer->EventCall(event, key, &pos)) {
             return;

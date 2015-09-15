@@ -1,14 +1,14 @@
-#include "Font.h"
+#include "font.h"
 
 Font::Font(std::string facename, int height, bool bold, bool italic) {
-    g_font = NULL;
+    font_ = NULL;
     DWORD weight = FW_NORMAL;
     if(bold)weight = FW_BOLD;
     D3DXCreateFont(
-            Game::GetInstance()->g_device,     //D3D Device
-            height,               //Font height
-            0,                //Font width
-            weight,        //Font Weight
+        Game::instance()->device_,     //D3D Device
+            height,               //font height
+            0,                //font width
+            weight,        //font Weight
             1,                //MipLevels
             italic,            //Italic
             DEFAULT_CHARSET,  //CharSet
@@ -16,12 +16,12 @@ Font::Font(std::string facename, int height, bool bold, bool italic) {
             ANTIALIASED_QUALITY, //Quality
             DEFAULT_PITCH | FF_DONTCARE,//PitchAndFamily
             facename.c_str(),          //pFacename,
-            &g_font);         //ppFont
+            &font_);         //ppFont
 }
 
 Font::~Font() {
-    if(g_font){
-        g_font->Release();
-        g_font=NULL;
+    if(font_){
+        font_->Release();
+        font_ =NULL;
     }
 }

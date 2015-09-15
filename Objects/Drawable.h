@@ -8,49 +8,49 @@ class Drawable;
 class Drawable {
 private:
 protected:
-    SizeF d_size = SizeF(32.0f, 32.0f);
-    SizeF d_size_scaled = SizeF(32.0f, 32.0f);
-    Position d_position = Position(0, 0);
-    SizeF d_scale = SizeF(1.0f, 1.0f);
-    float d_rotation = 0.0f;
+    SizeF size_ = SizeF(32.0f, 32.0f);
+    SizeF size_scaled = SizeF(32.0f, 32.0f);
+    Position position_ = Position(0, 0);
+    SizeF scale_ = SizeF(1.0f, 1.0f);
+    float rotation_ = 0.0f;
 public:
     Drawable();
 
-    virtual SizeF GetSize() = 0;
+    virtual SizeF size() = 0;
 
-    virtual void SetSize(SizeF size) = 0;
+    virtual void set_size(SizeF size) = 0;
 
-    virtual Position GetPosition() = 0;
+    virtual Position position() = 0;
 
-    virtual void SetPosition(Position position) = 0;
+    virtual void set_position(Position position) = 0;
 
-    virtual void SetPosition(float x, float y) = 0;
+    virtual void set_position(float x, float y) = 0;
 
-    virtual SizeF GetScale() { return d_scale; }
+    virtual SizeF scale() { return scale_; }
 
-    virtual void SetScale(SizeF scale) {
-        d_scale.width = scale.width;
-        d_scale.height = scale.height;
-        d_size_scaled.width = d_size.width * scale.width;
-        d_size_scaled.height = d_size.width * scale.height;
+    virtual void set_scaled_size(SizeF scale) {
+        scale_.width = scale.width;
+        scale_.height = scale.height;
+        size_scaled.width = size_.width * scale.width;
+        size_scaled.height = size_.width * scale.height;
 
     }
 
-    virtual SizeF GetScaledSize() { return d_size_scaled; }
+    virtual SizeF scaled_size() { return size_scaled; }
 
-    virtual void SetRotation(float rot) {
-        d_rotation = rot;
+    virtual void set_rotation(float rot) {
+        rotation_ = rot;
     }
 
-    virtual float GetRotation() {
-        return d_rotation;
+    virtual float rotation() {
+        return rotation_;
     }
 
     virtual bool Contains(Position pos) {
-        return pos.x >= GetPosition().x - (d_size_scaled.width - d_size.width) / 2 &&
-               pos.x <= GetPosition().x + d_size.width + (d_size_scaled.width - d_size.width) / 2 &&
-               pos.y >= GetPosition().y - (d_size_scaled.height - d_size.height) / 2 &&
-               pos.y <= GetPosition().y + d_size.height + (d_size_scaled.height - d_size.height) / 2;
+        return pos.x >= position().x - (size_scaled.width - size_.width) / 2 &&
+               pos.x <= position().x + size_.width + (size_scaled.width - size_.width) / 2 &&
+               pos.y >= position().y - (size_scaled.height - size_.height) / 2 &&
+               pos.y <= position().y + size_.height + (size_scaled.height - size_.height) / 2;
     }
 };
 

@@ -15,10 +15,10 @@ class AudioManager;
 
 class AudioManager {
 private:
-    IXAudio2 *pXAudio2;
-    IXAudio2MasteringVoice *pMasteringVoice;
-    std::list<Audio *> lAudio;
-    UINT32 flags;
+    IXAudio2 *device_;
+    IXAudio2MasteringVoice *mastering_voice_;
+    std::list<Audio *> audio_list;
+    UINT32 flags_;
 
 public:
     AudioManager();

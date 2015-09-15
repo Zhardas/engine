@@ -1,58 +1,58 @@
 class Game;
 
-#ifndef HEADACHE_GAME_H
-#define HEADACHE_GAME_H
+#ifndef GAME_H_
+#define GAME_H_
 
-#include "Graphics/Renderer.h"
-#include "Graphics/TextureManager.h"
-#include "Graphics/Font.h"
 #include <ctime>
 #include <chrono>
 #include <iostream>
-#include <Audio/AudioManager.h>
-#include "Helper/types.h"
+#include <d3d9.h>
+#include "graphics/renderer.h"
+#include "graphics/texture_manager.h"
+#include "scene/scene.h"
+#include "audio/audio_manager.h"
+#include "helper/types.h"
 
 #define VERSION_MAJOR @Headache_VERSION_MAJOR@
 #define VERSION_MINOR @Headache_VERSION_MINOR@
 
 class Game {
-private:
+ private:
+  bool running_;
+  int width_;
+  int height_;
+  std::chrono::high_resolution_clock::time_point update_chrono_start_;
+  std::chrono::duration<int64_t, std::micro> update_chrono_accumulator_;
+  std::chrono::duration<int64_t, std::ratio<1, 120> > update_chrono_delta_;
+  std::time_t update_time_start_;
+  int64_t update_tick_;
+  int64_t render_tick_;
+  LPDIRECT3DDEVICE9 InitializeDevice(HWND hWnd);
 
-    bool running_;
-    std::chrono::high_resolution_clock::time_point update_chrono_start;
-    std::chrono::duration<int64_t, std::micro> update_chrono_accumulator;
-    std::chrono::duration<long, std::ratio<1, 120> > update_chrono_delta;
-    std::time_t update_time_start;
-    long update_tick;
-    long render_tick;
-public:
-    LPDIRECT3DDEVICE9 g_device;
-    int g_width;
-    int g_height;
-    Position *g_mouse_position;
+ public:
+  LPDIRECT3DDEVICE9 device_;
+  Position *mouse_position_;
+  Scene *scene_;
+  Renderer *renderer_;
+  TextureManager *texture_manager_;
+  AudioManager *audio_manager_;
 
-    Scene *g_scene;
-    Renderer *g_renderer;
-    TextureManager *g_texture_manager;
-    AudioManager *g_audio;
-    //Input* p_input;
+  Game();
 
-    Game();
+  static Game *instance();
 
-    static Game *GetInstance();
+  void SetDeviceOptions();
 
-    void SetDeviceOptions();
+  void Loop();
 
-    void Loop();
+  void Initialize(HWND hWindow);
 
-    void Initialize(HWND hWindow);
-
-    bool isRunning() { return running_; }
-
-    void StopRunning() { running_ = false; }
-
-    LPDIRECT3DDEVICE9 InitializeDevice(HWND hWnd);
+  int width() { return width_; }
+  int height() { return height_; }
+  bool running() { return running_; }
+  void stop_running() { running_ = false; }
+  LPDIRECT3DDEVICE9 device() { return device_; };
 };
 
 
-#endif //HEADACHE_GAME_H
+#endif  // GAME_H_

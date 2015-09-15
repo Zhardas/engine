@@ -1,25 +1,24 @@
 class Font;
 #ifndef PLAYGROUND_FONT_H
 #define PLAYGROUND_FONT_H
-#include "Game.h"
-#include "Objects/Text.h"
+#include "game.h"
 
 class Font {
 private:
-    ID3DXFont * g_font;
+    ID3DXFont *font_;
 public:
     Font(std::string facename, int height, bool bold, bool italic);
     ~Font();
 
-    ID3DXFont *GetFont() const {
-        return g_font;
+    ID3DXFont *font() const {
+        return font_;
     }
 
-    Size GetSize(std::string text){
+    Size size(std::string text){
         RECT rcRect = {0, 0, 0, 0};
         // calculate required rect
-        g_font->DrawText(NULL, text.c_str(), text.length(), &rcRect, DT_CALCRECT,
-                    D3DCOLOR_XRGB(0, 0, 0));
+        font_->DrawText(NULL, text.c_str(), text.length(), &rcRect, DT_CALCRECT,
+                        D3DCOLOR_XRGB(0, 0, 0));
 
         // return size
         return Size(rcRect.right - rcRect.left, rcRect.bottom - rcRect.top);

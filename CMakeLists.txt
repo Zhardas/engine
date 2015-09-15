@@ -18,33 +18,35 @@ link_directories(${PROJECT_SOURCE_DIR}/lib/vorbis/lib/)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
 
 add_library(headache
-    Game.cpp
-    Game.h
-    Graphics/Renderer.cpp
-    Graphics/Renderer.h
-    Graphics/TextureManager.cpp
-    Graphics/TextureManager.h
-    Objects/Drawable.cpp
-    Objects/Drawable.h
-    Objects/TexturedQuad.cpp
-    Objects/TexturedQuad.h
-    Scene/Scene.cpp
-    Scene/Scene.h
-    Helper/input.h
-    Audio/AudioManager.h
-    Audio/AudioManager.cpp
-    Helper/types.h
-    Audio/Audio.cpp
-    Audio/Audio.h
-    Graphics/Font.cpp
-    Graphics/Font.h
-    Objects/Text.cpp
-    Objects/Text.h
-    Graphics/Layers/Layer.cpp
-    Graphics/Layers/Layer.h
-    Graphics/Layers/DrawableLayer.cpp
-    Graphics/Layers/DrawableLayer.h
-    Graphics/Layers/TextLayer.cpp
-    Graphics/Layers/TextLayer.h Objects/Camera.cpp Objects/Camera.h)
+        game.cpp
+        game.h
+        graphics/renderer.cpp
+        graphics/renderer.h
+        graphics/texture_manager.cpp
+        graphics/texture_manager.h
+        objects/drawable.cpp
+        objects/drawable.h
+        objects/textured_quad.cpp
+        objects/textured_quad.h
+        scene/scene.cpp
+        scene/scene.h
+        helper/input.h
+        audio/audio_manager.h
+        audio/audio_manager.cpp
+        helper/types.h
+        audio/audio.cpp
+        audio/audio.h
+        graphics/font.cpp
+        graphics/font.h
+        objects/text.cpp
+        objects/text.h
+        graphics/layers/layer.cpp
+        graphics/layers/layer.h
+        graphics/layers/layer_drawable.cpp
+        graphics/layers/layer_drawable.h
+        graphics/layers/layer_text.cpp
+        graphics/layers/layer_text.h
+        objects/camera.cpp
+        objects/camera.h)
 
 target_link_libraries(headache d3d9 d3dx9 dinput8 dxguid vorbis ogg vorbisfile)

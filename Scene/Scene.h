@@ -3,26 +3,21 @@ class Scene;
 #ifndef HEADACHE_SCENE_H
 #define HEADACHE_SCENE_H
 
-#include <Objects/TexturedQuad.h>
-#include <Graphics/Renderer.h>
-#include <Game.h>
 #include <list>
-#include <Helper/input.h>
 #include <algorithm>
-#include <Objects/Text.h>
-#include <Graphics/Font.h>
-#include <Helper/input.h>
 #include <iostream>
-#include <Graphics/Layers/Layer.h>
-#include <Objects/Camera.h>
+#include "game.h"
+#include "graphics/layers/layer.h"
+#include "objects/camera.h"
+#include "Helper/input.h"
+#include "Helper/input.h"
 
 class Scene {
 private:
-    Game *g_game;
-    std::list<Layer *> *layers;
-protected:
-    Camera *camera;
+    std::list<Layer *> *layers_;
 public:
+    Camera *camera_;
+
     Scene();
 
     virtual ~Scene();
@@ -31,18 +26,14 @@ public:
 
     void EventCall(Event event, uint8_t key, Position *parameter);
 
-    std::list<Layer *> *GetLayers() { return layers; };
+    std::list<Layer *> *GetLayers() { return layers_; };
 
     void AddLayer(Layer *layer) {
-        layers->push_back(layer);
+        layers_->push_back(layer);
     }
 
     void RemoveLayer(Layer *layer) {
-        layers->remove(layer);
-    }
-
-    Camera *GetCamera() {
-        return camera;
+        layers_->remove(layer);
     }
 };
 

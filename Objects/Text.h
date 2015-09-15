@@ -3,47 +3,45 @@ class Text;
 #ifndef PLAYGROUND_TEXT_H
 #define PLAYGROUND_TEXT_H
 
-#include <Graphics/Font.h>
-#include "Game.h"
+#include "graphics/font.h"
+#include "game.h"
 
 class Text {
 private:
-    std::string text;
-    Position position;
-    Size size;
+    std::string text_;
+    Position position_;
+    Size size_;
 public:
-    byte Alpha = 255, Red = 255, Green = 255, Blue = 255;
+
+    byte color_alpha_ = 255;
+    byte color_red_ = 255;
+    byte color_green_ = 255;
+    byte color_blue_ = 255;
+    Font *font_;
 
     Text(std::string font, int size, bool bold, bool italic);
 
-    Font *font;
 
-    void SetText(std::string text) { this->text = text; };
+    void set_text(std::string text) { this->text_ = text; };
 
-    std::string GetText() { return text; }
+    std::string text() { return text_; }
 
-    Position GetPosition() { return position; }
+    Position position() { return position_; }
 
-    void SetPosition(int x, int y) {
-        position.x = x;
-        position.y = y;
+    void set_position(int x, int y) {
+        position_.x = x;
+        position_.y = y;
+    }
+    Size size() const {
+        return size_;
     }
 
-    void SetPosition(Position size) {
-        position.x = size.x;
-        position.y = size.y;
+    void set_size(int height, int width) {
+        size_.height = height;
+        size_.width = width;
     }
 
-    Size GetSize() const {
-        return size;
-    }
-
-    void SetSize(Size size) {
-        this->size.height = size.height;
-        this->size.width = size.width;
-    }
-
-    void SetSize();
+    void reset_size();
 };
 
 

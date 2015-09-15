@@ -6,18 +6,18 @@
 #include "Audio.h"
 
 Audio::Audio(IXAudio2 *parent) {
-    am_xaudio2 = parent;
-    destroy_after_playback = false;
+    device_ = parent;
+    destroy_after_playback_ = false;
 }
 
 Audio::~Audio() {
-    if (pSourceVoice != NULL) {
-        pSourceVoice->Stop(0);
-        pSourceVoice->FlushSourceBuffers();
-        pSourceVoice->DestroyVoice();
+    if (source_voice_ != NULL) {
+        source_voice_->Stop(0);
+        source_voice_->FlushSourceBuffers();
+        source_voice_->DestroyVoice();
     }
-    if (bFileOpened)
-        ov_clear(&vf);
+    if (is_file_opened_)
+        ov_clear(&vorbis_file_);
 }
 
 bool Audio::LoadSound(const char *szSoundFileName) {
@@ -31,12 +31,12 @@ bool Audio::LoadSound(const char *szSoundFileName) {
     //MultiByteToWideChar(CP_ACP, 0, strSoundPath, -1, wstrSoundPath, MAX_PATH);
 
     //If we already have a file open then kill the current voice setup
-    if (bFileOpened) {
-        pSourceVoice->Stop(0);
-        pSourceVoice->FlushSourceBuffers();
-        pSourceVoice->DestroyVoice();
+    if (is_file_opened_) {
+        source_voice_->Stop(0);
+        source_voice_->FlushSourceBuffers();
+        source_voice_->DestroyVoice();
 
-        ov_clear(&vf);
+        ov_clear(&vorbis_file_);
 
         ResetParams();
     }
@@ -57,15 +57,15 @@ bool Audio::LoadSound(const char *szSoundFileName) {
     }
 
     //ov_open(f, &vf, NULL, 0); //Windows does not like this function so we use ov_open_callbacks() instead
-    if (ov_open_callbacks(f, &vf, NULL, 0, OV_CALLBACKS_DEFAULT) < 0) {
+    if (ov_open_callbacks(f, &vorbis_file_, NULL, 0, OV_CALLBACKS_DEFAULT) < 0) {
         fclose(f);
         return false;
     } else {
-        bFileOpened = true;
+        is_file_opened_ = true;
     }
 
     //The vorbis_info struct keeps the most of the interesting format info
-    vorbis_info *vi = ov_info(&vf, -1);
+    vorbis_info *vi = ov_info(&vorbis_file_, -1);
 
     //Set the wave format
     WAVEFORMATEX wfm;
@@ -83,11 +83,11 @@ bool Audio::LoadSound(const char *szSoundFileName) {
     int sec = 0;
     int ret = 1;
 
-    memset(&buffers[currentDiskReadBuffer], 0, sizeof(buffers[currentDiskReadBuffer]));
+    memset(&buffers[current_read_buffer_], 0, sizeof(buffers[current_read_buffer_]));
 
     //Read in the bits
     while (ret && pos < STREAMING_BUFFER_SIZE) {
-        ret = ov_read(&vf, buffers[currentDiskReadBuffer] + pos, static_cast<int>(STREAMING_BUFFER_SIZE - pos), 0, 2, 1,
+        ret = ov_read(&vorbis_file_, buffers[current_read_buffer_] + pos, static_cast<int>(STREAMING_BUFFER_SIZE - pos), 0, 2, 1,
                       &sec);
         pos += ret;
     }
@@ -95,62 +95,62 @@ bool Audio::LoadSound(const char *szSoundFileName) {
     HRESULT hr;
 
     //Create the source voice
-    if (FAILED(hr = am_xaudio2->CreateSourceVoice(&pSourceVoice, &wfm))) {
+    if (FAILED(hr = device_->CreateSourceVoice(&source_voice_, &wfm))) {
         //LogError("<li>Error %#X creating source voice", hr);
         return false;
     }
 
     //Submit the wave sample data using an XAUDIO2_BUFFER structure
     XAUDIO2_BUFFER buffer = {0};
-    buffer.pAudioData = (BYTE *) &buffers[currentDiskReadBuffer];
+    buffer.pAudioData = (BYTE *) &buffers[current_read_buffer_];
     buffer.AudioBytes = STREAMING_BUFFER_SIZE;
 
-    if (FAILED(hr = pSourceVoice->SubmitSourceBuffer(&buffer))) {
+    if (FAILED(hr = source_voice_->SubmitSourceBuffer(&buffer))) {
         //LogError("<li>Error %#X submitting source buffer", hr);
         return false;
     }
 
-    currentDiskReadBuffer++;
+    current_read_buffer_++;
 
     return true;
 }
 
 void Audio::ResetParams() {
-    bFileOpened = false;
-    isRunning = false;
-    boolIsPaused = false;
-    bLoop = false;
-    bDone = false;
-    bAlmostDone = false;
-    currentDiskReadBuffer = 0;
+    is_file_opened_ = false;
+    is_running_ = false;
+    is_paused_ = false;
+    loop_ = false;
+    is_done_ = false;
+    is_almost_done_ = false;
+    current_read_buffer_ = 0;
 }
 
 bool Audio::Play(bool loop) {
-    if (pSourceVoice == NULL) {
+    if (source_voice_ == NULL) {
         //LogError("<li>Error: pSourceVoice NOT created");
         return false;
     }
 
     HRESULT hr;
 
-    if (FAILED(hr = pSourceVoice->Start(0))) {
+    if (FAILED(hr = source_voice_->Start(0))) {
         //LogError("<li>Error %#X submitting source buffer", hr);
     }
 
     XAUDIO2_VOICE_STATE state;
-    pSourceVoice->GetState(&state);
-    isRunning = (state.BuffersQueued > 0) != 0;
+    source_voice_->GetState(&state);
+    is_running_ = (state.BuffersQueued > 0) != 0;
 
-    bLoop = loop;
-    bDone = false;
-    bAlmostDone = false;
-    boolIsPaused = false;
+    loop_ = loop;
+    is_done_ = false;
+    is_almost_done_ = false;
+    is_paused_ = false;
 
-    return isRunning;
+    return is_running_;
 }
 
 void Audio::Stop() {
-    if (pSourceVoice == NULL)
+    if (source_voice_ == NULL)
         return;
 
     //XAUDIO2_FLUSH_BUFFERS according to MSDN is meant to flush the buffers after the voice is stopped
@@ -160,8 +160,8 @@ void Audio::Stop() {
     //pSourceVoice->Stop(0);
     //pSourceVoice->FlushSourceBuffers();
 
-    boolIsPaused = false;
-    isRunning = false;
+    is_paused_ = false;
+    is_running_ = false;
 }
 
 bool Audio::IsPlaying() {
@@ -169,111 +169,111 @@ bool Audio::IsPlaying() {
     pSourceVoice->GetState(&state);
     return (state.BuffersQueued > 0) != 0;*/
 
-    return isRunning;
+    return is_running_;
 }
 
 //Alter the volume up and down
 void Audio::AlterVolume(float fltVolume) {
-    if (pSourceVoice == NULL)
+    if (source_voice_ == NULL)
         return;
 
-    pSourceVoice->SetVolume(fltVolume);         //Current voice volume
+    source_voice_->SetVolume(fltVolume);         //Current voice volume
     //pMasteringVoice->SetVolume(fltVolume);    //Playback device volume
 }
 
 //Return the current volume
 void Audio::GetVolume(float &fltVolume) {
-    if (pSourceVoice == NULL)
+    if (source_voice_ == NULL)
         return;
 
-    pSourceVoice->GetVolume(&fltVolume);
+    source_voice_->GetVolume(&fltVolume);
     //pMasteringVoice->GetVolume(&fltVolume);
 }
 
 void Audio::Pause() {
-    if (pSourceVoice == NULL)
+    if (source_voice_ == NULL)
         return;
 
-    if (boolIsPaused) {
-        pSourceVoice->Start(0); //Unless we tell it otherwise the voice resumes playback from its last position
-        boolIsPaused = false;
+    if (is_paused_) {
+        source_voice_->Start(0); //Unless we tell it otherwise the voice resumes playback from its last position
+        is_paused_ = false;
     }
     else {
-        pSourceVoice->Stop(0);
-        boolIsPaused = true;
+        source_voice_->Stop(0);
+        is_paused_ = true;
     }
 }
 
 void Audio::Update() {
-    if (pSourceVoice == nullptr)
+    if (source_voice_ == nullptr)
         return;
 
-    if (!isRunning)
+    if (!is_running_)
         return;
 
-    if (bDone && !bLoop) {
+    if (is_done_ && !loop_) {
         Stop();
     }
 
     //Do we have any free buffers?
     XAUDIO2_VOICE_STATE state;
-    pSourceVoice->GetState(&state);
+    source_voice_->GetState(&state);
 
     if (state.BuffersQueued < MAX_BUFFER_COUNT - 1) {
 
         //Got to use this trick because otherwise all the bits wont play
-        if (bAlmostDone && !bLoop) {
-            bDone = true;
+        if (is_almost_done_ && !loop_) {
+            is_done_ = true;
         }
 
-        memset(&buffers[currentDiskReadBuffer], 0, sizeof(buffers[currentDiskReadBuffer]));
+        memset(&buffers[current_read_buffer_], 0, sizeof(buffers[current_read_buffer_]));
 
         DWORD pos = 0;
         int sec = 0;
         int ret = 1;
 
         while (ret && pos < STREAMING_BUFFER_SIZE) {
-            ret = ov_read(&vf, buffers[currentDiskReadBuffer] + pos, static_cast<int>(STREAMING_BUFFER_SIZE - pos), 0,
+            ret = ov_read(&vorbis_file_, buffers[current_read_buffer_] + pos, static_cast<int>(STREAMING_BUFFER_SIZE - pos), 0,
                           2, 1, &sec);
             pos += ret;
         }
 
         //Reached the end?
-        if (!ret && bLoop) {
+        if (!ret && loop_) {
             //We are looping so restart from the beginning
             //NOTE: sound with sizes smaller than BUFSIZE may be cut off
 
             ret = 1;
-            ov_pcm_seek(&vf, 0);
+            ov_pcm_seek(&vorbis_file_, 0);
             while (ret && pos < STREAMING_BUFFER_SIZE) {
-                ret = ov_read(&vf, buffers[currentDiskReadBuffer] + pos, static_cast<int>(STREAMING_BUFFER_SIZE - pos),
+                ret = ov_read(&vorbis_file_, buffers[current_read_buffer_] + pos, static_cast<int>(STREAMING_BUFFER_SIZE - pos),
                               0, 2, 1, &sec);
                 pos += ret;
             }
         }
-        else if (!ret && !(bLoop)) {
+        else if (!ret && !(loop_)) {
             //Not looping so fill the rest with 0
             //while(pos<size)
             //    *(buffers[currentDiskReadBuffer]+pos)=0; pos ++;
 
             //And say that after the current section no other section follows
-            bAlmostDone = true;
+            is_almost_done_ = true;
         }
 
         XAUDIO2_BUFFER buffer = {0};
-        buffer.pAudioData = (BYTE *) &buffers[currentDiskReadBuffer];
-        if (bAlmostDone) {
+        buffer.pAudioData = (BYTE *) &buffers[current_read_buffer_];
+        if (is_almost_done_) {
             buffer.Flags = 0;   //Tell the source voice not to expect any data after this buffer
         }
         buffer.AudioBytes = STREAMING_BUFFER_SIZE;
 
         HRESULT hr;
-        if (FAILED(hr = pSourceVoice->SubmitSourceBuffer(&buffer))) {
+        if (FAILED(hr = source_voice_->SubmitSourceBuffer(&buffer))) {
             //LogError("<li>Error %#X submitting source buffer\n", hr );
             return;
         }
 
-        currentDiskReadBuffer++;
-        currentDiskReadBuffer %= MAX_BUFFER_COUNT;
+        current_read_buffer_++;
+        current_read_buffer_ %= MAX_BUFFER_COUNT;
     }
 }

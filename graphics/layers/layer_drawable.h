@@ -3,31 +3,32 @@ class DrawableLayer;
 #ifndef PLAYGROUND_DYNAMICLAYER_H
 #define PLAYGROUND_DYNAMICLAYER_H
 
-#include "Layer.h"
+#include <d3d9.h>
 #include <algorithm>
-#include <Objects/TexturedQuad.h>
+#include "layer.h"
+#include "objects/textured_quad.h"
 
 class DrawableLayer : public Layer {
 private:
-    Type type;
+    Type type_;
 public:
     DrawableLayer(Type type);
 
     bool reload = true;
-    std::list<TexturedQuad *> *drawableList;
-    LPDIRECT3DVERTEXBUFFER9 vertex_buffer;
+    std::list<TexturedQuad *> *drawable_list_;
+    LPDIRECT3DVERTEXBUFFER9 vertex_buffer_;
 
     Type GetType() {
-        return type;
+        return type_;
     }
 
     void Add(TexturedQuad *obj) {
-        drawableList->push_back(obj);
+        drawable_list_->push_back(obj);
         reload = true;
     }
 
     void Remove(TexturedQuad *obj) {
-        drawableList->remove(obj);
+        drawable_list_->remove(obj);
     }
 
     bool EventCall(Event event, unsigned char key, Position *parameter);

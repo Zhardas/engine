@@ -6,12 +6,14 @@ class Renderer;
 #include <windows.h>
 #include <d3dx9.h>
 #include <d3d9.h>
-#include <Scene/Scene.h>
-#include <Objects/TexturedQuad.h>
-#include <Game.h>
 #include <list>
 #include <algorithm>
-#include <Graphics/Layers/DrawableLayer.h>
+#include "game.h"
+#include "objects/textured_quad.h"
+#include "graphics/Layers/layer.h"
+#include "graphics/Layers/layer_drawable.h"
+#include "graphics/Layers/layer_text.h"
+#include "scene/scene.h"
 
 class Renderer {
     struct v_3c {
@@ -47,8 +49,6 @@ class Renderer {
         byte r, g, b;
     };
 
-    Game *g_game;
-
     void SetUpCamera(LPDIRECT3DDEVICE9 p_dx_Device);
 
     LPDIRECT3DVERTEXBUFFER9 GenerateStaticVertexBuffer(std::list<TexturedQuad *> *pList);
@@ -58,7 +58,7 @@ class Renderer {
     void Draw(TexturedQuad *pQuad, UINT index);
 
 public:
-    color clear_color = {72, 31, 39};
+    color color_ = {72, 31, 39};
 
     Renderer();
 

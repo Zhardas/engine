@@ -1,19 +1,18 @@
-#include "TextureManager.h"
+#include "texture_manager.h"
 
 TextureManager::TextureManager() {
-    g_game = Game::GetInstance();
-    textures = new std::map<std::string, IDirect3DBaseTexture9 *>();
+    textures_ = new std::map<std::string, IDirect3DBaseTexture9 *>();
 }
 
-IDirect3DBaseTexture9 *TextureManager::GetTexture(LPCSTR texture_name) {
+IDirect3DBaseTexture9 *TextureManager::LoadTexture(LPCSTR texture_name) {
     std::stringstream path;
     path << "resources\\textures\\" << texture_name;
-    std::map<std::string, IDirect3DBaseTexture9 *>::iterator it = textures->find(texture_name);
-    if (it != textures->end()) {
-        return textures->at(texture_name);
+    std::map<std::string, IDirect3DBaseTexture9 *>::iterator it = textures_->find(texture_name);
+    if (it != textures_->end()) {
+        return textures_->at(texture_name);
     } else {
         IDirect3DTexture9 *texture = NULL;
-        HRESULT result = D3DXCreateTextureFromFile(g_game->g_device, path.str().c_str(), &texture);
+        HRESULT result = D3DXCreateTextureFromFile(Game::instance()->device(), path.str().c_str(), &texture);
         switch (result) {
             case D3D_OK:
                 break;
@@ -36,7 +35,7 @@ IDirect3DBaseTexture9 *TextureManager::GetTexture(LPCSTR texture_name) {
                 std::cout << "Something went really wrong with texture initialization!\n";
                 break;
         }
-        textures->insert(std::pair<std::string, IDirect3DBaseTexture9 *>(texture_name, texture));
+        textures_->insert(std::pair<std::string, IDirect3DBaseTexture9 *>(texture_name, texture));
         return texture;
     }
 }

@@ -8,8 +8,8 @@ class Camera;
 class Camera {
 private:
 public:
-    Position3 position;
-    float zoom = 1.0f;
+    Position3 position_;
+    float zoom_ = 1.0f;
 
     Camera();
 };

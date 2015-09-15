@@ -10,22 +10,24 @@
 
 class Audio {
 private:
-    IXAudio2 *am_xaudio2;
-    IXAudio2SourceVoice *pSourceVoice;
-    bool bFileOpened;
-    OggVorbis_File vf;
+    IXAudio2 *device_;
+    IXAudio2SourceVoice *source_voice_;
+    OggVorbis_File vorbis_file_;
     char buffers[MAX_BUFFER_COUNT][STREAMING_BUFFER_SIZE];
-    DWORD currentDiskReadBuffer;
+    DWORD current_read_buffer_;
 
-    bool isRunning;
-    bool boolIsPaused;
-    bool bAlmostDone;
-    bool bDone;
-    bool bLoop;
+    bool is_file_opened_;
+    bool is_running_;
+    bool is_paused_;
+    bool is_almost_done_;
+    bool is_done_;
+    bool loop_;
 
     void ResetParams();
 
 public:
+    bool destroy_after_playback_;
+
     Audio(IXAudio2 *parent);
 
     ~Audio();
@@ -45,8 +47,6 @@ public:
     void Pause();
 
     void Update();
-
-    bool destroy_after_playback;
 };
 
 

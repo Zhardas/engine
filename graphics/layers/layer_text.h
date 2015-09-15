@@ -1,31 +1,31 @@
-class TextLayer;
+class text_layer;
 
 #ifndef PLAYGROUND_TEXTLAYER_H
 #define PLAYGROUND_TEXTLAYER_H
 
-#include <Objects/Text.h>
-#include "Layer.h"
+#include "objects/text.h"
+#include "layer.h"
 
-class TextLayer : public Layer {
+class text_layer: public Layer {
 private:
 public:
-    TextLayer();
+    text_layer();
 
-    std::list<Text *> *text_list;
+    std::list<Text *> *text_list_;
 
     Type GetType() {
         return Type::TEXT;
     }
 
     void Add(Text *text) {
-        text_list->push_back(text);
+        text_list_->push_back(text);
     }
     void Remove(Text * text){
-        text_list->remove(text);
+        text_list_->remove(text);
     }
 
     virtual bool EventCall(Event event, unsigned char key, Position *parameter){
-        // TODO: Text events
+        // TODO: text events
         return false;
     };
 };

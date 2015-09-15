@@ -1,11 +1,11 @@
-#include "Text.h"
+#include "text.h"
 
 Text::Text(std::string font, int size, bool bold, bool italic) {
-    Text::font = new Font(font, size, bold, italic);
+    Text::font_ = new Font(font, size, bold, italic);
 }
 
-void Text::SetSize() {
-    Size calc_size = font->GetSize(text);
-    size.height = calc_size.height;
-    size.width = calc_size.width;
+void Text::reset_size() {
+    Size calc_size = font_->size(text_);
+    size_.height = calc_size.height;
+    size_.width = calc_size.width;
 }

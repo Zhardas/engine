@@ -1,6 +1,6 @@
-#include "Camera.h"
+#include "camera.h"
 
 Camera::Camera() {
-    position.x = 0;
-    position.y = 0;
+    position_.x = 0;
+    position_.y = 0;
 }
