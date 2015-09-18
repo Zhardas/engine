@@ -53,7 +53,7 @@ class Game {
 
   void SetDeviceOptions();
 
-  void Initialize(std::string title);
+  void Initialize(std::string title, Scene* scene);
 
   int width() { return width_; }
   int height() { return height_; }

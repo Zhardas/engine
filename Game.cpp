@@ -204,8 +204,9 @@ void Game::Loop() {
   }
 }
 
-void Game::Initialize(std::string title) {
+void Game::Initialize(std::string title, Scene* scene) {
   window_handle_ = InitializeWindow(title);
+  scene_ = scene;
 
   if (device_ != nullptr)return;
   device_ = InitializeDevice();
@@ -228,5 +229,11 @@ Game *Game::instance() {
   return instance;
 }
 Game::~Game() {
+  device_->Release();
+  delete device_;
+  delete renderer_;
+  delete texture_manager_;
+  delete audio_manager_;
+  delete scene_;
   DestroyWindow(window_handle());
 }
