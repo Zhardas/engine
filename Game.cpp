@@ -163,11 +163,22 @@ void Game::Initialize(std::string title, Scene *scene) {
   if (device_ == nullptr)return;
   SetDeviceOptions();
 
+  std::cout << "\nTexture manager initialization: ";
   texture_manager_ = new TextureManager();
+  std::cout << "success!";
+  std::cout << "\nAudio manager initialization: "; // TODO: Fix weird bug with std::cout repeating this line or use in-engine console.
   audio_manager_ = new AudioManager();
-  std::cout << "Audio manager initialization: " << audio_manager_->InitializeAudio() << "\n";
+  if(audio_manager_->InitializeAudio()){
+    std::cout << "success!";
+  }else{
+    std::cout << "FAIL!";
+  }
+  std::cout << "\nInput manager initialization: ";
+  input_manager_ = new InputManager();
+  std::cout << "success!";
 
   running_ = true;
+  std::cout << "\nEngine started.";
 }
 
 Game *Game::instance() {
