@@ -3,12 +3,14 @@ class Game;
 #ifndef GAME_H_
 #define GAME_H_
 
-#include <ctime>
-#include <chrono>
-#include <iostream>
 #include <windows.h>
 #include <windowsx.h>
 #include <d3d9.h>
+#include <ctime>
+#include <chrono>
+#include <iostream>
+#include <string>
+#include "input/input_manager.h"
 #include "graphics/renderer.h"
 #include "graphics/texture_manager.h"
 #include "scene/scene.h"
@@ -18,7 +20,7 @@ class Game;
 #define VERSION_MAJOR @Headache_VERSION_MAJOR@
 #define VERSION_MINOR @Headache_VERSION_MINOR@
 
-LRESULT CALLBACK OurWindowProcedure(HWND window_handle, UINT message, WPARAM parameter1, LPARAM parameter2);
+LRESULT CALLBACK WindowsMessageCallback(HWND window_handle, UINT message, WPARAM parameter1, LPARAM parameter2);
 
 class Game {
  private:
@@ -40,11 +42,11 @@ class Game {
 
  public:
   LPDIRECT3DDEVICE9 device_;
-  Position *mouse_position_;
   Scene *scene_;
   Renderer *renderer_;
   TextureManager *texture_manager_;
   AudioManager *audio_manager_;
+  InputManager *input_manager_;
 
   Game();
   ~Game();
@@ -59,7 +61,6 @@ class Game {
   int height() { return height_; }
   bool running() { return running_; }
   void stop_running() { running_ = false; }
-  LPDIRECT3DDEVICE9 device() { return device_; };
   void Loop();
   HWND window_handle() {return window_handle_;}
 };

@@ -36,6 +36,8 @@ add_library(headache
         helper/types.h
         audio/audio.cpp
         audio/audio.h
+        input/input_manager.cpp
+        input/input_manager.h
         graphics/font.cpp
         graphics/font.h
         objects/text.cpp

@@ -18,9 +18,9 @@ void Renderer::SetUpCamera(LPDIRECT3DDEVICE9 p_dx_Device) {
 
 
 void Renderer::DrawScene(Scene *scene) {
-    LPDIRECT3DDEVICE9 pDevice9 = Game::instance()->device_;
-    pDevice9->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(255, color_.r, color_.g, color_.b), 1.0f, 0);
-    pDevice9->BeginScene();
+    LPDIRECT3DDEVICE9 device = Game::instance()->device_;
+    device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(255, color_.r, color_.g, color_.b), 1.0f, 0);
+    device->BeginScene();
 
     // Move camera
     auto cam_pos = scene->camera_->position_;
@@ -29,7 +29,7 @@ void Renderer::DrawScene(Scene *scene) {
     view_matrix(3, 0) = -cam_pos.x;
     view_matrix(3, 1) = -cam_pos.y;
     view_matrix(3, 2) = cam_pos.z; // TODO: ???
-    pDevice9->SetTransform(D3DTS_VIEW, &view_matrix);
+    device->SetTransform(D3DTS_VIEW, &view_matrix);
 
     for (Layer *layer : *scene->GetLayers()) {
         UINT index = 0;
@@ -56,7 +56,7 @@ void Renderer::DrawScene(Scene *scene) {
                         D3DXMatrixTransformation2D(&matFinal, &pivot, 1.0f, &scaling, &pivot, obj->rotation(),
                                                    &moving);
 
-                        pDevice9->SetTransform(D3DTS_WORLD, &matFinal);
+                        device->SetTransform(D3DTS_WORLD, &matFinal);
 
                         // Draw
                         Draw(obj, index);
@@ -64,7 +64,7 @@ void Renderer::DrawScene(Scene *scene) {
 
                         // Reset world transformation
                         D3DXMatrixIdentity(&matFinal);
-                        pDevice9->SetTransform(D3DTS_WORLD, &matFinal);
+                        device->SetTransform(D3DTS_WORLD, &matFinal);
                     }
                 }
             }
@@ -87,7 +87,7 @@ void Renderer::DrawScene(Scene *scene) {
                         D3DXMatrixTransformation2D(&matFinal, &pivot, 1.0f, &scaling, &pivot, obj->rotation(),
                                                    &moving);
 
-                        pDevice9->SetTransform(D3DTS_WORLD, &matFinal);
+                        device->SetTransform(D3DTS_WORLD, &matFinal);
 
                         // Draw
                         Draw(obj, index);
@@ -95,7 +95,7 @@ void Renderer::DrawScene(Scene *scene) {
 
                         // Reset world transformation
                         D3DXMatrixIdentity(&matFinal);
-                        pDevice9->SetTransform(D3DTS_WORLD, &matFinal);
+                        device->SetTransform(D3DTS_WORLD, &matFinal);
                     }
                     cast_layer->vertex_buffer_->Release();
                     delete cast_layer->vertex_buffer_;
@@ -124,8 +124,8 @@ void Renderer::DrawScene(Scene *scene) {
         }
     }
 
-    pDevice9->EndScene();
-    pDevice9->Present(NULL, NULL, NULL, NULL);
+    device->EndScene();
+    device->Present(NULL, NULL, NULL, NULL);
 }
 
 LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateStaticVertexBuffer(std::list<TexturedQuad *> *object_list) {

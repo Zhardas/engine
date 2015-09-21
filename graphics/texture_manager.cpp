@@ -12,7 +12,7 @@ IDirect3DBaseTexture9 *TextureManager::LoadTexture(LPCSTR texture_name) {
         return textures_->at(texture_name);
     } else {
         IDirect3DTexture9 *texture = NULL;
-        HRESULT result = D3DXCreateTextureFromFile(Game::instance()->device(), path.str().c_str(), &texture);
+        HRESULT result = D3DXCreateTextureFromFile(Game::instance()->device_, path.str().c_str(), &texture);
         switch (result) {
             case D3D_OK:
                 break;

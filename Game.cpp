@@ -1,8 +1,8 @@
 #include "./game.h"
 
 Game::Game() {
-  update_chrono_accumulator_ = std::chrono::microseconds(0);
-  update_chrono_delta_ = std::chrono::duration<int64_t, std::ratio<1, 120>>(1);
+  update_chrono_accumulator_ = std::chrono::microseconds(int64_t(0));
+  update_chrono_delta_ = std::chrono::duration<int64_t, std::ratio<1, 120>>(int64_t(1));
 
   srand(static_cast<unsigned int>(time(NULL)));
 
@@ -11,71 +11,20 @@ Game::Game() {
 
   width_ = 1280;
   height_ = 720;
-  mouse_position_ = new Position(0, 0);
   update_chrono_start_ = std::chrono::high_resolution_clock::now();
   update_time_start_ = std::time(NULL);
-  update_chrono_accumulator_ = std::chrono::microseconds(0);
+  update_chrono_accumulator_ = std::chrono::microseconds(int64_t(0));
 }
 
-LRESULT CALLBACK OurWindowProcedure(HWND window_handle, UINT message, WPARAM parameter1, LPARAM parameter2) {
-  Game *game = Game::instance();
+LRESULT CALLBACK WindowsMessageCallback(HWND window_handle, UINT message, WPARAM parameter1, LPARAM parameter2) {
   switch (message) {
     case WM_CLOSE: {
-      game->stop_running();
+      Game::instance()->stop_running();
       break;
     };
     default: {
-      if (message >= WM_MOUSEFIRST && message <= WM_MOUSELAST) {
-        Position pos = Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2));
-        pos.y = game->height() - pos.y;
-        switch (message) {
-          case WM_MOUSEMOVE: {
-            game->mouse_position_->x = GET_X_LPARAM(parameter2);
-            game->mouse_position_->y = GET_Y_LPARAM(parameter2);
-            game->scene_->EventCall(MOUSE_MOVE, MOUSE_LEFT, &pos);
-          };
-            break;
-          case WM_LBUTTONUP: {
-            game->scene_->EventCall(MOUSE_UP, MOUSE_LEFT, &pos);
-          };
-            break;
-          case WM_MBUTTONUP: {
-            game->scene_->EventCall(MOUSE_UP, MOUSE_MIDDLE, &pos);
-          };
-            break;
-          case WM_RBUTTONUP: {
-            game->scene_->EventCall(MOUSE_UP, MOUSE_RIGHT, &pos);
-          };
-            break;
-          case WM_LBUTTONDOWN: {
-            game->scene_->EventCall(MOUSE_DOWN, MOUSE_LEFT, &pos);
-          };
-            break;
-          case WM_MBUTTONDOWN: {
-            game->scene_->EventCall(MOUSE_DOWN, MOUSE_MIDDLE, &pos);
-          };
-            break;
-          case WM_RBUTTONDOWN: {
-            game->scene_->EventCall(MOUSE_DOWN, MOUSE_RIGHT, &pos);
-          };
-            break;
-          default:
-            break;
-        }
-      }
-      else if (message >= WM_KEYFIRST && message <= WM_KEYLAST) {
-        switch (message) {
-          case WM_KEYUP: {
-            game->scene_->EventCall(KEYBOARD_UP, static_cast<uint8_t>(parameter1), nullptr);
-          };
-            break;
-          case WM_KEYDOWN: {
-            game->scene_->EventCall(KEYBOARD_DOWN, static_cast<uint8_t>(parameter1), nullptr);
-          };
-            break;
-          default:
-            break;
-        }
+      if ((message >= WM_MOUSEFIRST && message <= WM_MOUSELAST) || (message >= WM_KEYFIRST && message <= WM_KEYLAST)) {
+        Game::instance()->input_manager_->ParseMessage(message, parameter1, parameter2);
       }
       break;
     };
@@ -84,26 +33,26 @@ LRESULT CALLBACK OurWindowProcedure(HWND window_handle, UINT message, WPARAM par
 }
 
 HWND Game::InitializeWindow(std::string title) {
-  RECT wnd_size = {0, 0, width(), height()};
-  AdjustWindowRectEx(&wnd_size, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE, FALSE,
+  RECT window_size = {0, 0, width(), height()};
+  AdjustWindowRectEx(&window_size, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE, FALSE,
                      WS_EX_CONTROLPARENT);
 
-  WNDCLASSEX wnd_Structure;
+  WNDCLASSEX window_structure;
 
-  wnd_Structure.cbSize = sizeof(WNDCLASSEX);
-  wnd_Structure.style = CS_HREDRAW | CS_VREDRAW;
-  wnd_Structure.lpfnWndProc = OurWindowProcedure;
-  wnd_Structure.cbClsExtra = 0;
-  wnd_Structure.cbWndExtra = 0;
-  wnd_Structure.hInstance = GetModuleHandle(NULL);
-  wnd_Structure.hIcon = NULL;
-  wnd_Structure.hCursor = NULL;
-  wnd_Structure.hbrBackground = GetSysColorBrush(COLOR_BTNFACE);
-  wnd_Structure.lpszMenuName = NULL;
-  wnd_Structure.lpszClassName = "Overlord";
-  wnd_Structure.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+  window_structure.cbSize = sizeof(WNDCLASSEX);
+  window_structure.style = CS_HREDRAW | CS_VREDRAW;
+  window_structure.lpfnWndProc = WindowsMessageCallback;
+  window_structure.cbClsExtra = 0;
+  window_structure.cbWndExtra = 0;
+  window_structure.hInstance = GetModuleHandle(NULL);
+  window_structure.hIcon = NULL;
+  window_structure.hCursor = NULL;
+  window_structure.hbrBackground = GetSysColorBrush(COLOR_BTNFACE);
+  window_structure.lpszMenuName = NULL;
+  window_structure.lpszClassName = "Overlord";
+  window_structure.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 
-  RegisterClassEx(&wnd_Structure);
+  RegisterClassEx(&window_structure);
 
   return CreateWindowEx(WS_EX_CONTROLPARENT,
                         "Overlord",
@@ -111,8 +60,8 @@ HWND Game::InitializeWindow(std::string title) {
                         WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE,
                         0,
                         0,
-                        wnd_size.right - wnd_size.left,
-                        wnd_size.bottom - wnd_size.top,
+                        window_size.right - window_size.left,
+                        window_size.bottom - window_size.top,
                         NULL,
                         NULL,
                         GetModuleHandle(NULL),
@@ -128,20 +77,20 @@ LPDIRECT3DDEVICE9 Game::InitializeDevice() {
     MessageBox(window_handle_, "DirectX Runtime library not installed!", "InitializeDevice()", MB_OK);
   }
 
-  D3DPRESENT_PARAMETERS dx_pres_params;
-  ZeroMemory(&dx_pres_params, sizeof(dx_pres_params));
-  dx_pres_params.Windowed = TRUE;
-  dx_pres_params.SwapEffect = D3DSWAPEFFECT_DISCARD;
-  dx_pres_params.BackBufferFormat = D3DFMT_X8R8G8B8;
-  dx_pres_params.AutoDepthStencilFormat = D3DFMT_D16;
-  dx_pres_params.EnableAutoDepthStencil = true;
-  dx_pres_params.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+  D3DPRESENT_PARAMETERS dx_presentation_parameters;
+  ZeroMemory(&dx_presentation_parameters, sizeof(dx_presentation_parameters));
+  dx_presentation_parameters.Windowed = TRUE;
+  dx_presentation_parameters.SwapEffect = D3DSWAPEFFECT_DISCARD;
+  dx_presentation_parameters.BackBufferFormat = D3DFMT_X8R8G8B8;
+  dx_presentation_parameters.AutoDepthStencilFormat = D3DFMT_D16;
+  dx_presentation_parameters.EnableAutoDepthStencil = true;
+  dx_presentation_parameters.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
 
   if (FAILED(dx->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, window_handle_, D3DCREATE_HARDWARE_VERTEXPROCESSING,
-                              &dx_pres_params, &device))) {
+                              &dx_presentation_parameters, &device))) {
     if (FAILED(
         dx->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, window_handle_, D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-                         &dx_pres_params, &device))) {
+                         &dx_presentation_parameters, &device))) {
       MessageBox(window_handle_, "Failed to create even the reference device!", "InitializeDevice()", MB_OK);
       return nullptr;
     }
@@ -204,7 +153,7 @@ void Game::Loop() {
   }
 }
 
-void Game::Initialize(std::string title, Scene* scene) {
+void Game::Initialize(std::string title, Scene *scene) {
   window_handle_ = InitializeWindow(title);
   scene_ = scene;
 
@@ -216,7 +165,7 @@ void Game::Initialize(std::string title, Scene* scene) {
 
   texture_manager_ = new TextureManager();
   audio_manager_ = new AudioManager();
-  audio_manager_->InitializeAudio();
+  std::cout << "Audio manager initialization: " << audio_manager_->InitializeAudio() << "\n";
 
   running_ = true;
 }
