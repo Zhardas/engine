@@ -8,7 +8,7 @@ class TexturedQuad;
 #include <string>
 #include <functional>
 
-class TexturedQuad: Drawable {
+class TexturedQuad: public Drawable {
 private:
     void CalcScaling() {
         size_scaled = SizeF(size_.width * scale_.width, size_.height * scale_.height);

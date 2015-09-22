@@ -15,9 +15,9 @@ struct Position {
         this->x = x;
         this->y = y;
     }
-    float Distance(Position* p){
-        auto a = fabsf(fmaxf(x, p->x) - fminf(x,p->x));
-        auto b = fabsf(fmaxf(y, p->y) - fminf(y,p->y));
+    float Distance(const Position& p){
+        auto a = fabsf(fmaxf(x, p.x) - fminf(x,p.x));
+        auto b = fabsf(fmaxf(y, p.y) - fminf(y,p.y));
         return sqrtf(a*a+b*b);
     }
     Position& operator+=(const Position& arg){

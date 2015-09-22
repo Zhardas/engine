@@ -6,6 +6,7 @@ class Game;
 #include <windows.h>
 #include <windowsx.h>
 #include <d3d9.h>
+#define D3D_DEBUG_INFO
 #include <ctime>
 #include <chrono>
 #include <iostream>
@@ -55,7 +56,7 @@ class Game {
 
   void SetDeviceOptions();
 
-  void Initialize(std::string title, Scene* scene);
+  void Initialize(std::string title);
 
   int width() { return width_; }
   int height() { return height_; }

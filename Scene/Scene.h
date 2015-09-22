@@ -9,32 +9,36 @@ class Scene;
 #include "game.h"
 #include "graphics/layers/layer.h"
 #include "objects/camera.h"
+#include "objects/interfaces/collidable.h"
 #include "Helper/input.h"
 #include "Helper/input.h"
 
 class Scene {
-private:
-    std::list<Layer *> *layers_;
-public:
-    Camera *camera_;
+ private:
+  std::list<Layer *> layers_ = {};
+ public:
+  Camera *camera_;
 
-    Scene();
+  Scene();
 
-    virtual ~Scene();
+  virtual ~Scene();
 
-    virtual void Update();
+  virtual void Update();
 
-    void EventCall(Event event, uint8_t key, Position *parameter);
+  void CheckCollision();
 
-    std::list<Layer *> *GetLayers() { return layers_; };
+  void EventCall(Event event, uint8_t key, Position *parameter);
 
-    void AddLayer(Layer *layer) {
-        layers_->push_back(layer);
-    }
+  std::list<Layer *> *GetLayers() { return &layers_; };
 
-    void RemoveLayer(Layer *layer) {
-        layers_->remove(layer);
-    }
+  void AddLayer(Layer *layer) {
+    layers_.push_back(layer);
+  }
+
+  void RemoveLayer(Layer *layer) {
+    layers_.remove(layer);
+  }
+  std::list<Collidable *> collidables_ = {};
 };
 
 

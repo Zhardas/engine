@@ -113,14 +113,14 @@ void Game::SetDeviceOptions() {
   device_->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
   device_->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
 
-  // g_device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-  // g_device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-  // g_device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+//  device_->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+//  device_->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+//  device_->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 
-  // g_device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
-  // g_device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
-  // g_device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_ANISOTROPIC);
-  // g_device->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, 16);
+//  device_->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
+//  device_->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
+//  device_->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_ANISOTROPIC);
+//  device_->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, 16);
 }
 
 void Game::Loop() {
@@ -153,24 +153,37 @@ void Game::Loop() {
   }
 }
 
-void Game::Initialize(std::string title, Scene *scene) {
-  window_handle_ = InitializeWindow(title);
-  scene_ = scene;
-
+void Game::Initialize(std::string title) {
   if (device_ != nullptr)return;
+  std::cout << "\nWindow initialization: ";
+  window_handle_ = InitializeWindow(title);
+  std::cout << "success!";
+
+  std::cout << "\nDevice initialization: "; // TODO: Fix weird bug with std::cout repeating this line or use in-engine console.
   device_ = InitializeDevice();
+  if (device_ != nullptr){
+    std::cout << "success!";
+  }else{
+    std::cout << "FAILED!";
+  }
+
+  std::cout << "\nRenderer initialization: ";
   renderer_ = new Renderer();
-  if (device_ == nullptr)return;
+  std::cout << "success!";
+
+  std::cout << "\nSetting device options: ";
   SetDeviceOptions();
+  std::cout << "success!";
 
   std::cout << "\nTexture manager initialization: ";
   texture_manager_ = new TextureManager();
   std::cout << "success!";
-  std::cout << "\nAudio manager initialization: "; // TODO: Fix weird bug with std::cout repeating this line or use in-engine console.
+  std::cout
+      << "\nAudio manager initialization: "; // TODO: Fix weird bug with std::cout repeating this line or use in-engine console.
   audio_manager_ = new AudioManager();
-  if(audio_manager_->InitializeAudio()){
+  if (audio_manager_->InitializeAudio()) {
     std::cout << "success!";
-  }else{
+  } else {
     std::cout << "FAIL!";
   }
   std::cout << "\nInput manager initialization: ";

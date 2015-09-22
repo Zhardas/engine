@@ -104,7 +104,7 @@ void Renderer::DrawScene(Scene *scene) {
             }
                 break;
             case Layer::TEXT: {
-                text_layer *cast_layer = static_cast<text_layer *>(layer);
+                TextLayer *cast_layer = static_cast<TextLayer *>(layer);
                 for (Text *text_item : *cast_layer->text_list_) {
                     Position pos = text_item->position();
                     Size size = text_item->size();
