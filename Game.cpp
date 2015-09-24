@@ -119,31 +119,17 @@ void Game::SetDeviceOptions() {
 void Game::Loop() {
   auto new_time = std::chrono::high_resolution_clock::now();
   auto frame_time = new_time - update_chrono_start_;
-  static auto overflow = update_chrono_accumulator_;
-  static bool overflow_negative = false;
   update_chrono_start_ = new_time;
   update_chrono_accumulator_ += std::chrono::duration_cast<std::chrono::microseconds>(frame_time);
-  auto
-      temp_duration = overflow_negative ? update_chrono_accumulator_ - overflow : update_chrono_accumulator_ + overflow;
 
-  if (temp_duration >= update_chrono_delta_) {
+  if (update_chrono_accumulator_ >= update_chrono_delta_) {
     audio_manager_->Update();
-    scene_->Update(temp_duration / update_chrono_delta_);
+    scene_->Update();
     update_tick_++;
-    update_chrono_accumulator_ -= update_chrono_accumulator_;
-    renderer_->DrawScene(scene_);
-    render_tick_++;
-    if (update_chrono_delta_ > temp_duration) {
-      overflow_negative = true;
-      overflow = (update_chrono_delta_ - temp_duration);
-    } else {
-      overflow_negative = false;
-      overflow = (temp_duration - update_chrono_delta_);
-    }
-    while (overflow > update_chrono_delta_) {
-      overflow -= update_chrono_delta_;
-    }
+    update_chrono_accumulator_.zero();
   }
+  renderer_->DrawScene(scene_);
+  render_tick_++;
 
   // counter updates
   std::time_t update_time_current = std::time(NULL);

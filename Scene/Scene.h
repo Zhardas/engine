@@ -23,7 +23,7 @@ class Scene {
 
   virtual ~Scene();
 
-  virtual void Update(float delta);
+  virtual void Update();
 
   void CheckCollision();
 
