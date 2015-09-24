@@ -56,7 +56,7 @@ class Renderer {
 
     LPDIRECT3DVERTEXBUFFER9 GenerateDynamicVertexBuffer(std::list<TexturedQuad *> *pList);
 
-    void Draw(TexturedQuad *pQuad, UINT index);
+    void Draw(TexturedQuad *quad, UINT index);
 
 public:
     color color_ = {72, 31, 39};

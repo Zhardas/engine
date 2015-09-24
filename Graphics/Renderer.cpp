@@ -132,35 +132,35 @@ LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateStaticVertexBuffer(std::list<TexturedQ
     if (object_list->size() <= 0) {
         return NULL;
     }
-    LPDIRECT3DVERTEXBUFFER9 p_dx_VertexBuffer = nullptr;
+    LPDIRECT3DVERTEXBUFFER9 vertex_buffer = nullptr;
     UINT index = 0;
 
-    v_3t cv_Vertices[4 * object_list->size()];
+    v_3t vertices[4 * object_list->size()];
     for (TexturedQuad *obj : *object_list) {
-        cv_Vertices[index * 4] = {0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
-        cv_Vertices[index * 4 + 1] = {0.0f, obj->size().height, 0.0f, 0.0f, 0.0f};
-        cv_Vertices[index * 4 + 2] = {obj->size().width, 0.0f, 0.0f, 1.0f, 1.0f};
-        cv_Vertices[index * 4 + 3] = {obj->size().width, obj->size().height, 0.0f, 1.0f, 0.0f};
+        vertices[index * 4] = {0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+        vertices[index * 4 + 1] = {0.0f, obj->size().height, 0.0f, 0.0f, 0.0f};
+        vertices[index * 4 + 2] = {obj->size().width, 0.0f, 0.0f, 1.0f, 1.0f};
+        vertices[index * 4 + 3] = {obj->size().width, obj->size().height, 0.0f, 1.0f, 0.0f};
         index++;
     }
     if (FAILED(Game::instance()->device_->CreateVertexBuffer(4 * index * sizeof(v_3t), D3DUSAGE_WRITEONLY,
-                                                   D3DFVF_XYZ | D3DFVF_TEX1,
-                                                   D3DPOOL_DEFAULT, &p_dx_VertexBuffer, NULL))) {
+                                                             D3DFVF_XYZ | D3DFVF_TEX1,
+                                                             D3DPOOL_DEFAULT, &vertex_buffer, NULL))) {
         //TODO: Error handling
     }
 
-    VOID *p_Vertices;
-    if (FAILED(p_dx_VertexBuffer->Lock(0, 4 * index * sizeof(v_3t), &p_Vertices, 0))) {
+    VOID *temp_vertices;
+    if (FAILED(vertex_buffer->Lock(0, 4 * index * sizeof(v_3t), &temp_vertices, 0))) {
         //TODO: Error handling
     } else {
-        memcpy(p_Vertices, cv_Vertices, 4 * index * sizeof(v_3t));
-        p_dx_VertexBuffer->Unlock();
+        memcpy(temp_vertices, vertices, 4 * index * sizeof(v_3t));
+        vertex_buffer->Unlock();
     }
-    return p_dx_VertexBuffer;
+    return vertex_buffer;
 }
 
-void Renderer::Draw(TexturedQuad *pQuad, UINT index) {
-    Game::instance()->device_->SetTexture(0, Game::instance()->texture_manager_->LoadTexture(pQuad->texture().c_str()));
+void Renderer::Draw(TexturedQuad *quad, UINT index) {
+    Game::instance()->device_->SetTexture(0, Game::instance()->texture_manager_->LoadTexture(quad->texture().c_str()));
     Game::instance()->device_->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4 * index, 2);
 }
 
@@ -168,30 +168,30 @@ LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateDynamicVertexBuffer(std::list<Textured
     if (object_list->size() <= 0) {
         return NULL;
     }
-    LPDIRECT3DVERTEXBUFFER9 p_dx_VertexBuffer = nullptr;
+    LPDIRECT3DVERTEXBUFFER9 vertex_buffer = nullptr;
     UINT index = 0;
 
-    v_3ct cv_Vertices[4 * object_list->size()];
+    v_3ct vertices[4 * object_list->size()];
     for (TexturedQuad *obj : *object_list) {
-        cv_Vertices[index * 4] = {0.0f, 0.0f, 0.0f, obj->color(), 0.0f, 1.0f};
-        cv_Vertices[index * 4 + 1] = {0.0f, obj->size().height, 0.0f, obj->color(), 0.0f, 0.0f};
-        cv_Vertices[index * 4 + 2] = {obj->size().width, 0.0f, 0.0f, obj->color(), 1.0f, 1.0f};
-        cv_Vertices[index * 4 + 3] = {obj->size().width, obj->size().height, 0.0f, obj->color(), 1.0f,
-                                      0.0f};
+        vertices[index * 4] = {0.0f, 0.0f, 0.0f, obj->color(), 0.0f, 1.0f};
+        vertices[index * 4 + 1] = {0.0f, obj->size().height, 0.0f, obj->color(), 0.0f, 0.0f};
+        vertices[index * 4 + 2] = {obj->size().width, 0.0f, 0.0f, obj->color(), 1.0f, 1.0f};
+        vertices[index * 4 + 3] = {obj->size().width, obj->size().height, 0.0f, obj->color(), 1.0f,
+                                   0.0f};
         index++;
     }
     if (FAILED(Game::instance()->device_->CreateVertexBuffer(4 * index * sizeof(v_3ct), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY,
-                                                   D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1,
-                                                   D3DPOOL_DEFAULT, &p_dx_VertexBuffer, NULL))) {
+                                                             D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1,
+                                                             D3DPOOL_DEFAULT, &vertex_buffer, NULL))) {
         //TODO: Error handling
     }
 
-    VOID *p_Vertices;
-    if (FAILED(p_dx_VertexBuffer->Lock(0, 4 * index * sizeof(v_3ct), &p_Vertices, D3DLOCK_DISCARD))) {
+    VOID *temp_vertices;
+    if (FAILED(vertex_buffer->Lock(0, 4 * index * sizeof(v_3ct), &temp_vertices, D3DLOCK_DISCARD))) {
         //TODO: Error handling
     } else {
-        memcpy(p_Vertices, cv_Vertices, 4 * index * sizeof(v_3ct));
-        p_dx_VertexBuffer->Unlock();
+        memcpy(temp_vertices, vertices, 4 * index * sizeof(v_3ct));
+        vertex_buffer->Unlock();
     }
-    return p_dx_VertexBuffer;
+    return vertex_buffer;
 }

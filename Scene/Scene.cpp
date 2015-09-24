@@ -8,7 +8,7 @@ Scene::~Scene() {
   while (!layers_.empty()) delete layers_.front(), layers_.pop_front();
 }
 
-void Scene::Update() {
+void Scene::Update(float delta) {
   CheckCollision();
 }
 

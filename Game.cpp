@@ -1,19 +1,12 @@
 #include "./game.h"
 
 Game::Game() {
-  update_chrono_accumulator_ = std::chrono::microseconds(int64_t(0));
-  update_chrono_delta_ = std::chrono::duration<int64_t, std::ratio<1, 120>>(int64_t(1));
-
-  srand(static_cast<unsigned int>(time(NULL)));
-
-  update_tick_ = 0;
-  render_tick_ = 0;
-
   width_ = 1280;
   height_ = 720;
+
+  srand(static_cast<unsigned int>(time(NULL)));
   update_chrono_start_ = std::chrono::high_resolution_clock::now();
   update_time_start_ = std::time(NULL);
-  update_chrono_accumulator_ = std::chrono::microseconds(int64_t(0));
 }
 
 LRESULT CALLBACK WindowsMessageCallback(HWND window_handle, UINT message, WPARAM parameter1, LPARAM parameter2) {
@@ -49,13 +42,13 @@ HWND Game::InitializeWindow(std::string title) {
   window_structure.hCursor = NULL;
   window_structure.hbrBackground = GetSysColorBrush(COLOR_BTNFACE);
   window_structure.lpszMenuName = NULL;
-  window_structure.lpszClassName = "Overlord";
+  window_structure.lpszClassName = "headache";
   window_structure.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 
   RegisterClassEx(&window_structure);
 
   return CreateWindowEx(WS_EX_CONTROLPARENT,
-                        "Overlord",
+                        "headache",
                         title.c_str(),
                         WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE,
                         0,
@@ -124,30 +117,40 @@ void Game::SetDeviceOptions() {
 }
 
 void Game::Loop() {
-  auto current = std::chrono::high_resolution_clock::now();
-  auto frameTime = current - update_chrono_start_;
+  auto new_time = std::chrono::high_resolution_clock::now();
+  auto frame_time = new_time - update_chrono_start_;
+  static auto overflow = update_chrono_accumulator_;
+  static bool overflow_negative = false;
+  update_chrono_start_ = new_time;
+  update_chrono_accumulator_ += std::chrono::duration_cast<std::chrono::microseconds>(frame_time);
+  auto
+      temp_duration = overflow_negative ? update_chrono_accumulator_ - overflow : update_chrono_accumulator_ + overflow;
 
-  update_chrono_accumulator_ += std::chrono::duration_cast<std::chrono::microseconds>(frameTime);
-
-  if (update_chrono_accumulator_ >= update_chrono_delta_) {
-    //    p_input->Update();
+  if (temp_duration >= update_chrono_delta_) {
     audio_manager_->Update();
-  }
-  while (update_chrono_accumulator_ >= update_chrono_delta_) {
-    scene_->Update();
+    scene_->Update(temp_duration / update_chrono_delta_);
     update_tick_++;
-    update_chrono_accumulator_ -= std::chrono::duration_cast<std::chrono::microseconds>(update_chrono_delta_);
+    update_chrono_accumulator_ -= update_chrono_accumulator_;
+    renderer_->DrawScene(scene_);
+    render_tick_++;
+    if (update_chrono_delta_ > temp_duration) {
+      overflow_negative = true;
+      overflow = (update_chrono_delta_ - temp_duration);
+    } else {
+      overflow_negative = false;
+      overflow = (temp_duration - update_chrono_delta_);
+    }
+    while (overflow > update_chrono_delta_) {
+      overflow -= update_chrono_delta_;
+    }
   }
 
-  renderer_->DrawScene(scene_);
-  render_tick_++;
-
-  update_chrono_start_ = current;
+  // counter updates
   std::time_t update_time_current = std::time(NULL);
   if (update_time_current - update_time_start_ >= 1) {
     update_time_start_ = update_time_current;
-    // std::cout << "UPS: " << update_tick_ << "\n";
-    // std::cout << "FPS: " << render_tick_ << "\n";
+    frames_per_second_ = render_tick_;
+    updates_per_second_ = update_tick_;
     update_tick_ = 0;
     render_tick_ = 0;
   }
@@ -159,11 +162,12 @@ void Game::Initialize(std::string title) {
   window_handle_ = InitializeWindow(title);
   std::cout << "success!";
 
-  std::cout << "\nDevice initialization: "; // TODO: Fix weird bug with std::cout repeating this line or use in-engine console.
+  std::cout
+      << "\nDevice initialization: "; // TODO: Fix weird bug with std::cout repeating this line or use in-engine console.
   device_ = InitializeDevice();
-  if (device_ != nullptr){
+  if (device_ != nullptr) {
     std::cout << "success!";
-  }else{
+  } else {
     std::cout << "FAILED!";
   }
 
