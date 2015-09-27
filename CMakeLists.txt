@@ -51,6 +51,8 @@ add_library(headache
         objects/camera.cpp
         objects/camera.h
         objects/interfaces/Collidable.cpp
-        objects/interfaces/Collidable.h)
+        objects/interfaces/Collidable.h
+        objects/common/console.cpp
+        objects/common/console.h)
 
 target_link_libraries(headache d3d9 d3dx9d dinput8 dxguid vorbis ogg vorbisfile)

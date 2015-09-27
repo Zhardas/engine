@@ -99,12 +99,13 @@ void Game::SetDeviceOptions() {
   device_->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
   device_->SetRenderState(D3DRS_ALPHABLENDENABLE, static_cast<DWORD>(true));
 
+  device_->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
   device_->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
   device_->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-  device_->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+
+  device_->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
   device_->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
   device_->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-  device_->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
 
 //  device_->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 //  device_->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);

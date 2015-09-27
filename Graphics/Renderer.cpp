@@ -44,8 +44,8 @@ void Renderer::DrawScene(Scene *scene) {
                     cast_layer->vertex_buffer_ = GenerateStaticVertexBuffer(cast_layer->drawable_list_);
                 }
                 if (cast_layer->vertex_buffer_ != NULL) {
-                    Game::instance()->device_->SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
-                    Game::instance()->device_->SetStreamSource(0, cast_layer->vertex_buffer_, 0, sizeof(v_3t));
+                    Game::instance()->device_->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+                    Game::instance()->device_->SetStreamSource(0, cast_layer->vertex_buffer_, 0, sizeof(v_3ct));
                     for (TexturedQuad *obj : *cast_layer->drawable_list_) {
                         // World transformation
                         D3DXVECTOR2 pivot = {obj->size().width / 2, obj->size().height / 2};
@@ -135,25 +135,25 @@ LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateStaticVertexBuffer(std::list<TexturedQ
     LPDIRECT3DVERTEXBUFFER9 vertex_buffer = nullptr;
     UINT index = 0;
 
-    v_3t vertices[4 * object_list->size()];
+    v_3ct vertices[4 * object_list->size()];
     for (TexturedQuad *obj : *object_list) {
-        vertices[index * 4] = {0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
-        vertices[index * 4 + 1] = {0.0f, obj->size().height, 0.0f, 0.0f, 0.0f};
-        vertices[index * 4 + 2] = {obj->size().width, 0.0f, 0.0f, 1.0f, 1.0f};
-        vertices[index * 4 + 3] = {obj->size().width, obj->size().height, 0.0f, 1.0f, 0.0f};
+        vertices[index * 4] = {0.0f, 0.0f, 0.0f, obj->color(), 0.0f, 1.0f};
+        vertices[index * 4 + 1] = {0.0f, obj->size().height, 0.0f, obj->color(), 0.0f, 0.0f};
+        vertices[index * 4 + 2] = {obj->size().width, 0.0f, 0.0f, obj->color(), 1.0f, 1.0f};
+        vertices[index * 4 + 3] = {obj->size().width, obj->size().height, 0.0f, obj->color(), 1.0f, 0.0f};
         index++;
     }
-    if (FAILED(Game::instance()->device_->CreateVertexBuffer(4 * index * sizeof(v_3t), D3DUSAGE_WRITEONLY,
-                                                             D3DFVF_XYZ | D3DFVF_TEX1,
+    if (FAILED(Game::instance()->device_->CreateVertexBuffer(4 * index * sizeof(v_3ct), D3DUSAGE_WRITEONLY,
+                                                             D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1,
                                                              D3DPOOL_DEFAULT, &vertex_buffer, NULL))) {
         //TODO: Error handling
     }
 
     VOID *temp_vertices;
-    if (FAILED(vertex_buffer->Lock(0, 4 * index * sizeof(v_3t), &temp_vertices, 0))) {
+    if (FAILED(vertex_buffer->Lock(0, 4 * index * sizeof(v_3ct), &temp_vertices, 0))) {
         //TODO: Error handling
     } else {
-        memcpy(temp_vertices, vertices, 4 * index * sizeof(v_3t));
+        memcpy(temp_vertices, vertices, 4 * index * sizeof(v_3ct));
         vertex_buffer->Unlock();
     }
     return vertex_buffer;
