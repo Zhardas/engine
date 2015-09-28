@@ -1,3 +1,4 @@
+#include <objects/text.h>
 #include "renderer.h"
 
 Renderer::Renderer() {
@@ -33,95 +34,56 @@ void Renderer::DrawScene(Scene *scene) {
 
   for (Layer *layer : *scene->GetLayers()) {
     UINT index = 0;
-    switch (layer->GetType()) {
+
+    // Generate Vertex Buffer
+    switch (layer->type()) {
       case Layer::STATIC: {
-        DrawableLayer *cast_layer = static_cast<DrawableLayer *>(layer);
-        if (cast_layer->reload) {
-          cast_layer->reload = false;
-          if (cast_layer->vertex_buffer_ != NULL) {
-            cast_layer->vertex_buffer_->Release();
+        if (layer->reload) {
+          layer->reload = false;
+          if (layer->vertex_buffer_ != NULL) {
+            layer->vertex_buffer_->Release();
           }
-          cast_layer->vertex_buffer_ = GenerateStaticVertexBuffer(cast_layer->drawable_list_);
+          layer->vertex_buffer_ = GenerateStaticVertexBuffer(layer->drawable_list_);
         }
-        if (cast_layer->vertex_buffer_ != NULL) {
-          Game::instance()->device_->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
-          Game::instance()->device_->SetStreamSource(0, cast_layer->vertex_buffer_, 0, sizeof(v_3ct));
-          for (TexturedQuad *obj : cast_layer->drawable_list_) {
-            // World transformation
-            D3DXVECTOR2 pivot = {obj->size().width / 2, obj->size().height / 2};
-            D3DXVECTOR2 scaling = {obj->scale().width, obj->scale().height};
-            D3DXVECTOR2 moving = {obj->position().x - Game::instance()->width() / 2,
-                                  obj->position().y - Game::instance()->height() / 2};
-            D3DXMATRIX matFinal;
-            D3DXMatrixTransformation2D(&matFinal, &pivot, 1.0f, &scaling, &pivot, obj->rotation(),
-                                       &moving);
-
-            device->SetTransform(D3DTS_WORLD, &matFinal);
-
-            // Draw
-            Draw(obj, index);
-            index++;
-
-            // Reset world transformation
-            D3DXMatrixIdentity(&matFinal);
-            device->SetTransform(D3DTS_WORLD, &matFinal);
-          }
-        }
-      }
         break;
+      }
       case Layer::DYNAMIC: {
-        DrawableLayer *cast_layer = static_cast<DrawableLayer *>(layer);
-        cast_layer->vertex_buffer_ = GenerateDynamicVertexBuffer(cast_layer->drawable_list_);
-        if (cast_layer->vertex_buffer_ != NULL) {
-          Game::instance()->device_->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
-          Game::instance()->device_->SetStreamSource(0, cast_layer->vertex_buffer_, 0, sizeof(v_3ct));
-          index = 0;
-          for (TexturedQuad *obj : cast_layer->drawable_list_) {
-            // World transformation
-            D3DXVECTOR2 pivot = {obj->size().width / 2, obj->size().height / 2};
-            D3DXVECTOR2 scaling = {obj->scale().width, obj->scale().height};
-            D3DXVECTOR2 moving = {obj->position().x - Game::instance()->width() / 2,
-                                  obj->position().y - Game::instance()->height() / 2};
-
-            D3DXMATRIX matFinal;
-            D3DXMatrixTransformation2D(&matFinal, &pivot, 1.0f, &scaling, &pivot, obj->rotation(),
-                                       &moving);
-
-            device->SetTransform(D3DTS_WORLD, &matFinal);
-
-            // Draw
-            Draw(obj, index);
-            index++;
-
-            // Reset world transformation
-            D3DXMatrixIdentity(&matFinal);
-            device->SetTransform(D3DTS_WORLD, &matFinal);
-          }
-          cast_layer->vertex_buffer_->Release();
-          delete cast_layer->vertex_buffer_;
-          cast_layer->vertex_buffer_ = NULL;
-        }
-      }
+        layer->vertex_buffer_ = GenerateDynamicVertexBuffer(layer->drawable_list_);
         break;
-      case Layer::TEXT: {
-        TextLayer *cast_layer = static_cast<TextLayer *>(layer);
-        for (Text *text_item : *cast_layer->text_list_) {
-          if(!text_item->visible_)continue;
-          Position pos = text_item->position();
-          Size size = text_item->size();
-          RECT r = {(LONG) pos.x, (LONG) pos.y,
-                    (LONG) (pos.x + size.width),
-                    (LONG) (pos.y + size.height)};
-          text_item->font_->font()->DrawText(NULL,
-                                             text_item->text().c_str(), -1,
-                                             &r,
-                                             DT_CENTER,
-                                             D3DCOLOR_ARGB(text_item->color_alpha_, text_item->color_red_,
-                                                           text_item->color_green_,
-                                                           text_item->color_blue_));
-        }
       }
-        break;
+    }
+
+    // Setup and draw
+    if (layer->vertex_buffer_ != NULL) {
+      Game::instance()->device_->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+      Game::instance()->device_->SetStreamSource(0, layer->vertex_buffer_, 0, sizeof(v_3ct));
+
+      for (auto *obj : layer->drawable_list_) {
+        // World transformation
+        D3DXVECTOR2 pivot = {obj->size().width / 2, obj->size().height / 2};
+        D3DXVECTOR2 scaling = {obj->scale().width, obj->scale().height};
+        D3DXVECTOR2 moving = {obj->position().x - Game::instance()->width() / 2,
+                              obj->position().y - Game::instance()->height() / 2};
+        D3DXMATRIX matFinal;
+        D3DXMatrixTransformation2D(&matFinal, &pivot, 1.0f, &scaling, &pivot, obj->rotation(),
+                                   &moving);
+
+        device->SetTransform(D3DTS_WORLD, &matFinal);
+
+        // Draw
+        Draw(obj, index);
+
+        // Reset world transformation
+        D3DXMatrixIdentity(&matFinal);
+        device->SetTransform(D3DTS_WORLD, &matFinal);
+      }
+    }
+
+    // Release dynamic buffers
+    if (layer->type() == Layer::DYNAMIC) {
+      layer->vertex_buffer_->Release();
+      delete layer->vertex_buffer_;
+      layer->vertex_buffer_ = NULL;
     }
   }
 
@@ -129,20 +91,22 @@ void Renderer::DrawScene(Scene *scene) {
   device->Present(NULL, NULL, NULL, NULL);
 }
 
-LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateStaticVertexBuffer(std::list<TexturedQuad *> &object_list) {
-  if (object_list.size() <= 0) {
+LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateStaticVertexBuffer(std::list<Drawable *> &list) {
+  if (list.size() <= 0) {
     return NULL;
   }
   LPDIRECT3DVERTEXBUFFER9 vertex_buffer = nullptr;
   UINT index = 0;
 
-  v_3ct vertices[4 * object_list.size()];
-  for (TexturedQuad *obj : object_list) {
-    vertices[index * 4] = {0.0f, 0.0f, 0.0f, obj->color(), 0.0f, 1.0f};
-    vertices[index * 4 + 1] = {0.0f, obj->size().height, 0.0f, obj->color(), 0.0f, 0.0f};
-    vertices[index * 4 + 2] = {obj->size().width, 0.0f, 0.0f, obj->color(), 1.0f, 1.0f};
-    vertices[index * 4 + 3] = {obj->size().width, obj->size().height, 0.0f, obj->color(), 1.0f, 0.0f};
-    index++;
+  v_3ct vertices[4 * list.size()];  // TODO: Allocates too much memory if list contains Text objects.
+  for (Drawable *obj : list) {
+    if(auto textured_quad = dynamic_cast<TexturedQuad*>(obj)){
+      vertices[index * 4] = {0.0f, 0.0f, 0.0f, textured_quad->color(), 0.0f, 1.0f};
+      vertices[index * 4 + 1] = {0.0f, textured_quad->size().height, 0.0f, textured_quad->color(), 0.0f, 0.0f};
+      vertices[index * 4 + 2] = {textured_quad->size().width, 0.0f, 0.0f, textured_quad->color(), 1.0f, 1.0f};
+      vertices[index * 4 + 3] = {textured_quad->size().width, textured_quad->size().height, 0.0f, textured_quad->color(), 1.0f, 0.0f};
+      index++;
+    }
   }
   if (FAILED(Game::instance()->device_->CreateVertexBuffer(4 * index * sizeof(v_3ct), D3DUSAGE_WRITEONLY,
                                                            D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1,
@@ -160,27 +124,44 @@ LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateStaticVertexBuffer(std::list<TexturedQ
   return vertex_buffer;
 }
 
-void Renderer::Draw(TexturedQuad *quad, UINT index) {
-  if (!quad->visible_)return;
-  Game::instance()->device_->SetTexture(0, Game::instance()->texture_manager_->LoadTexture(quad->texture().c_str()));
-  Game::instance()->device_->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4 * index, 2);
+void Renderer::Draw(Drawable *drawable, UINT &index) {
+  if (auto obj = dynamic_cast<TexturedQuad *>(drawable)) {
+    if (!drawable->visible_)return;
+    Game::instance()->device_->SetTexture(0, Game::instance()->texture_manager_->LoadTexture(obj->texture().c_str()));
+    Game::instance()->device_->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4 * index, 2);
+    index++;
+  } else if (auto text = dynamic_cast<Text *>(drawable)) {
+    if (!drawable->visible_)return;
+    RECT rect = {(LONG) text->position().x, (LONG) text->position().y,
+                 (LONG) (text->position().x + text->size().width),
+                 (LONG) (text->position().y + text->size().height)};
+    text->font_->font()->DrawText(NULL,
+                                  text->text().c_str(), -1,
+                                  &rect,
+                                  DT_CENTER,
+                                  D3DCOLOR_ARGB(text->color_alpha_, text->color_red_,
+                                                text->color_green_,
+                                                text->color_blue_));
+  }
 }
 
-LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateDynamicVertexBuffer(std::list<TexturedQuad *> &object_list) {
-  if (object_list.size() <= 0) {
+LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateDynamicVertexBuffer(std::list<Drawable *> &list) {
+  if (list.size() <= 0) {
     return NULL;
   }
   LPDIRECT3DVERTEXBUFFER9 vertex_buffer = nullptr;
   UINT index = 0;
 
-  v_3ct vertices[4 * object_list.size()];
-  for (TexturedQuad *obj : object_list) {
-    vertices[index * 4] = {0.0f, 0.0f, 0.0f, obj->color(), 0.0f, 1.0f};
-    vertices[index * 4 + 1] = {0.0f, obj->size().height, 0.0f, obj->color(), 0.0f, 0.0f};
-    vertices[index * 4 + 2] = {obj->size().width, 0.0f, 0.0f, obj->color(), 1.0f, 1.0f};
-    vertices[index * 4 + 3] = {obj->size().width, obj->size().height, 0.0f, obj->color(), 1.0f,
-                               0.0f};
-    index++;
+  v_3ct vertices[4 * list.size()];  // TODO: Allocates too much memory if list contains Text objects.
+  for (Drawable *obj : list) {
+    if(auto textured_quad = dynamic_cast<TexturedQuad*>(obj)) {
+      vertices[index * 4] = {0.0f, 0.0f, 0.0f, textured_quad->color(), 0.0f, 1.0f};
+      vertices[index * 4 + 1] = {0.0f, textured_quad->size().height, 0.0f, textured_quad->color(), 0.0f, 0.0f};
+      vertices[index * 4 + 2] = {textured_quad->size().width, 0.0f, 0.0f, textured_quad->color(), 1.0f, 1.0f};
+      vertices[index * 4 + 3] = {textured_quad->size().width, textured_quad->size().height, 0.0f, textured_quad->color(), 1.0f,
+                                 0.0f};
+      index++;
+    }
   }
   if (FAILED(Game::instance()->device_->CreateVertexBuffer(4 * index * sizeof(v_3ct),
                                                            D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY,

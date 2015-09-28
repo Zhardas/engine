@@ -11,23 +11,19 @@ Scene::~Scene() {
 
 void Scene::Update() {
   for (auto layer : layers_) {
-    if (auto drawable_layer = dynamic_cast<DrawableLayer *>(layer)) {
-      for (auto obj : drawable_layer->drawable_list_) {
-        // Collision
-        CheckCollision(obj);
-      }
+    for (auto obj : layer->drawable_list_) {
+      // Collision
+      CheckCollision(obj);
     }
   }
 }
 
-void Scene::CheckCollision(Drawable* drawable) {
+void Scene::CheckCollision(Drawable *drawable) {
   if (auto collider = dynamic_cast<Collider *>(drawable)) {
     for (auto collide_layer : layers_) {
-      if (auto collide_drawable_layer = dynamic_cast<DrawableLayer *>(collide_layer)) {
-        for (TexturedQuad * collide_obj : collide_drawable_layer->drawable_list_) {
-          if (Collidable * collidable = (Collidable*)(collide_obj)) {
-            collider->Collide(collidable);
-          }
+      for (Drawable *collide_obj : collide_layer->drawable_list_) {
+        if (Collidable *collidable = dynamic_cast<Collidable *>(collide_obj)) {
+          collider->Collide(collidable);
         }
       }
     }

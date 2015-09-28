@@ -9,88 +9,83 @@ class TexturedQuad;
 #include <functional>
 
 class TexturedQuad: public Drawable {
-private:
-    void CalcScaling() {
-        size_scaled = SizeF(size_.width * scale_.width, size_.height * scale_.height);
-    }
+ private:
+  void CalcScaling() {
+    size_scaled = Size(size_.width * scale_.width, size_.height * scale_.height);
+  }
 
-protected:
-    std::string texture_;
-    DWORD color_;
-public:
-    TexturedQuad();
+ protected:
+  std::string texture_;
+  DWORD color_;
+ public:
+  TexturedQuad();
 
-    void set_texture(std::string texture) {
-        texture_ = texture;
-    }
+  void set_texture(std::string texture) {
+    texture_ = texture;
+  }
 
-    std::string texture() {
-        return texture_;
-    }
+  std::string texture() {
+    return texture_;
+  }
 
-    SizeF size() {
-        return size_;
-    }
+  Size size() {
+    return size_;
+  }
 
-    void set_size(SizeF size) {
-        size_.width = size.width;
-        size_.height = size.height;
-        CalcScaling();
-    }
+  void set_size(Size size) {
+    Drawable::set_size(size);
+  }
 
-    void set_size(float width, float height) {
-        size_.width = width;
-        size_.height = height;
-        CalcScaling();
-    }
+  Position position() {
+    return position_;
+  }
 
-    Position position() {
-        return position_;
-    }
+  void set_position(Position position) {
+    Drawable::set_position(position);
+  }
 
-    void set_position(Position position) {
-        position_.x = position.x;
-        position_.y = position.y;
-    }
+  Size scale() {
+    return scale_;
+  }
 
-    void set_position(float x, float y) {
-        position_.x = x;
-        position_.y = y;
-    }
+  void set_scaled_size(Size scale) {
+    scale_.width = scale.width;
+    scale_.height = scale.height;
+    CalcScaling();
+  }
 
-    SizeF scale() {
-        return scale_;
-    }
+  Size scaled_size() {
+    return size_scaled;
+  }
 
-    void set_scaled_size(SizeF scale) {
-        scale_.width = scale.width;
-        scale_.height = scale.height;
-        CalcScaling();
-    }
+  void set_rotation(float rot) {
+    Drawable::set_rotation(rot);
+  }
 
-    SizeF scaled_size() {
-        return size_scaled;
-    }
+  float rotation() {
+    return Drawable::rotation();
+  }
 
-    void set_rotation(float rot) {
-        Drawable::set_rotation(rot);
-    }
+  bool Contains(Position &pos) {
+    return Drawable::Contains(pos);
+  }
 
-    float rotation() {
-        return Drawable::rotation();
-    }
+  DWORD color() {
+    return color_;
+  }
 
-    bool Contains(Position pos) {
-        return Drawable::Contains(pos);
-    }
-
-    DWORD color() {
-        return color_;
-    }
-
-    void set_color(DWORD color) {
-        color_ = color;
-    }
+  void set_color(DWORD color) {
+    color_ = color;
+  }
+  virtual void set_size(float width, float height) {
+    size_.width = width;
+    size_.height = height;
+    CalcScaling();
+  }
+  virtual void set_position(float x, float y){
+    position_.x = x;
+    position_.y = y;
+  }
 };
 
 

@@ -27,8 +27,3 @@ Console::~Console() {
   delete textbox_;
   delete text_;
 }
-void Console::Add(DrawableLayer *drawable_layer, TextLayer *text_layer) {
-  drawable_layer->Add(background_);
-  drawable_layer->Add(textbox_);
-  text_layer->Add(text_);
-}

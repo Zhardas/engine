@@ -66,32 +66,21 @@ struct Position3 {
 };
 
 struct Size {
-  int width;
-  int height;
-
-  Size() {
-    this->width = 100;
-    this->height = 100;
-  }
-
-  Size(int width, int height) {
-    this->width = width;
-    this->height = height;
-  }
-};
-
-struct SizeF {
   float width;
   float height;
 
-  SizeF() {
+  Size() {
     this->width = 100.0f;
     this->height = 100.0f;
   }
 
-  SizeF(float width, float height) {
+  Size(float width, float height) {
     this->width = width;
     this->height = height;
+  }
+
+  Size operator*(const Size &multiplier) {
+    return Size(width * multiplier.width, height * multiplier.height);
   }
 };
 

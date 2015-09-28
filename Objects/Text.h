@@ -6,42 +6,48 @@ class Text;
 #include "graphics/font.h"
 #include "game.h"
 
-class Text {
+class Text: public Drawable {
  private:
   std::string text_;
-  Position position_;
-  Size size_;
  public:
-  bool visible_ = true;
   byte color_alpha_ = 255;
   byte color_red_ = 255;
   byte color_green_ = 255;
   byte color_blue_ = 255;
   Font *font_;
+  bool reset_size_ = true;
 
   Text(std::string font, int size, bool bold, bool italic);
 
-
-  void set_text(std::string text) { this->text_ = text; };
+  void set_text(std::string text) {
+    this->text_ = text;
+    if (reset_size_)reset_size();
+  };
 
   std::string text() { return text_; }
 
   Position position() { return position_; }
 
-  void set_position(int x, int y) {
-    position_.x = x;
-    position_.y = y;
-  }
-  Size size() const {
+  Size size() {
     return size_;
   }
 
-  void set_size(int height, int width) {
-    size_.height = height;
-    size_.width = width;
-  }
-
   void reset_size();
+
+  virtual void set_size(float width, float height) {
+    size_.width = width;
+    size_.height = height;
+  }
+  void set_position(Position position) {
+    Drawable::set_position(position);
+  }
+  void set_size(Size size) {
+    Drawable::set_size(size);
+  }
+  virtual void set_position(float x, float y) {
+    position_.x = x;
+    position_.y = y;
+  }
 };
 
 

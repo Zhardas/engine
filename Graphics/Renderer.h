@@ -12,8 +12,6 @@ class Renderer;
 #include "game.h"
 #include "objects/textured_quad.h"
 #include "graphics/Layers/layer.h"
-#include "graphics/Layers/layer_drawable.h"
-#include "graphics/Layers/layer_text.h"
 #include "scene/scene.h"
 
 class Renderer {
@@ -52,11 +50,11 @@ class Renderer {
 
     void SetUpCamera(LPDIRECT3DDEVICE9 p_dx_Device);
 
-    LPDIRECT3DVERTEXBUFFER9 GenerateStaticVertexBuffer(std::list<TexturedQuad *> &pList);
+    LPDIRECT3DVERTEXBUFFER9 GenerateStaticVertexBuffer(std::list<Drawable *> &list);
 
-    LPDIRECT3DVERTEXBUFFER9 GenerateDynamicVertexBuffer(std::list<TexturedQuad *> &pList);
+    LPDIRECT3DVERTEXBUFFER9 GenerateDynamicVertexBuffer(std::list<Drawable *> &list);
 
-    void Draw(TexturedQuad *quad, UINT index);
+    void Draw(Drawable *drawable, UINT &index);
 
 public:
     color color_ = {72, 31, 39};
