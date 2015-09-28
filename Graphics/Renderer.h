@@ -52,9 +52,9 @@ class Renderer {
 
     void SetUpCamera(LPDIRECT3DDEVICE9 p_dx_Device);
 
-    LPDIRECT3DVERTEXBUFFER9 GenerateStaticVertexBuffer(std::list<TexturedQuad *> *pList);
+    LPDIRECT3DVERTEXBUFFER9 GenerateStaticVertexBuffer(std::list<TexturedQuad *> &pList);
 
-    LPDIRECT3DVERTEXBUFFER9 GenerateDynamicVertexBuffer(std::list<TexturedQuad *> *pList);
+    LPDIRECT3DVERTEXBUFFER9 GenerateDynamicVertexBuffer(std::list<TexturedQuad *> &pList);
 
     void Draw(TexturedQuad *quad, UINT index);
 

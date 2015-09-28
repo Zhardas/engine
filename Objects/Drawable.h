@@ -17,6 +17,8 @@ class Drawable {
   SizeF scale_ = SizeF(1.0f, 1.0f);
   float rotation_ = 0.0f;
  public:
+  bool visible_ = true;
+  
   Drawable();
 
   virtual SizeF size() = 0;

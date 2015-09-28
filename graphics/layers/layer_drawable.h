@@ -15,7 +15,7 @@ public:
     DrawableLayer(Type type);
 
     bool reload = true;
-    std::list<TexturedQuad *> *drawable_list_;
+    std::list<TexturedQuad *> drawable_list_;
     LPDIRECT3DVERTEXBUFFER9 vertex_buffer_;
 
     Type GetType() {
@@ -23,12 +23,12 @@ public:
     }
 
     void Add(TexturedQuad *obj) {
-        drawable_list_->push_back(obj);
+        drawable_list_.push_back(obj);
         reload = true;
     }
 
     void Remove(TexturedQuad *obj) {
-        drawable_list_->remove(obj);
+        drawable_list_.remove(obj);
     }
 
     bool EventCall(Event event, unsigned char key, Position *parameter);

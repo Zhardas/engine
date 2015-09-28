@@ -6,6 +6,7 @@
 
 class Console {
  private:
+  bool visible_;
   TexturedQuad* background_;
   TexturedQuad* textbox_;
   std::list<Text*> text_list_;
@@ -15,6 +16,14 @@ class Console {
   ~Console();
 
   void Add(DrawableLayer *drawable_layer, TextLayer *text_layer);
+  void set_visible(bool visible) {
+    visible_ = visible;
+    background_->visible_ = false;
+    textbox_->visible_ = false;
+    text_->visible_ = false;
+
+  }
+  bool visible(){return visible_; }
 };
 
 

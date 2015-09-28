@@ -84,12 +84,6 @@ public:
         return Drawable::Contains(pos);
     }
 
-    std::function<bool(const uint8_t &, Position *)> OnMouseUp;
-    std::function<bool(const uint8_t &, Position *)> OnMouseDown;
-    std::function<bool(Position *)> OnMouseMove;
-    std::function<bool(const uint8_t &)> OnKeyUp;
-    std::function<bool(const uint8_t &)> OnKeyDown;
-
     DWORD color() {
         return color_;
     }

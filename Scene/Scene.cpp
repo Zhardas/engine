@@ -1,3 +1,4 @@
+#include <objects/interfaces/collider.h>
 #include "scene.h"
 
 Scene::Scene() {
@@ -9,14 +10,25 @@ Scene::~Scene() {
 }
 
 void Scene::Update() {
-  CheckCollision();
+  for (auto layer : layers_) {
+    if (auto drawable_layer = dynamic_cast<DrawableLayer *>(layer)) {
+      for (auto obj : drawable_layer->drawable_list_) {
+        // Collision
+        CheckCollision(obj);
+      }
+    }
+  }
 }
 
-void Scene::CheckCollision() {
-  for(Collidable* collider : collidables_){
-    for(Collidable* collidable : collidables_){
-      if (collider != collidable) {
-        collider->Collide(*collidable);
+void Scene::CheckCollision(Drawable* drawable) {
+  if (auto collider = dynamic_cast<Collider *>(drawable)) {
+    for (auto collide_layer : layers_) {
+      if (auto collide_drawable_layer = dynamic_cast<DrawableLayer *>(collide_layer)) {
+        for (TexturedQuad * collide_obj : collide_drawable_layer->drawable_list_) {
+          if (Collidable * collidable = (Collidable*)(collide_obj)) {
+            collider->Collide(collidable);
+          }
+        }
       }
     }
   }

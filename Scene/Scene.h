@@ -10,6 +10,7 @@ class Scene;
 #include "graphics/layers/layer.h"
 #include "objects/camera.h"
 #include "objects/interfaces/collidable.h"
+#include "objects/drawable.h"
 #include "Helper/input.h"
 #include "Helper/input.h"
 
@@ -25,7 +26,7 @@ class Scene {
 
   virtual void Update();
 
-  void CheckCollision();
+  void CheckCollision(Drawable* drawable);
 
   void EventCall(Event event, uint8_t key, Position *parameter);
 
@@ -38,7 +39,7 @@ class Scene {
   void RemoveLayer(Layer *layer) {
     layers_.remove(layer);
   }
-  std::list<Collidable *> collidables_ = {};
+  //std::list<Collidable *> collidables_ = {};
 };
 
 

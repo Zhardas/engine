@@ -50,8 +50,9 @@ add_library(headache
         graphics/layers/layer_text.h
         objects/camera.cpp
         objects/camera.h
-        objects/interfaces/Collidable.cpp
-        objects/interfaces/Collidable.h
+        objects/interfaces/collidable.h
+        objects/interfaces/collider.h
+        objects/interfaces/interactive.h
         objects/common/console.cpp
         objects/common/console.h)
 
