@@ -49,12 +49,12 @@ class Game {
  public:
   int64_t updates_per_second_ = 0;
   int64_t frames_per_second_ = 0;
-  LPDIRECT3DDEVICE9 device_;
-  Scene *scene_;
-  Renderer *renderer_;
-  TextureManager *texture_manager_;
-  AudioManager *audio_manager_;
-  InputManager *input_manager_;
+  LPDIRECT3DDEVICE9 device_ = nullptr;
+  Scene *scene_ = nullptr;
+  Renderer *renderer_ = nullptr;
+  TextureManager *texture_manager_ = nullptr;
+  AudioManager *audio_manager_ = nullptr;
+  InputManager *input_manager_ = nullptr;
 
   Game();
   ~Game();
