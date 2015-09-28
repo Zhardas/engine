@@ -1,13 +1,13 @@
 class Collidable;
 #ifndef OVERLORD_COLLIDABLE_H
 #define OVERLORD_COLLIDABLE_H
-
-#include <string>
+#include <stdint.h>
 
 class Collidable {
- private:
+ protected:
+  uint8_t type_ = 0;
  public:
-  std::string type_ = "drawable";
+  uint8_t type() { return type_; }
 };
 
 

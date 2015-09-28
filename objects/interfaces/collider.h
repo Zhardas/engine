@@ -10,7 +10,7 @@ class Collider;
 class Collider {
  private:
  public:
-  std::list<std::function<void(const Collidable &)>> events_collision_ = {};
+  std::list<std::function<void(Collidable &)>> events_collision_ = {};
 
   void Collide(Collidable* collidable){
     for (auto collision : events_collision_) {
