@@ -86,6 +86,9 @@ class TexturedQuad: public Drawable {
     position_.x = x;
     position_.y = y;
   }
+  virtual void set_visible(bool visible){
+    visible_ = visible;
+  }
 };
 
 

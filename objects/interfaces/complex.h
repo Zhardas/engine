@@ -3,10 +3,17 @@ class Complex;
 #define OVERLORD_COMPLEX_H
 #include <objects/drawable.h>
 
-class Complex{
+class Complex {
  public:
-  virtual void Add(std::list<Drawable*> &list) = 0;
-  virtual void Remove(std::list<Drawable *> &list) = 0;
+  std::list<Drawable *> complex_list_;
+
+  void Add(Drawable *drawable) {
+    complex_list_.push_back(drawable);
+  }
+
+  void Remove(Drawable *drawable) {
+    complex_list_.push_back(drawable);
+  }
 };
 
 #endif //OVERLORD_COMPLEX_H

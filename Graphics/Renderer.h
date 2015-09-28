@@ -6,10 +6,10 @@ class Renderer;
 #include <windows.h>
 #include <d3dx9.h>
 #include <d3d9.h>
-#define D3D_DEBUG_INFO
 #include <list>
 #include <algorithm>
 #include "game.h"
+#include "objects/text.h"
 #include "objects/textured_quad.h"
 #include "graphics/Layers/layer.h"
 #include "scene/scene.h"
@@ -48,7 +48,7 @@ class Renderer {
         byte r, g, b;
     };
 
-    void SetUpCamera(LPDIRECT3DDEVICE9 p_dx_Device);
+    void SetUpCamera();
 
     LPDIRECT3DVERTEXBUFFER9 GenerateStaticVertexBuffer(std::list<Drawable *> &list);
 

@@ -53,4 +53,4 @@ add_library(headache
         objects/common/console.h
         objects/interfaces/complex.h)
 
-target_link_libraries(headache d3d9 d3dx9d dinput8 dxguid vorbis ogg vorbisfile)
+target_link_libraries(headache d3d9 d3dx9 dinput8 dxguid vorbis ogg vorbisfile)

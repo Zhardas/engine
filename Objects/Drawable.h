@@ -16,14 +16,14 @@ class Drawable {
   Position position_ = Position(0, 0);
   Size scale_ = Size(1.0f, 1.0f);
   float rotation_ = 0.0f;
- public:
   bool visible_ = true;
+ public:
 
   Drawable();
 
   virtual Size size() = 0;
 
-  virtual void set_size(Size size){
+  virtual void set_size(Size size) {
     set_size(size.width, size.height);
   }
 
@@ -54,6 +54,9 @@ class Drawable {
   virtual float rotation() {
     return rotation_;
   }
+
+  virtual bool visible() { return visible_; }
+  virtual void set_visible(bool visible) = 0;
 
   virtual bool Contains(Position &pos) {
     return pos.x >= position().x - (size_scaled.width - size_.width) / 2 &&

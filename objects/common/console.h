@@ -7,35 +7,39 @@
 #include <objects/interfaces/complex.h>
 #define TEXTBOX_HEIGHT 25.0f
 
-class Console: public Complex, public Interactive {
+class Console: public Drawable, public Complex, public Interactive {
  private:
-  bool visible_;
-  TexturedQuad *background_;
-  TexturedQuad *textbox_;
+  TexturedQuad *background_ = nullptr;
+  TexturedQuad *textbox_ = nullptr;
 //  std::list<Text*> text_list_;
-  Text *text_;
+  Text *text_ = nullptr;
  public:
   Console();
   ~Console();
 
+  static Console* instance(){
+    static Console* instance = nullptr;
+    if(instance == nullptr){
+      instance = new Console();
+    }
+    return instance;
+  }
+
   void set_visible(bool visible) {
     visible_ = visible;
-    background_->visible_ = false;
-    textbox_->visible_ = false;
-    text_->visible_ = false;
-
+    background_->set_visible(visible);
+    textbox_->set_visible(visible);
+    text_->set_visible(visible);
   }
   bool visible() { return visible_; }
-  void Add(std::list<Drawable *> &list) {
-    list.push_back(background_);
-    list.push_back(textbox_);
-    list.push_back(text_);
+  Size size() {
+    return background_->size();
   }
-  virtual void Remove(std::list<Drawable *> &list) {
-    list.remove(background_);
-    list.remove(textbox_);
-    list.remove(text_);
+  virtual void set_size(float width, float height) { }
+  Position position() {
+    return background_->position();
   }
+  virtual void set_position(float x, float y) { }
 };
 
 

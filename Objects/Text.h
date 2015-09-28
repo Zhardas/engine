@@ -3,8 +3,9 @@ class Text;
 #ifndef PLAYGROUND_TEXT_H
 #define PLAYGROUND_TEXT_H
 
-#include "graphics/font.h"
 #include "game.h"
+#include "graphics/font.h"
+#include "objects/drawable.h"
 
 class Text: public Drawable {
  private:
@@ -19,6 +20,9 @@ class Text: public Drawable {
 
   Text(std::string font, int size, bool bold, bool italic);
 
+  virtual void set_visible(bool visible){
+    visible_ = visible;
+  }
   void set_text(std::string text) {
     this->text_ = text;
     if (reset_size_)reset_size();

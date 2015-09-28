@@ -2,6 +2,7 @@ class Font;
 #ifndef PLAYGROUND_FONT_H
 #define PLAYGROUND_FONT_H
 #include "game.h"
+#include "helper/types.h"
 
 class Font {
 private:
