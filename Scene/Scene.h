@@ -10,6 +10,8 @@ class Scene;
 #include "graphics/layers/layer.h"
 #include "objects/camera.h"
 #include "objects/interfaces/collidable.h"
+#include <objects/interfaces/collider.h>
+#include <objects/interfaces/updatable.h>
 #include "objects/drawable.h"
 #include "Helper/input.h"
 #include "Helper/input.h"

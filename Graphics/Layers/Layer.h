@@ -34,11 +34,7 @@ class Layer {
   bool EventCall(Event event, unsigned char key, Position *parameter);
 
   void Add(Drawable *obj) {
-//    if(auto complex = dynamic_cast<Complex*>(obj)){
-//      complex->Add(drawable_list_);
-//    }else{
       drawable_list_.push_back(obj);
-//    }
     reload = true;
   }
 

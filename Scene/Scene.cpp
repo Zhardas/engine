@@ -1,4 +1,3 @@
-#include <objects/interfaces/collider.h>
 #include "scene.h"
 
 Scene::Scene() {
@@ -14,6 +13,11 @@ void Scene::Update() {
     for (auto obj : layer->drawable_list_) {
       // Collision
       CheckCollision(obj);
+
+      // Update
+      if(auto updatable = dynamic_cast<Updatable*>(obj)){
+        updatable->Update();
+      }
     }
   }
 }

@@ -24,26 +24,26 @@ add_library(headache
         graphics/renderer.h
         graphics/texture_manager.cpp
         graphics/texture_manager.h
-        objects/drawable.cpp
-        objects/drawable.h
-        objects/textured_quad.cpp
-        objects/textured_quad.h
         scene/scene.cpp
         scene/scene.h
-        helper/input.h
         audio/audio_manager.h
         audio/audio_manager.cpp
-        helper/types.h
         audio/audio.cpp
         audio/audio.h
+        helper/input.h
+        helper/types.h
         input/input_manager.cpp
         input/input_manager.h
         graphics/font.cpp
         graphics/font.h
-        objects/text.cpp
-        objects/text.h
         graphics/layers/layer.cpp
         graphics/layers/layer.h
+        objects/drawable.cpp
+        objects/drawable.h
+        objects/textured_quad.cpp
+        objects/textured_quad.h
+        objects/text.cpp
+        objects/text.h
         objects/camera.cpp
         objects/camera.h
         objects/interfaces/collidable.h
@@ -51,6 +51,8 @@ add_library(headache
         objects/interfaces/interactive.h
         objects/common/console.cpp
         objects/common/console.h
-        objects/interfaces/complex.h)
+        objects/interfaces/complex.h
+        objects/interfaces/animation.h
+        objects/interfaces/updatable.h)
 
 target_link_libraries(headache d3d9 d3dx9 dinput8 dxguid vorbis ogg vorbisfile)
