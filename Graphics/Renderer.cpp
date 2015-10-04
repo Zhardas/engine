@@ -61,12 +61,12 @@ void Renderer::DrawScene(Scene *scene) {
         if (auto complex_obj = dynamic_cast<Complex *>(obj)) {
           for (auto drawable_obj : complex_obj->complex_list_) {
             // World transformation
-            D3DXVECTOR2 pivot = {obj->size().width / 2, obj->size().height / 2};
-            D3DXVECTOR2 scaling = {obj->scale().width, obj->scale().height};
-            D3DXVECTOR2 moving = {obj->position().x - Game::instance()->width() / 2,
-                                  obj->position().y - Game::instance()->height() / 2};
+            D3DXVECTOR2 pivot = {drawable_obj->size().width / 2, drawable_obj->size().height / 2};
+            D3DXVECTOR2 scaling = {drawable_obj->scale().width, drawable_obj->scale().height};
+            D3DXVECTOR2 moving = {drawable_obj->position().x - Game::instance()->width() / 2,
+                                  drawable_obj->position().y - Game::instance()->height() / 2};
             D3DXMATRIX matFinal;
-            D3DXMatrixTransformation2D(&matFinal, &pivot, 1.0f, &scaling, &pivot, obj->rotation(),
+            D3DXMatrixTransformation2D(&matFinal, &pivot, 1.0f, &scaling, &pivot, drawable_obj->rotation(),
                                        &moving);
 
             device->SetTransform(D3DTS_WORLD, &matFinal);
