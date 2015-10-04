@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
-project(headache)
+project(headache2)
 
 # The version number.
-set(Headache_VERSION_MAJOR 2)
+set(Headache_VERSION_MAJOR 1)
 set(Headache_VERSION_MINOR 0)
 
 include_directories(SYSTEM "${PROJECT_SOURCE_DIR}/lib/dx/include/")
@@ -17,13 +17,17 @@ link_directories(${PROJECT_SOURCE_DIR}/lib/vorbis/lib/)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
 
-add_library(headache
+add_library(headache2
         game.cpp
         game.h
         graphics/renderer.cpp
         graphics/renderer.h
         graphics/texture_manager.cpp
         graphics/texture_manager.h
+        graphics/font.cpp
+        graphics/font.h
+        graphics/layers/layer.cpp
+        graphics/layers/layer.h
         scene/scene.cpp
         scene/scene.h
         audio/audio_manager.h
@@ -34,25 +38,22 @@ add_library(headache
         helper/types.h
         input/input_manager.cpp
         input/input_manager.h
-        graphics/font.cpp
-        graphics/font.h
-        graphics/layers/layer.cpp
-        graphics/layers/layer.h
-        objects/drawable.cpp
         objects/drawable.h
-        objects/textured_quad.cpp
+        objects/drawable.cpp
         objects/textured_quad.h
-        objects/text.cpp
+        objects/textured_quad.cpp
         objects/text.h
-        objects/camera.cpp
+        objects/text.cpp
         objects/camera.h
-        objects/interfaces/collidable.h
-        objects/interfaces/collider.h
-        objects/interfaces/interactive.h
+        objects/camera.cpp
+        objects/drawable_animated.h
         objects/common/console.cpp
         objects/common/console.h
         objects/interfaces/complex.h
         objects/interfaces/animation.h
-        objects/interfaces/updatable.h)
+        objects/interfaces/updatable.h
+        objects/interfaces/collidable.h
+        objects/interfaces/collider.h
+        objects/interfaces/interactive.h)
 
-target_link_libraries(headache d3d9 d3dx9 dinput8 dxguid vorbis ogg vorbisfile)
+target_link_libraries(headache2 d3d9 d3dx9 dinput8 dxguid vorbis ogg vorbisfile)

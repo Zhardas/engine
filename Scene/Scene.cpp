@@ -11,13 +11,23 @@ Scene::~Scene() {
 void Scene::Update() {
   for (auto layer : layers_) {
     for (auto obj : layer->drawable_list_) {
-      // Collision
-      CheckCollision(obj);
+      // Complex object layer reload check
+      if(layer->type() == Layer::STATIC && !layer->reload_){
+        if(auto complex = dynamic_cast<Complex*>(obj)){
+          if(complex->reload_layer_){
+            layer->reload_ = true;
+            complex->reload_layer_ = false;
+          }
+        }
+      }
 
       // Update
       if(auto updatable = dynamic_cast<Updatable*>(obj)){
         updatable->Update();
       }
+
+      // Collision
+      CheckCollision(obj);
     }
   }
 }

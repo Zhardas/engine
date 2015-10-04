@@ -17,7 +17,7 @@ class Layer {
 
   LPDIRECT3DVERTEXBUFFER9 vertex_buffer_ = nullptr;
   std::list<Drawable *> drawable_list_ = {};
-  bool reload = true;
+  bool reload_ = true;
 
  private:
 
@@ -34,17 +34,13 @@ class Layer {
   bool EventCall(Event event, unsigned char key, Position *parameter);
 
   void Add(Drawable *obj) {
-      drawable_list_.push_back(obj);
-    reload = true;
+    drawable_list_.push_back(obj);
+    reload_ = true;
   }
 
   void Remove(Drawable *obj) {
-//    if(auto complex = dynamic_cast<Complex*>(obj)){
-//      complex->Remove(drawable_list_);
-//    }else{
-      drawable_list_.remove(obj);
-//    }
-//    reload = true;
+    drawable_list_.remove(obj);
+    reload_ = true;
   }
 };
 

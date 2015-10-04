@@ -7,7 +7,7 @@
 #include <objects/interfaces/complex.h>
 #define TEXTBOX_HEIGHT 25.0f
 
-class Console: public Drawable, public Complex, public Interactive {
+class Console: public Complex, public Interactive {
  private:
   TexturedQuad *background_ = nullptr;
   TexturedQuad *textbox_ = nullptr;

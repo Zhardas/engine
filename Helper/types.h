@@ -1,6 +1,7 @@
 #ifndef HEADACHE_TYPES_H
 #define HEADACHE_TYPES_H
 #include <math.h>
+#include <iostream>
 
 struct Position {
   float x;
@@ -82,6 +83,17 @@ struct Size {
   Size operator*(const Size &multiplier) {
     return Size(width * multiplier.width, height * multiplier.height);
   }
+
 };
+
+inline std::ostream &operator<<(std::ostream &stream, Position const &position) {
+  stream << "x: " << std::to_string(position.x) << " " << "y: " << std::to_string(position.y);
+  return stream;
+}
+
+inline std::ostream &operator<<(std::ostream &stream, Size const &size) {
+  stream << "w: " << std::to_string(size.width) << " " << "h: " << std::to_string(size.height);
+  return stream;
+}
 
 #endif //HEADACHE_TYPES_H

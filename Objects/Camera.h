@@ -6,12 +6,12 @@ class Camera;
 
 
 class Camera {
-private:
-public:
-    Position3 position_;
-    float zoom_ = 1.0f;
+ private:
+ public:
+  Position3 position_{0.0f, 0.0f, 0.0f};
+  float zoom_ = 1.0f;
 
-    Camera();
+  Camera();
 };
 
 

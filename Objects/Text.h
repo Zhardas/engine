@@ -19,6 +19,7 @@ class Text: public Drawable {
   bool reset_size_ = true;
 
   Text(std::string font, int size, bool bold, bool italic);
+  ~Text();
 
   virtual void set_visible(bool visible){
     visible_ = visible;
@@ -38,7 +39,7 @@ class Text: public Drawable {
 
   void reset_size();
 
-  virtual void set_size(float width, float height) {
+  void set_size(float width, float height) {
     size_.width = width;
     size_.height = height;
   }
@@ -48,11 +49,9 @@ class Text: public Drawable {
   void set_size(Size size) {
     Drawable::set_size(size);
   }
-  virtual void set_position(float x, float y) {
+  void set_position(float x, float y) {
     position_.x = x;
     position_.y = y;
   }
 };
-
-
 #endif //PLAYGROUND_TEXT_H

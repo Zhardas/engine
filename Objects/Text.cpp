@@ -1,7 +1,7 @@
 #include "text.h"
 
 Text::Text(std::string font, int size, bool bold, bool italic) {
-  Text::font_ = new Font(font, size, bold, italic);
+  font_ = new Font(font, size, bold, italic);
 }
 
 void Text::reset_size() {
@@ -9,3 +9,7 @@ void Text::reset_size() {
   size_.height = calc_size.height;
   size_.width = calc_size.width;
 }
+
+Text::~Text(){
+  delete font_;
+};

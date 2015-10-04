@@ -10,13 +10,10 @@ class TexturedQuad;
 
 class TexturedQuad: public Drawable {
  private:
-  void CalcScaling() {
-    size_scaled = Size(size_.width * scale_.width, size_.height * scale_.height);
-  }
-
+  void CalcScaling();
  protected:
-  std::string texture_;
-  DWORD color_;
+  std::string texture_ = "default.png";
+  DWORD color_ = 0xffffffff;
  public:
   TexturedQuad();
 

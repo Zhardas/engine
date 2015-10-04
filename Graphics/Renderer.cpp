@@ -37,8 +37,8 @@ void Renderer::DrawScene(Scene *scene) {
     // Generate Vertex Buffer
     switch (layer->type()) {
       case Layer::STATIC: {
-        if (layer->reload) {
-          layer->reload = false;
+        if (layer->reload_) {
+          layer->reload_ = false;
           if (layer->vertex_buffer_ != NULL) {
             layer->vertex_buffer_->Release();
           }
