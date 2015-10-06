@@ -3,6 +3,7 @@ Console::Console() {
   float console_height = Game::instance()->height() / 3;
   int font_size = 16;
   auto padding = 5;
+  set_visible(false);
 
   background_ = new TexturedQuad();
   background_->set_texture("dark_150.png");
@@ -24,6 +25,13 @@ Console::Console() {
   text_->color_green_ = 200;
   text_->reset_size();
   Add(text_);
+
+  events_key_up_.push_back([&](const uint8_t &key){
+    if(key == 222){ // carol
+      set_visible(!visible_);
+    }
+    return false;
+  });
 }
 Console::~Console() {
   delete background_;

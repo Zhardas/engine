@@ -6,7 +6,7 @@ class Complex;
 
 class Complex: public Drawable {
  public:
-  std::list<Drawable *> complex_list_;
+  std::list<Drawable *> complex_list_ = {};
   bool reload_layer_ = false;
 
   void Add(Drawable *drawable) {

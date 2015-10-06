@@ -16,6 +16,7 @@ class TexturedQuad: public Drawable {
   DWORD color_ = 0xffffffff;
  public:
   TexturedQuad();
+  virtual ~TexturedQuad() { }
 
   void set_texture(std::string texture) {
     texture_ = texture;
@@ -79,11 +80,11 @@ class TexturedQuad: public Drawable {
     size_.height = height;
     CalcScaling();
   }
-  virtual void set_position(float x, float y){
+  virtual void set_position(float x, float y) {
     position_.x = x;
     position_.y = y;
   }
-  virtual void set_visible(bool visible){
+  virtual void set_visible(bool visible) {
     visible_ = visible;
   }
 };

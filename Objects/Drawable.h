@@ -20,6 +20,7 @@ class Drawable {
  public:
 
   Drawable();
+  virtual ~Drawable() { }
 
   virtual Size size() = 0;
 

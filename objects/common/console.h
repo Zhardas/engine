@@ -27,9 +27,6 @@ class Console: public Complex, public Interactive {
 
   void set_visible(bool visible) {
     visible_ = visible;
-    background_->set_visible(visible);
-    textbox_->set_visible(visible);
-    text_->set_visible(visible);
   }
   bool visible() { return visible_; }
   Size size() {

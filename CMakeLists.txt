@@ -54,6 +54,7 @@ add_library(headache2
         objects/interfaces/updatable.h
         objects/interfaces/collidable.h
         objects/interfaces/collider.h
-        objects/interfaces/interactive.h)
+        objects/interfaces/interactive.h
+        helper/helper.h)
 
 target_link_libraries(headache2 d3d9 d3dx9 dinput8 dxguid vorbis ogg vorbisfile)

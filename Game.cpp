@@ -181,6 +181,11 @@ void Game::Initialize(std::string title) {
   input_manager_ = new InputManager();
   std::cout << "success!";
 
+  std::cout << "\nMiscellaneous initialization: ";
+  // initialize random seed
+  srand(static_cast<unsigned int>(time(NULL)));
+  std::cout << "success!";
+
   running_ = true;
   std::cout << "\nEngine started.";
 }

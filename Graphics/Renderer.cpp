@@ -59,6 +59,14 @@ void Renderer::DrawScene(Scene *scene) {
 
       for (auto obj : layer->drawable_list_) {
         if (auto complex_obj = dynamic_cast<Complex *>(obj)) {
+          if(!complex_obj->visible()){
+            for (auto drawable_obj : complex_obj->complex_list_) {
+              if (auto obj = dynamic_cast<TexturedQuad *>(drawable_obj)) {
+                index++;
+              }
+            }
+            continue;
+          }
           for (auto drawable_obj : complex_obj->complex_list_) {
             // World transformation
             D3DXVECTOR2 pivot = {drawable_obj->size().width / 2, drawable_obj->size().height / 2};
