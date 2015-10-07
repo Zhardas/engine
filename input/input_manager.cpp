@@ -1,12 +1,18 @@
 #include "./input_manager.h"
 
 InputManager::InputManager() {
-  mouse_position_ = Position(0,0);
+  mouse_position_ = Position(0, 0);
 }
 void InputManager::ParseMessage(UINT message, WPARAM parameter1, LPARAM parameter2) {
   if (message >= WM_MOUSEFIRST && message <= WM_MOUSELAST) {
+    auto far_corner = Position(Game::instance()->width(), Game::instance()->height());
     mouse_position_ = Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2));
-    // TODO: transform absolute mouse position to relative position
+    mouse_position_ = mouse_position_ -= Game::instance()->window_position();
+    if (mouse_position_.x < 0)mouse_position_.x = 0;
+    else if (mouse_position_.y < 0)mouse_position_.y = 0;
+    if (mouse_position_.x > far_corner.x)mouse_position_.x = far_corner.x;
+    else if (mouse_position_.y > far_corner.y)mouse_position_.y = far_corner.y;
+
     switch (message) {
       case WM_MOUSEMOVE: {
         Game::instance()->scene_->EventCall(MOUSE_MOVE, MOUSE_LEFT, &mouse_position_);

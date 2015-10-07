@@ -27,16 +27,16 @@ class Game {
  private:
   int64_t update_tick_ = 0;
   int64_t render_tick_ = 0;
-
   bool running_;
   int width_;
   int height_;
   HWND window_handle_;
+  DWORD window_parameters_ = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE;
   std::chrono::high_resolution_clock::time_point update_chrono_start_;
   std::chrono::duration<float, std::ratio<1, 60> > update_chrono_accumulator_ = std::chrono::duration<float,
-                                                         std::ratio<1,
-                                                                    60>>(0);
-  // TODO: update_chrono_delta_ should be equal to monitor refresh rate. NB! Check header too.
+                                                                                                      std::ratio<1,
+                                                                                                                 60>>(0);
+  // TODO(Zhardas): update_chrono_delta_ should be equal to monitor refresh rate. NB! Check header too.
   const std::chrono::duration<float, std::ratio<1, 60> > update_chrono_delta_ = std::chrono::duration<float,
                                                                                                       std::ratio<1,
                                                                                                                  60>>(1);
@@ -71,6 +71,7 @@ class Game {
   void stop_running() { running_ = false; }
   void Loop();
   HWND window_handle() { return window_handle_; }
+  Position window_position();
 };
 
 

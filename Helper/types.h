@@ -1,7 +1,8 @@
-#ifndef HEADACHE_TYPES_H
-#define HEADACHE_TYPES_H
+#ifndef HELPER_TYPES_H_
+#define HELPER_TYPES_H_
 #include <math.h>
 #include <iostream>
+#include <string>
 
 struct Position {
   float x;
@@ -26,6 +27,11 @@ struct Position {
     this->y += arg.y;
     return *this;
   }
+  Position &operator-=(const Position &arg) {
+    this->x -= arg.x;
+    this->y -= arg.y;
+    return *this;
+  }
   Position operator*(const float &multiplier) {
     return Position(x * multiplier, y * multiplier);
   }
@@ -33,6 +39,9 @@ struct Position {
     this->x *= multiplier;
     this->y *= multiplier;
     return *this;
+  }
+  std::string ToString() {
+    return "x: " + std::to_string(x) + " y: " + std::to_string(y);
   }
 };
 
@@ -83,17 +92,14 @@ struct Size {
   Size operator*(const Size &multiplier) {
     return Size(width * multiplier.width, height * multiplier.height);
   }
-
 };
-
 inline std::ostream &operator<<(std::ostream &stream, Position const &position) {
-  stream << "x: " << std::to_string(position.x) << " " << "y: " << std::to_string(position.y);
+  stream << "x: " << std::to_string(position.x) << " y: " << std::to_string(position.y);
   return stream;
 }
 
 inline std::ostream &operator<<(std::ostream &stream, Size const &size) {
-  stream << "w: " << std::to_string(size.width) << " " << "h: " << std::to_string(size.height);
+  stream << "w: " << std::to_string(size.width) << " h: " << std::to_string(size.height);
   return stream;
 }
-
-#endif //HEADACHE_TYPES_H
+#endif  // HELPER_TYPES_H_

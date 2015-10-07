@@ -12,6 +12,9 @@ class InputManager {
  public:
   InputManager();
   void ParseMessage(UINT message, WPARAM parameter1, LPARAM parameter2);
+  Position &mouse_position() {
+    return mouse_position_;
+  }
 };
 
 

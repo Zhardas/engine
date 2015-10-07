@@ -27,7 +27,7 @@ LRESULT CALLBACK WindowsMessageCallback(HWND window_handle, UINT message, WPARAM
 
 HWND Game::InitializeWindow(std::string title) {
   RECT window_size = {0, 0, width(), height()};
-  AdjustWindowRectEx(&window_size, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE, FALSE,
+  AdjustWindowRectEx(&window_size, window_parameters_, FALSE,
                      WS_EX_CONTROLPARENT);
 
   WNDCLASSEX window_structure;
@@ -50,7 +50,7 @@ HWND Game::InitializeWindow(std::string title) {
   return CreateWindowEx(WS_EX_CONTROLPARENT,
                         "headache",
                         title.c_str(),
-                        WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE,
+                        window_parameters_,
                         0,
                         0,
                         window_size.right - window_size.left,
@@ -205,4 +205,15 @@ Game::~Game() {
   delete audio_manager_;
   delete scene_;
   DestroyWindow(window_handle());
+}
+Position Game::window_position() {
+  RECT window_rect;
+  GetWindowRect(window_handle_, &window_rect);
+//  RECT window_rect_original = window_rect;
+//  AdjustWindowRectEx(&window_rect, window_parameters_, FALSE,
+//                     WS_EX_CONTROLPARENT);
+//  auto mod_x = window_rect_original.left - window_rect.left;
+//  auto mod_y = window_rect_original.top - window_rect.top;
+//  return Position(window_rect_original.left + mod_x, window_rect_original.top + mod_y);
+  return Position(window_rect.left, window_rect.top);
 }
