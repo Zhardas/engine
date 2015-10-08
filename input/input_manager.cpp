@@ -5,13 +5,7 @@ InputManager::InputManager() {
 }
 void InputManager::ParseMessage(UINT message, WPARAM parameter1, LPARAM parameter2) {
   if (message >= WM_MOUSEFIRST && message <= WM_MOUSELAST) {
-    auto far_corner = Position(Game::instance()->width(), Game::instance()->height());
     mouse_position_ = Position(GET_X_LPARAM(parameter2), GET_Y_LPARAM(parameter2));
-    mouse_position_ = mouse_position_ -= Game::instance()->window_position();
-    if (mouse_position_.x < 0)mouse_position_.x = 0;
-    else if (mouse_position_.y < 0)mouse_position_.y = 0;
-    if (mouse_position_.x > far_corner.x)mouse_position_.x = far_corner.x;
-    else if (mouse_position_.y > far_corner.y)mouse_position_.y = far_corner.y;
     mouse_position_.y = Game::instance()->height() - mouse_position_.y;
     switch (message) {
       case WM_MOUSEMOVE: {

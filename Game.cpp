@@ -209,11 +209,5 @@ Game::~Game() {
 Position Game::window_position() {
   RECT window_rect;
   GetWindowRect(window_handle_, &window_rect);
-//  RECT window_rect_original = window_rect;
-//  AdjustWindowRectEx(&window_rect, window_parameters_, FALSE,
-//                     WS_EX_CONTROLPARENT);
-//  auto mod_x = window_rect_original.left - window_rect.left;
-//  auto mod_y = window_rect_original.top - window_rect.top;
-//  return Position(window_rect_original.left + mod_x, window_rect_original.top + mod_y);
   return Position(window_rect.left, window_rect.top);
 }

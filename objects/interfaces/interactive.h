@@ -1,6 +1,6 @@
 class Interactive;
-#ifndef OVERLORD_INTERACTIVE_H
-#define OVERLORD_INTERACTIVE_H
+#ifndef OBJECTS_INTERFACES_INTERACTIVE_H_
+#define OBJECTS_INTERFACES_INTERACTIVE_H_
 
 #include <stdint.h>
 #include <helper/types.h>
@@ -48,4 +48,4 @@ class Interactive {
 };
 
 
-#endif //OVERLORD_INTERACTIVE_H
+#endif  // OBJECTS_INTERFACES_INTERACTIVE_H_
