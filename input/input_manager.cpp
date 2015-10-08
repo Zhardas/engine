@@ -12,7 +12,7 @@ void InputManager::ParseMessage(UINT message, WPARAM parameter1, LPARAM paramete
     else if (mouse_position_.y < 0)mouse_position_.y = 0;
     if (mouse_position_.x > far_corner.x)mouse_position_.x = far_corner.x;
     else if (mouse_position_.y > far_corner.y)mouse_position_.y = far_corner.y;
-
+    mouse_position_.y = Game::instance()->height() - mouse_position_.y;
     switch (message) {
       case WM_MOUSEMOVE: {
         Game::instance()->scene_->EventCall(MOUSE_MOVE, MOUSE_LEFT, &mouse_position_);
