@@ -14,26 +14,26 @@ class AudioManager;
 #define SafeDelete(pObject) if(pObject != NULL) {delete pObject; pObject=NULL;}
 
 class AudioManager {
-private:
-    IXAudio2 *device_;
-    IXAudio2MasteringVoice *mastering_voice_;
-    std::list<Audio *> audio_list;
-    UINT32 flags_;
+ private:
+  IXAudio2 *device_;
+  IXAudio2MasteringVoice *mastering_voice_;
+  std::list<Audio *> audio_list;
+  UINT32 flags_;
 
-public:
-    AudioManager();
+ public:
+  AudioManager();
 
-    ~AudioManager();
+  ~AudioManager();
 
-    bool InitializeAudio();
+  bool InitializeAudio();
 
-    void Update();
+  void Update();
 
-    void AlterVolume(float fltVolume);
+  void AlterVolume(float fltVolume);
 
-    void GetVolume(float &fltVolume);
+  void GetVolume(float &fltVolume);
 
-    Audio *Generate();
+  Audio *Generate();
 };
 
 

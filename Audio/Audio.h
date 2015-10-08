@@ -9,44 +9,44 @@
 #define MAX_BUFFER_COUNT 3
 
 class Audio {
-private:
-    IXAudio2 *device_;
-    IXAudio2SourceVoice *source_voice_;
-    OggVorbis_File vorbis_file_;
-    char buffers[MAX_BUFFER_COUNT][STREAMING_BUFFER_SIZE];
-    DWORD current_read_buffer_;
+ private:
+  IXAudio2 *device_;
+  IXAudio2SourceVoice *source_voice_;
+  OggVorbis_File vorbis_file_;
+  char buffers[MAX_BUFFER_COUNT][STREAMING_BUFFER_SIZE];
+  DWORD current_read_buffer_;
 
-    bool is_file_opened_;
-    bool is_running_;
-    bool is_paused_;
-    bool is_almost_done_;
-    bool is_done_;
-    bool loop_;
+  bool is_file_opened_;
+  bool is_running_;
+  bool is_paused_;
+  bool is_almost_done_;
+  bool is_done_;
+  bool loop_;
 
-    void ResetParams();
+  void ResetParams();
 
-public:
-    bool destroy_after_playback_;
+ public:
+  bool destroy_after_playback_;
 
-    Audio(IXAudio2 *parent);
+  Audio(IXAudio2 *parent);
 
-    ~Audio();
+  ~Audio();
 
-    bool LoadSound(const char *szSoundFileName);
+  bool LoadSound(const char *szSoundFileName);
 
-    void AlterVolume(float fltVolume);
+  void AlterVolume(float fltVolume);
 
-    void GetVolume(float &fltVolume);
+  void GetVolume(float &fltVolume);
 
-    bool Play(bool loop);
+  bool Play(bool loop);
 
-    void Stop();
+  void Stop();
 
-    bool IsPlaying();
+  bool IsPlaying();
 
-    void Pause();
+  void Pause();
 
-    void Update();
+  void Update();
 };
 
 
