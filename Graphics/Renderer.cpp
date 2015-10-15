@@ -61,7 +61,7 @@ void Renderer::DrawScene(Scene *scene) {
         if (auto complex_obj = dynamic_cast<Complex *>(obj)) {
           if(!complex_obj->visible()){
             for (auto drawable_obj : complex_obj->complex_list_) {
-              if (auto obj = dynamic_cast<TexturedQuad *>(drawable_obj)) {
+              if (dynamic_cast<TexturedQuad *>(drawable_obj)) {
                 index++;
               }
             }
