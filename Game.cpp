@@ -125,6 +125,7 @@ void Game::Loop() {
 
   if (update_chrono_accumulator_ >= update_chrono_delta_) {
     audio_manager_->Update();
+    network_manager_->Update();
     scene_->Update();
     update_tick_++;
     update_chrono_accumulator_.zero();
@@ -181,6 +182,10 @@ void Game::Initialize(std::string title) {
   input_manager_ = new InputManager();
   std::cout << "success!";
 
+  std::cout << "\nNetwork manager initialization: ";
+  network_manager_ = new NetworkManager();
+  std::cout << "success!";
+
   std::cout << "\nMiscellaneous initialization: ";
   // initialize random seed
   srand(static_cast<unsigned int>(time(NULL)));
@@ -203,6 +208,8 @@ Game::~Game() {
   delete renderer_;
   delete texture_manager_;
   delete audio_manager_;
+  delete input_manager_;
+  delete network_manager_;
   delete scene_;
   DestroyWindow(window_handle());
 }

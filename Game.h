@@ -11,6 +11,7 @@ class Game;
 #include <chrono>
 #include <iostream>
 #include <string>
+#include <networking/network_manager.h>
 #include "input/input_manager.h"
 #include "graphics/renderer.h"
 #include "graphics/texture_manager.h"
@@ -55,6 +56,7 @@ class Game {
   TextureManager *texture_manager_ = nullptr;
   AudioManager *audio_manager_ = nullptr;
   InputManager *input_manager_ = nullptr;
+  NetworkManager *network_manager_ = nullptr;
 
   Game();
   ~Game();

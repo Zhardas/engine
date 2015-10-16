@@ -53,6 +53,10 @@ add_library(headache2
         objects/interfaces/collidable.h
         objects/interfaces/collider.h
         objects/interfaces/interactive.h
-        helper/helper.h)
+        helper/helper.h
+        networking/network_manager.cpp
+        networking/network_manager.h
+        networking/client.cpp
+        networking/client.h)
 
-target_link_libraries(headache2 d3d9 d3dx9 dinput8 dxguid vorbis ogg vorbisfile enet)
+target_link_libraries(headache2 d3d9 d3dx9 dinput8 dxguid vorbis ogg vorbisfile enet Ws2_32 Winmm)
