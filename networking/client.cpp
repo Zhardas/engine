@@ -34,16 +34,19 @@ bool Client::Initialize(const char *host, enet_uint16 port) {
 }
 void Client::Update() {
   if (!is_initialized_)return;
-  event_status_ = enet_host_service(client_, &event_, 50000);
+//  event_status_ = enet_host_service(client_, &event_, 50000);
+  event_status_ = enet_host_service(client_, &event_, 0);
 
   // If we had some event that interested us
   if (event_status_ > 0) {
     switch (event_.type) {
       case ENET_EVENT_TYPE_CONNECT:
+        std::cout << "\nConnected to server! " << event_.peer->address.host << ":" << event_.peer->address.port;
         // printf("(Client) We got a new connection from %x\n", event.peer->address.host);
         break;
 
       case ENET_EVENT_TYPE_RECEIVE:
+        std::cout << "\nServer: " << event_.packet->data;
         // printf("(Client) Message from server : %s\n", event.packet->data);
         // Lets broadcast this message to all
         // enet_host_broadcast(client, 0, event.packet);
@@ -51,6 +54,7 @@ void Client::Update() {
         break;
 
       case ENET_EVENT_TYPE_DISCONNECT:
+        std::cout << "\nServer disconnected! " << event_.packet->data;
         // printf("(Client) %s disconnected.\n", reinterpret_cast<char *>(event.peer->data));
 
         // Reset client's information

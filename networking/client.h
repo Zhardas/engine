@@ -3,6 +3,7 @@
 
 #include <enet/enet.h>
 #include <string>
+#include <iostream>
 
 class Client {
  private:
