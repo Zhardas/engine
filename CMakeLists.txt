@@ -57,6 +57,6 @@ add_library(headache2
         networking/network_manager.cpp
         networking/network_manager.h
         networking/client.cpp
-        networking/client.h)
+        networking/client.h Objects/common/button.cpp Objects/common/button.h)
 
 target_link_libraries(headache2 d3d9 d3dx9 dinput8 dxguid vorbis ogg vorbisfile enet Ws2_32 Winmm)

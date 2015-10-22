@@ -13,3 +13,12 @@ void Text::reset_size() {
 Text::~Text(){
   delete font_;
 };
+void Text::set_position(float x, float y) {
+  position_.x = x;
+  position_.y = Game::instance()->height() - y - size_.height;
+}
+void Text::set_size(Size size) {
+  position_.y -= size_.height;
+  Drawable::set_size(size);
+  position_.y += size_.height;
+}

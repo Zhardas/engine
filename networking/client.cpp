@@ -52,7 +52,7 @@ void Client::Update() {
         break;
 
       case ENET_EVENT_TYPE_DISCONNECT:
-        std::cout << "\nServer disconnected! " << event_.packet->data;
+        std::cout << "\nServer disconnected! " << event_.peer->data;
         // printf("(Client) %s disconnected.\n", reinterpret_cast<char *>(event.peer->data));
 
         // Reset client's information

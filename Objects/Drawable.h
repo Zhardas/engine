@@ -38,7 +38,7 @@ class Drawable {
 
   virtual void set_position(float x, float y) = 0;
 
-  virtual void set_scaled_size(Size scale) {
+  virtual void set_scale(Size scale) {
     scale_.width = scale.width;
     scale_.height = scale.height;
     size_scaled.width = size_.width * scale.width;

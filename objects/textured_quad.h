@@ -46,7 +46,7 @@ class TexturedQuad: public Drawable {
     return scale_;
   }
 
-  void set_scaled_size(Size scale) {
+  void set_scale(Size scale) {
     scale_.width = scale.width;
     scale_.height = scale.height;
     CalcScaling();

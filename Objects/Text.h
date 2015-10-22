@@ -46,14 +46,9 @@ class Text: public Drawable {
     size_.height = height;
   }
   void set_position(Position position) {
-    Drawable::set_position(position);
+    set_position(position.x, position.y);
   }
-  void set_size(Size size) {
-    Drawable::set_size(size);
-  }
-  void set_position(float x, float y) {
-    position_.x = x;
-    position_.y = y;
-  }
+  void set_size(Size size);
+  void set_position(float x, float y);
 };
 #endif  // OBJECTS_TEXT_H_
