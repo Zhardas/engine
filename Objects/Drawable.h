@@ -1,7 +1,7 @@
 class Drawable;
 
-#ifndef HEADACHE_DRAWABLE_H
-#define HEADACHE_DRAWABLE_H
+#ifndef OBJECTS_DRAWABLE_H_
+#define OBJECTS_DRAWABLE_H_
 
 #include <string>
 #include <list>
@@ -60,12 +60,15 @@ class Drawable {
   virtual void set_visible(bool visible) = 0;
 
   virtual bool Contains(Position &pos) {
-    return pos.x >= position().x - (size_scaled.width - size_.width) / 2 &&
-        pos.x <= position().x + size_.width + (size_scaled.width - size_.width) / 2 &&
-        pos.y >= position().y - (size_scaled.height - size_.height) / 2 &&
-        pos.y <= position().y + size_.height + (size_scaled.height - size_.height) / 2;
+//    return pos.x >= position().x - (size_scaled.width - size_.width) / 2 &&
+//        pos.x <= position().x + size_.width + (size_scaled.width - size_.width) / 2 &&
+//        pos.y >= position().y - (size_scaled.height - size_.height) / 2 &&
+//        pos.y <= position().y + size_.height + (size_scaled.height - size_.height) / 2;
+    return pos.x >= position().x &&
+        pos.x <= position().x + size().width &&
+        pos.y >= position().y &&
+        pos.y <= position().y + size().height;
   }
 };
 
-
-#endif //HEADACHE_DRAWABLE_H
+#endif  // OBJECTS_DRAWABLE_H_
