@@ -1,15 +1,17 @@
 class Text;
 
-#ifndef PLAYGROUND_TEXT_H
-#define PLAYGROUND_TEXT_H
+#ifndef OBJECTS_TEXT_H_
+#define OBJECTS_TEXT_H_
 
-#include "game.h"
+#include <string>
+#include "./game.h"
 #include "graphics/font.h"
 #include "objects/drawable.h"
 
 class Text: public Drawable {
  private:
   std::string text_;
+
  public:
   byte color_alpha_ = 255;
   byte color_red_ = 255;
@@ -21,13 +23,13 @@ class Text: public Drawable {
   Text(std::string font, int size, bool bold, bool italic);
   ~Text();
 
-  virtual void set_visible(bool visible){
+  virtual void set_visible(bool visible) {
     visible_ = visible;
   }
   void set_text(std::string text) {
     this->text_ = text;
     if (reset_size_)reset_size();
-  };
+  }
 
   std::string text() { return text_; }
 
@@ -54,4 +56,4 @@ class Text: public Drawable {
     position_.y = y;
   }
 };
-#endif //PLAYGROUND_TEXT_H
+#endif  // OBJECTS_TEXT_H_

@@ -1,3 +1,4 @@
+class NetworkManager;
 #ifndef NETWORKING_NETWORK_MANAGER_H_
 #define NETWORKING_NETWORK_MANAGER_H_
 

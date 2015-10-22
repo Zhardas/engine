@@ -1,7 +1,7 @@
 class Scene;
 
-#ifndef HEADACHE_SCENE_H
-#define HEADACHE_SCENE_H
+#ifndef SCENE_SCENE_H_
+#define SCENE_SCENE_H_
 
 #include <list>
 #include <algorithm>
@@ -19,6 +19,7 @@ class Scene;
 class Scene {
  private:
   std::list<Layer *> layers_ = {};
+
  public:
   Camera *camera_;
 
@@ -28,11 +29,11 @@ class Scene {
 
   virtual void Update();
 
-  void CheckCollision(Drawable* drawable);
+  void CheckCollision(Drawable *drawable);
 
   void EventCall(Event event, uint8_t key, Position *parameter);
 
-  std::list<Layer *> *GetLayers() { return &layers_; };
+  std::list<Layer *> *GetLayers() { return &layers_; }
 
   void AddLayer(Layer *layer) {
     layers_.push_back(layer);
@@ -41,8 +42,8 @@ class Scene {
   void RemoveLayer(Layer *layer) {
     layers_.remove(layer);
   }
-  //std::list<Collidable *> collidables_ = {};
+
+  virtual void Parse(ENetPacket *packet) { }
 };
 
-
-#endif //HEADACHE_SCENE_H
+#endif  // SCENE_SCENE_H_

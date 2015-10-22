@@ -4,7 +4,8 @@ Client::~Client() {
   enet_host_destroy(client_);
   enet_deinitialize();
 }
-bool Client::Initialize(const char *host, enet_uint16 port) {
+bool Client::Initialize(Scene *scene, const char *host, enet_uint16 port) {
+  parent_ = scene;
   // Initialize enet
   if (enet_initialize() != 0) {
     // fprintf(stderr, "An error occured while initializing ENet.\n");
@@ -46,10 +47,7 @@ void Client::Update() {
         break;
 
       case ENET_EVENT_TYPE_RECEIVE:
-        std::cout << "\nServer: " << event_.packet->data;
-        // printf("(Client) Message from server : %s\n", event.packet->data);
-        // Lets broadcast this message to all
-        // enet_host_broadcast(client, 0, event.packet);
+        parent_->Parse(event_.packet);
         enet_packet_destroy(event_.packet);
         break;
 
@@ -66,7 +64,11 @@ void Client::Update() {
   }
 }
 void Client::Send(const char *message) {
-  if (!(strlen(message) > 0))return;
+  if (strlen(message) <= 0)return;
   ENetPacket *packet = enet_packet_create(message, strlen(message) + 1, ENET_PACKET_FLAG_RELIABLE);
+  enet_peer_send(peer_, 0, packet);
+}
+void Client::Send(uint8_t *data, size_t length) {
+  ENetPacket *packet = enet_packet_create(data, length, ENET_PACKET_FLAG_RELIABLE);
   enet_peer_send(peer_, 0, packet);
 }
