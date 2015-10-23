@@ -22,7 +22,8 @@ Font::Font(std::string facename, int height, bool bold, bool italic) {
 Font::~Font() {
   if (font_ != nullptr) {
     font_->Release();
-    delete font_;
+    font_ = nullptr;
+    //delete font_;  // TODO (Zhardas): Fix destructor.
   }
 }
 Size Font::size(std::string text) {
