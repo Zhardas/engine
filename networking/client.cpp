@@ -43,7 +43,7 @@ void Client::Update() {
     switch (event_.type) {
       case ENET_EVENT_TYPE_CONNECT:
         std::cout << "\nConnected to server! " << event_.peer->address.host << ":" << event_.peer->address.port;
-        // printf("(Client) We got a new connection from %x\n", event.peer->address.host);
+        connected_ = true;
         break;
 
       case ENET_EVENT_TYPE_RECEIVE:
@@ -53,6 +53,7 @@ void Client::Update() {
 
       case ENET_EVENT_TYPE_DISCONNECT:
         std::cout << "\nServer disconnected! " << event_.peer->data;
+        connected_ = false;
         // printf("(Client) %s disconnected.\n", reinterpret_cast<char *>(event.peer->data));
 
         // Reset client's information

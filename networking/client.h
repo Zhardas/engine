@@ -17,9 +17,10 @@ class Client {
   ENetEvent event_;
   int event_status_ = 1;
   bool is_initialized_ = false;
-  std::map<enet_uint8, std::function<void()>> callbacks_;
   Scene *parent_ = nullptr;
  public:
+  bool connected_ = false;
+
   Client() { }
   ~Client();
   bool Initialize(Scene *scene, const char *host, enet_uint16 port);

@@ -15,7 +15,7 @@ void Button::set_position(float x, float y) {
   AlignText();
 }
 void Button::set_visible(bool visible) {
-  visible_ = false;
+  visible_ = visible;
 }
 Button::Button() {
   text_ = new Text("Arial", 24, false, false);
