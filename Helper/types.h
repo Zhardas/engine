@@ -3,6 +3,12 @@
 #include <math.h>
 #include <iostream>
 #include <string>
+#include <functional>
+#include <memory>
+
+template<typename T>
+using removable_unique_ptr = std::unique_ptr<T, std::function<void(T*)>>;
+
 
 struct Position {
   float x;

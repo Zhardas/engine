@@ -1,7 +1,7 @@
 #include "text.h"
 
-Text::Text(std::string font, int size, bool bold, bool italic) {
-  font_ = new Font(font, size, bold, italic);
+Text::Text(std::string font, int size, bool bold, bool italic) : font_(std::make_unique<Font>(font, size, bold, italic)) {
+
 }
 
 void Text::reset_size() {
@@ -9,10 +9,6 @@ void Text::reset_size() {
   size_.height = calc_size.height;
   size_.width = calc_size.width;
 }
-
-Text::~Text(){
-  delete font_;
-};
 void Text::set_position(float x, float y) {
   position_.x = x;
   position_.y = Game::instance()->height() - y - size_.height;

@@ -4,6 +4,7 @@ class Text;
 #define OBJECTS_TEXT_H_
 
 #include <string>
+#include <memory>
 #include "./game.h"
 #include "graphics/font.h"
 #include "objects/drawable.h"
@@ -17,11 +18,10 @@ class Text: public Drawable {
   byte color_red_ = 255;
   byte color_green_ = 255;
   byte color_blue_ = 255;
-  Font *font_;
+  std::unique_ptr<Font> font_;
   bool reset_size_ = true;
 
   Text(std::string font, int size, bool bold, bool italic);
-  ~Text();
 
   virtual void set_visible(bool visible) {
     visible_ = visible;

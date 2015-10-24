@@ -1,7 +1,7 @@
 #include "font.h"
 
 Font::Font(std::string facename, int height, bool bold, bool italic) {
-  font_ = NULL;
+  ID3DXFont *pure_font_ = NULL;
   DWORD weight = FW_NORMAL;
   if (bold)weight = FW_BOLD;
   D3DXCreateFont(
@@ -16,15 +16,12 @@ Font::Font(std::string facename, int height, bool bold, bool italic) {
       ANTIALIASED_QUALITY, //Quality
       DEFAULT_PITCH | FF_DONTCARE,//PitchAndFamily
       facename.c_str(),          //pFacename,
-      &font_);         //ppFont
-}
-
-Font::~Font() {
-  if (font_ != nullptr) {
-    font_->Release();
-    font_ = nullptr;
-    //delete font_;  // TODO (Zhardas): Fix destructor.
-  }
+      &pure_font_);         //ppFont
+  font_ = removable_unique_ptr<ID3DXFont>(
+      pure_font_,
+      [](ID3DXFont *obj) {
+        obj->Release();
+      });
 }
 Size Font::size(std::string text) {
   RECT rcRect = {0, 0, 0, 0};
