@@ -9,11 +9,10 @@ class Button;
 class Button: public Complex, public Interactive {
  private:
  public:
-  TexturedQuad* background_ = nullptr;
-  Text* text_ = nullptr;
+  std::unique_ptr<TexturedQuad> background_;
+  std::unique_ptr<Text> text_;
 
   Button();
-  ~Button();
   virtual Size size();
   virtual void set_size(float width, float height);
   virtual Position position();

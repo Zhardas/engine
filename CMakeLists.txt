@@ -44,7 +44,6 @@ add_library(headache2
         objects/text.cpp
         objects/camera.h
         objects/camera.cpp
-        objects/drawable_animated.h
         objects/common/console.cpp
         objects/common/console.h
         objects/interfaces/complex.h
@@ -57,6 +56,10 @@ add_library(headache2
         networking/network_manager.cpp
         networking/network_manager.h
         networking/client.cpp
-        networking/client.h Objects/common/button.cpp Objects/common/button.h Objects/common/textbox.cpp Objects/common/textbox.h)
+        networking/client.h
+        objects/common/button.cpp
+        objects/common/button.h
+        objects/common/textbox.cpp
+        objects/common/textbox.h)
 
 target_link_libraries(headache2 d3d9 d3dx9 dinput8 dxguid vorbis ogg vorbisfile enet Ws2_32 Winmm)

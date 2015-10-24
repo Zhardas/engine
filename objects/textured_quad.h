@@ -16,7 +16,6 @@ class TexturedQuad: public Drawable {
   DWORD color_ = 0xffffffff;
  public:
   TexturedQuad();
-  virtual ~TexturedQuad() { }
 
   void set_texture(std::string texture) {
     texture_ = texture;

@@ -19,13 +19,12 @@ class Scene;
 class Scene {
  private:
   std::list<Layer *> layers_ = {};
+  bool CheckComplexReload(Complex *obj);
 
  public:
   Camera *camera_;
 
   Scene();
-
-  virtual ~Scene();
 
   virtual void Update();
 

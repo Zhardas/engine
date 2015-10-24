@@ -55,15 +55,15 @@ void AudioManager::GetVolume(float &fltVolume) {
 
 void AudioManager::Update() {
   std::list<Audio *> remove_list;
-  for (Audio *audio : audio_list) {
+  for (auto audio : audio_list) {
     audio->Update();
     if (audio->destroy_after_playback_ && !audio->IsPlaying()) {
       remove_list.push_back(audio);
     }
   }
-  for (Audio *audio2 : remove_list) {
-    audio_list.remove(audio2);
-    delete audio2;
+  for (auto removable : remove_list) {
+    audio_list.remove(removable);
+    delete removable;
   }
 }
 

@@ -9,12 +9,11 @@ class TextBox;
 class TextBox: public Complex, public Interactive {
  private:
  public:
-  TexturedQuad* background_ = nullptr;
-  Text* text_ = nullptr;
+  std::unique_ptr<TexturedQuad> background_ ;
+  std::unique_ptr<Text> text_;
   bool is_active_ = false;
 
-  TextBox();
-  ~TextBox();
+  TextBox(std::string font = "Consolas", uint8_t font_size = 28, bool bold = false, bool italic = false);
   virtual Size size();
   virtual void set_size(float width, float height);
   virtual Position position();

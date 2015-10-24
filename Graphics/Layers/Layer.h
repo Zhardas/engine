@@ -28,13 +28,15 @@ class Layer {
   Type type() {
     return type_;
   }
+
+  bool EventCall(Event event, unsigned char key, Position *parameter, Drawable *drawable);
   bool EventCall(Event event, unsigned char key, Position *parameter);
-  
+
   void Add(Drawable *obj) {
     drawable_list_.push_back(obj);
     reload_ = true;
   }
-  
+
   void Remove(Drawable *obj) {
     drawable_list_.remove(obj);
     reload_ = true;

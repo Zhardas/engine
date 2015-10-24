@@ -55,7 +55,7 @@ class Game {
   int64_t updates_per_second_ = 0;
   int64_t frames_per_second_ = 0;
   LPDIRECT3DDEVICE9 device_ = nullptr;
-  Scene *scene_ = nullptr;
+  std::shared_ptr<Scene> scene_;
   Renderer *renderer_ = nullptr;
   TextureManager *texture_manager_ = nullptr;
   AudioManager *audio_manager_ = nullptr;

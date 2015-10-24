@@ -126,11 +126,11 @@ void Game::Loop() {
   if (update_chrono_accumulator_ >= update_chrono_delta_) {
     audio_manager_->Update();
     network_manager_->Update();
-    scene_->Update();
+    if(scene_)scene_->Update();
     update_tick_++;
     update_chrono_accumulator_.zero();
   }
-  renderer_->DrawScene(scene_);
+  if(scene_)renderer_->DrawScene(scene_);
   render_tick_++;
 
   // counter updates
@@ -204,13 +204,11 @@ Game *Game::instance() {
 }
 Game::~Game() {
   device_->Release();
-  delete device_;
   delete renderer_;
   delete texture_manager_;
   delete audio_manager_;
   delete input_manager_;
   delete network_manager_;
-  delete scene_;
   DestroyWindow(window_handle());
 }
 Position Game::window_position() {

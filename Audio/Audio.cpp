@@ -155,6 +155,7 @@ void Audio::Stop() {
   if (source_voice_ == NULL)
     return;
 
+  // TODO (Zhardas): Check if anything needs to be done here.
   //XAUDIO2_FLUSH_BUFFERS according to MSDN is meant to flush the buffers after the voice is stopped
   //unfortunately the March 2008 release of the SDK does not include this parameter in the xaudio files
   //and I have been unable to ascertain what its value is

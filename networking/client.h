@@ -8,6 +8,7 @@ class Client;
 #include <iostream>
 #include <functional>
 #include <map>
+#include <memory>
 
 class Client {
  private:
@@ -17,13 +18,12 @@ class Client {
   ENetEvent event_;
   int event_status_ = 1;
   bool is_initialized_ = false;
-  Scene *parent_ = nullptr;
  public:
   bool connected_ = false;
 
   Client() { }
   ~Client();
-  bool Initialize(Scene *scene, const char *host, enet_uint16 port);
+  bool Initialize(const char *host, enet_uint16 port);
   void Update();
   void Send(const char *message);
   void Send(uint8_t *data, size_t length);

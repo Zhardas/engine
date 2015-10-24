@@ -18,15 +18,12 @@ void Button::set_visible(bool visible) {
   visible_ = visible;
 }
 Button::Button() {
-  text_ = new Text("Arial", 24, false, false);
-  background_ = new TexturedQuad();
+  text_ = std::make_unique<Text>("Arial", 24, false, false);
+  background_ = std::make_unique<TexturedQuad>();
   background_->set_size(256.0f, 64.0f);
   AlignText();
-  complex_list_.push_back(background_);
-  complex_list_.push_back(text_);
-}
-Button::~Button() {
-
+  complex_list_.push_back(background_.get());
+  complex_list_.push_back(text_.get());
 }
 void Button::AlignText() {
   auto x_mod = background_->size().width - text_->size().width;

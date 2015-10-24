@@ -20,7 +20,6 @@ class Drawable {
  public:
 
   Drawable();
-  virtual ~Drawable() { }
 
   virtual Size size() = 0;
 
@@ -60,10 +59,7 @@ class Drawable {
   virtual void set_visible(bool visible) = 0;
 
   virtual bool Contains(Position &pos) {
-//    return pos.x >= position().x - (size_scaled.width - size_.width) / 2 &&
-//        pos.x <= position().x + size_.width + (size_scaled.width - size_.width) / 2 &&
-//        pos.y >= position().y - (size_scaled.height - size_.height) / 2 &&
-//        pos.y <= position().y + size_.height + (size_scaled.height - size_.height) / 2;
+    // TODO (Zhardas): Take scaling and rotation into account.
     return pos.x >= position().x &&
         pos.x <= position().x + size().width &&
         pos.y >= position().y &&

@@ -1,21 +1,20 @@
 #ifndef OVERLORD_CONSOLE_H
 #define OVERLORD_CONSOLE_H
 
+#include <memory>
 #include <objects/textured_quad.h>
 #include <objects/interfaces/interactive.h>
 #include <objects/text.h>
 #include <objects/interfaces/complex.h>
+#include "textbox.h"
 #define TEXTBOX_HEIGHT 25.0f
 
 class Console: public Complex, public Interactive {
  private:
-  TexturedQuad *background_ = nullptr;
-  TexturedQuad *textbox_ = nullptr;
-//  std::list<Text*> text_list_;
-  Text *text_ = nullptr;
+  std::unique_ptr<TexturedQuad> background_;
+  std::unique_ptr<TextBox> textbox_;
  public:
   Console();
-  ~Console();
 
   static Console* instance(){
     static Console* instance = nullptr;

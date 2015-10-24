@@ -1,10 +1,10 @@
 #include "textbox.h"
 
-TextBox::TextBox() {
-  background_ = new TexturedQuad();
+TextBox::TextBox(std::string font, uint8_t font_size, bool bold, bool italic) {
+  background_ = std::make_unique<TexturedQuad>();
   background_->set_texture("textbox.png");
   background_->set_size(128.0f, 32.0f);
-  text_ = new Text("Consolas", 28, false, false);
+  text_ = std::make_unique<Text>(font, font_size, bold, italic);
   text_->color_blue_ = 0;
   text_->color_red_ = 0;
   text_->color_green_ = 0;
@@ -36,12 +36,8 @@ TextBox::TextBox() {
     }
     return false;
   });
-  complex_list_.push_back(background_);
-  complex_list_.push_back(text_);
-}
-TextBox::~TextBox() {
-  delete background_;
-  delete text_;
+  complex_list_.push_back(background_.get());
+  complex_list_.push_back(text_.get());
 }
 Size TextBox::size() {
   return background_->size();
@@ -62,5 +58,5 @@ void TextBox::set_visible(bool visible) {
 }
 void TextBox::AlignText() {
   auto y_mod = background_->size().height - text_->size().height;
-  text_->set_position(background_->position().x + 2.0f, background_->position().y + y_mod / 3);
+  text_->set_position(background_->position().x + 5.0f, background_->position().y + y_mod / 3);
 }

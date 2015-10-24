@@ -4,8 +4,7 @@ Client::~Client() {
   enet_host_destroy(client_);
   enet_deinitialize();
 }
-bool Client::Initialize(Scene *scene, const char *host, enet_uint16 port) {
-  parent_ = scene;
+bool Client::Initialize(const char *host, enet_uint16 port) {
   // Initialize enet
   if (enet_initialize() != 0) {
     // fprintf(stderr, "An error occured while initializing ENet.\n");
@@ -47,7 +46,7 @@ void Client::Update() {
         break;
 
       case ENET_EVENT_TYPE_RECEIVE:
-        parent_->Parse(event_.packet);
+        if(Game::instance()->scene_)Game::instance()->scene_->Parse(event_.packet);
         enet_packet_destroy(event_.packet);
         break;
 

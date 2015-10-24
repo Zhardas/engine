@@ -4,28 +4,36 @@ Scene::Scene() {
   camera_ = new Camera();
 }
 
-Scene::~Scene() {
-  while (!layers_.empty()) delete layers_.front(), layers_.pop_front();
+bool Scene::CheckComplexReload(Complex* obj){
+  if(obj->reload_layer_){
+    obj->reload_layer_ = false;
+    return true;
+  }
+  for(auto drawable : obj->complex_list_){
+    if(auto complex = dynamic_cast<Complex*>(drawable)){
+      if(CheckComplexReload(complex)){
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 void Scene::Update() {
   for (auto layer : layers_) {
     for (auto obj : layer->drawable_list_) {
       // Complex object layer reload check
-      if(layer->type() == Layer::STATIC && !layer->reload_){
-        if(auto complex = dynamic_cast<Complex*>(obj)){
-          if(complex->reload_layer_){
+      if (layer->type() == Layer::STATIC && !layer->reload_) {
+        if (auto complex = dynamic_cast<Complex *>(obj)) {
+          if(CheckComplexReload(complex)){
             layer->reload_ = true;
-            complex->reload_layer_ = false;
           }
         }
       }
-
       // Update
-      if(auto updatable = dynamic_cast<Updatable*>(obj)){
+      if (auto updatable = dynamic_cast<Updatable *>(obj)) {
         updatable->Update();
       }
-
       // Collision
       CheckCollision(obj);
     }
