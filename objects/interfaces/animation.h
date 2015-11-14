@@ -5,10 +5,9 @@ class Animation;
 #include <string>
 #include <objects/drawable.h>
 #include <sstream>
-#include "updatable.h"
 #include "../textured_quad.h"
 
-class Animation: public TexturedQuad, public Updatable {
+class Animation: public TexturedQuad {
  private:
   unsigned int timer_ = 0;
  public:

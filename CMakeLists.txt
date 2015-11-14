@@ -48,7 +48,6 @@ add_library(headache2
         objects/common/console.h
         objects/interfaces/complex.h
         objects/interfaces/animation.h
-        objects/interfaces/updatable.h
         objects/interfaces/collidable.h
         objects/interfaces/collider.h
         objects/interfaces/interactive.h

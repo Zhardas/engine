@@ -9,7 +9,6 @@ class Drawable;
 #include "Helper/types.h"
 
 class Drawable {
- private:
  protected:
   Size size_ = Size(32.0f, 32.0f);
   Size size_scaled = Size(32.0f, 32.0f);
@@ -17,8 +16,8 @@ class Drawable {
   Size scale_ = Size(1.0f, 1.0f);
   float rotation_ = 0.0f;
   bool visible_ = true;
- public:
 
+ public:
   Drawable();
 
   virtual Size size() = 0;
@@ -58,13 +57,14 @@ class Drawable {
   virtual bool visible() { return visible_; }
   virtual void set_visible(bool visible) = 0;
 
-  virtual bool Contains(Position &pos) {
-    // TODO (Zhardas): Take scaling and rotation into account.
+  virtual bool Contains(const Position &pos) {
+    // TODO(Zhardas): Take scaling and rotation into account.
     return pos.x >= position().x &&
         pos.x <= position().x + size().width &&
         pos.y >= position().y &&
         pos.y <= position().y + size().height;
   }
+  virtual void Update(){}
 };
 
 #endif  // OBJECTS_DRAWABLE_H_

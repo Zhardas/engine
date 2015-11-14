@@ -6,15 +6,13 @@ class Scene;
 #include <list>
 #include <algorithm>
 #include <iostream>
-#include "game.h"
-#include "graphics/layers/layer.h"
-#include "objects/camera.h"
-#include "objects/interfaces/collidable.h"
-#include <objects/interfaces/collider.h>
-#include <objects/interfaces/updatable.h>
-#include "objects/drawable.h"
-#include "Helper/input.h"
-#include "Helper/input.h"
+#include "../game.h"
+#include "../graphics/layers/layer.h"
+#include "../objects/camera.h"
+#include "../objects/interfaces/collidable.h"
+#include "../objects/interfaces/collider.h"
+#include "../objects/drawable.h"
+#include "../helper/input.h"
 
 class Scene {
  private:

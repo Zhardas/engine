@@ -1,22 +1,23 @@
-#include "scene.h"
+#include "./scene.h"
 
 Scene::Scene() {
   camera_ = new Camera();
 }
 
-bool Scene::CheckComplexReload(Complex* obj){
-  if(obj->reload_layer_){
+bool Scene::CheckComplexReload(Complex *obj) {
+  auto reload = false;
+  if (obj->reload_layer_) {
     obj->reload_layer_ = false;
-    return true;
+    reload = true;
   }
-  for(auto drawable : obj->complex_list_){
-    if(auto complex = dynamic_cast<Complex*>(drawable)){
-      if(CheckComplexReload(complex)){
-        return true;
+  for (auto drawable : obj->complex_list_) {
+    if (auto complex = dynamic_cast<Complex *>(drawable)) {
+      if (CheckComplexReload(complex)) {
+        reload = true;
       }
     }
   }
-  return false;
+  return reload;
 }
 
 void Scene::Update() {
@@ -25,15 +26,13 @@ void Scene::Update() {
       // Complex object layer reload check
       if (layer->type() == Layer::STATIC && !layer->reload_) {
         if (auto complex = dynamic_cast<Complex *>(obj)) {
-          if(CheckComplexReload(complex)){
+          if (CheckComplexReload(complex)) {
             layer->reload_ = true;
           }
         }
       }
       // Update
-      if (auto updatable = dynamic_cast<Updatable *>(obj)) {
-        updatable->Update();
-      }
+      obj->Update();
       // Collision
       CheckCollision(obj);
     }
@@ -54,15 +53,16 @@ void Scene::CheckCollision(Drawable *drawable) {
 
 void Scene::EventCall(Event event, uint8_t key, Position *parameter) {
   Position pos;
-  if (event == Event::MOUSE_DOWN || event == Event::MOUSE_UP || event == Event::MOUSE_MOVE) {
+  if (event == Event::MOUSE_DOWN
+      || event == Event::MOUSE_UP
+      || event == Event::MOUSE_MOVE) {
     pos = *parameter;
     pos.x += camera_->position_.x;
     pos.y += camera_->position_.y;
   }
-  for (std::list<Layer *>::reverse_iterator rit = layers_.rbegin(); rit != layers_.rend(); ++rit) {
-    auto layer = static_cast<Layer *>(*rit);
+  std::for_each(layers_.rbegin(), layers_.rend(), [&event, &key, &pos](Layer *layer) {
     if (layer->EventCall(event, key, &pos)) {
       return;
     }
-  }
+  });
 }

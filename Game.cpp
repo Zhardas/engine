@@ -130,6 +130,8 @@ void Game::Loop() {
     update_tick_++;
     update_chrono_accumulator_.zero();
   }
+  auto update_time = std::chrono::high_resolution_clock::now() - new_time;
+  if(update_time.count() > 0)update_time_ = update_time.count();
   if(scene_)renderer_->DrawScene(scene_);
   render_tick_++;
 
