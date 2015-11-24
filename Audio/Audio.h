@@ -4,10 +4,13 @@
 #include <XAudio2.h>
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
-
-#define STREAMING_BUFFER_SIZE 2048*2
+#include <math.h>
+#ifndef M_PI
+#define M_PI 3.14159265359f
+#endif
+#define STREAMING_BUFFER_SIZE 4096
 //44100/5
-#define DATA_SIZE STREAMING_BUFFER_SIZE/2
+//#define DATA_SIZE STREAMING_BUFFER_SIZE/2
 //65536*10
 #define MAX_BUFFER_COUNT 3
 
