@@ -198,10 +198,9 @@ void Audio::Pause() {
     return;
 
   if (is_paused_) {
-    source_voice_->Start(0); //Unless we tell it otherwise the voice resumes playback from its last position
+    source_voice_->Start(0); // Unless we tell it otherwise the voice resumes playback from its last position
     is_paused_ = false;
-  }
-  else {
+  } else {
     source_voice_->Stop(0);
     is_paused_ = true;
   }
@@ -218,7 +217,7 @@ void Audio::Update() {
     Stop();
   }
 
-  //Do we have any free buffers?
+  // Do we have any free buffers?
   XAUDIO2_VOICE_STATE state;
   source_voice_->GetState(&state);
 
@@ -241,7 +240,6 @@ void Audio::Update() {
                   2, 1, &sec);
       pos += ret;
     }
-
     //Reached the end?
     if (!ret && loop_) {
       //We are looping so restart from the beginning
@@ -270,6 +268,12 @@ void Audio::Update() {
       buffer.Flags = 0;   //Tell the source voice not to expect any data after this buffer
     }
     buffer.AudioBytes = STREAMING_BUFFER_SIZE;
+
+    if (samples_ == nullptr)samples_ = new short[DATA_SIZE];
+    for (int i = 0; i < DATA_SIZE; ++i) {
+      samples_[i] = (buffer.pAudioData[i * 2] | (buffer.pAudioData[i * 2 + 1] << 8));
+      //samples_[i] = buffer.pAudioData[i];
+    }
 
     HRESULT hr;
     if (FAILED(hr = source_voice_->SubmitSourceBuffer(&buffer))) {
