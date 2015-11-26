@@ -269,11 +269,12 @@ void Audio::Update() {
     }
     buffer.AudioBytes = STREAMING_BUFFER_SIZE;
 
-    if (samples_ == nullptr)samples_ = new short[STREAMING_BUFFER_SIZE/2];
-    for (int i = 0; i < STREAMING_BUFFER_SIZE/2; ++i) {
+    if (samples_ == nullptr)samples_ = new short[STREAMING_BUFFER_SIZE / 2];
+    for (int i = 0; i < STREAMING_BUFFER_SIZE / 2; ++i) {
       samples_[i] = (buffer.pAudioData[i * 2] | (buffer.pAudioData[i * 2 + 1] << 8));
       //samples_[i] = buffer.pAudioData[i] * 0.5f * (1.0f - cos(2.0f * M_PI * (float) (i) / (float) (STREAMING_BUFFER_SIZE - 1.0f)));
-      //samples_[i] = (buffer.pAudioData[i * 2 + 1] | (buffer.pAudioData[i * 2] << 8)) * 0.5f * (1.0f - cos(2.0f * M_PI * (float) (i) / (float) (STREAMING_BUFFER_SIZE/2 - 1.0f)));
+      //samples_[i] = (buffer.pAudioData[i * 2] | (buffer.pAudioData[i * 2 + 1] << 8)) * 0.5f
+      //    * (1.0f - cos(2.0f * M_PI * (float) (i) / (float) (STREAMING_BUFFER_SIZE / 2 - 1.0f)));
     }
 
     HRESULT hr;

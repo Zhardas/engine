@@ -14,7 +14,7 @@ class Scene;
 #include "../objects/drawable.h"
 #include "../helper/input.h"
 
-class Scene {
+class Scene : public Interactive {
  private:
   std::list<Layer *> layers_ = {};
   bool CheckComplexReload(Complex *obj);

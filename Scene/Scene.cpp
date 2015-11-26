@@ -60,6 +60,38 @@ void Scene::EventCall(Event event, uint8_t key, Position *parameter) {
     pos.x += camera_->position_.x;
     pos.y += camera_->position_.y;
   }
+  switch (event) {
+    case MOUSE_UP: {
+      if (MouseUp(key, parameter)) {
+        return;
+      }
+      break;
+    }
+    case MOUSE_DOWN: {
+      if (MouseDown(key, parameter)) {
+        return;
+      }
+      break;
+    }
+    case MOUSE_MOVE: {
+      if (MouseMove(parameter)) {
+        return;
+      }
+      break;
+    }
+    case KEYBOARD_UP: {
+      if (KeyUp(key)) {
+        return;
+      }
+      break;
+    }
+    case KEYBOARD_DOWN: {
+      if (KeyDown(key)) {
+        return;
+      }
+      break;
+    }
+  }
   std::for_each(layers_.rbegin(), layers_.rend(), [&event, &key, &pos](Layer *layer) {
     if (layer->EventCall(event, key, &pos)) {
       return;
