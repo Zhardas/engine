@@ -269,12 +269,19 @@ void Audio::Update() {
     }
     buffer.AudioBytes = STREAMING_BUFFER_SIZE;
 
-    if (samples_ == nullptr)samples_ = new short[STREAMING_BUFFER_SIZE / 2];
+    if (samples_ == nullptr)samples_ = new double[STREAMING_BUFFER_SIZE / 2];
     for (int i = 0; i < STREAMING_BUFFER_SIZE / 2; ++i) {
-      samples_[i] = (buffer.pAudioData[i * 2] | (buffer.pAudioData[i * 2 + 1] << 8));
+      //samples_[i] =
+      //    (buffer.pAudioData[i * 2] | (buffer.pAudioData[i * 2 + 1] << 8))*1.0/128.0 * 0.5* (1.0 - cos(2.0 * M_PI * (double) (i) / (STREAMING_BUFFER_SIZE / 2 - 1.0)));
+      double t = (buffer.pAudioData[i * 2] | (buffer.pAudioData[i * 2 + 1] << 8));
+      samples_[i] = ( t* 1.0 / 128.0 - 1.0) * 0.5
+          * (1.0 - cos(2.0 * M_PI * (double) (i) / (STREAMING_BUFFER_SIZE / 2 - 1.0)));
+      if (samples_[i] > 1.0)samples_[i] = 1.0;
+      else if (samples_[i] < -1.0)samples_[i] = -1.0;
       //samples_[i] = buffer.pAudioData[i] * 0.5f * (1.0f - cos(2.0f * M_PI * (float) (i) / (float) (STREAMING_BUFFER_SIZE - 1.0f)));
       //samples_[i] = (buffer.pAudioData[i * 2] | (buffer.pAudioData[i * 2 + 1] << 8)) * 0.5f
       //    * (1.0f - cos(2.0f * M_PI * (float) (i) / (float) (STREAMING_BUFFER_SIZE / 2 - 1.0f)));
+      //std::cout << "\n" << samples_[i];
     }
 
     HRESULT hr;

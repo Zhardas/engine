@@ -32,7 +32,7 @@ class Audio {
   void ResetParams();
 
  public:
-  short* samples_ = nullptr;
+  double* samples_ = nullptr;
   bool destroy_after_playback_ = false;
 
   Audio(IXAudio2 *parent);
