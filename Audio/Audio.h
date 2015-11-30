@@ -8,7 +8,7 @@
 #ifndef M_PI
 #define M_PI 3.14159265359f
 #endif
-#define STREAMING_BUFFER_SIZE 4096
+#define STREAMING_BUFFER_SIZE 44100
 //44100/5
 //#define DATA_SIZE STREAMING_BUFFER_SIZE/2
 //65536*10
@@ -32,7 +32,11 @@ class Audio {
   void ResetParams();
 
  public:
-  double* samples_ = nullptr;
+  short* samples_ = nullptr;
+  //float* left_samples_ = nullptr;
+  //float* right_samples_ = nullptr;
+  double* double_samples_ = nullptr;
+  int samples_count_ = 4096;
   bool destroy_after_playback_ = false;
 
   Audio(IXAudio2 *parent);

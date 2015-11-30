@@ -4,6 +4,7 @@
 Audio::Audio(IXAudio2 *parent) {
   device_ = parent;
   destroy_after_playback_ = false;
+  double_samples_ = new double[samples_count_];
 }
 
 Audio::~Audio() {
@@ -221,6 +222,41 @@ void Audio::Update() {
   XAUDIO2_VOICE_STATE state;
   source_voice_->GetState(&state);
 
+  if(state.SamplesPlayed > 0){
+    //if(left_samples_ == nullptr)left_samples_ = new float[samples];
+    //if(right_samples_ == nullptr)right_samples_ = new float[samples];
+    int sec = 0;
+    float **pcm = new float*[2];
+    pcm[0] = new float[samples_count_];
+    pcm[1] = new float[samples_count_];
+    auto sp = ov_pcm_tell(&vorbis_file_);
+    ov_pcm_seek(&vorbis_file_, state.SamplesPlayed);
+    //ov_pcm_seek(&vorbis_file_, sp-44100);
+    //std::cout << "\n" << sp << " - " << state.SamplesPlayed;
+    int test = 0;
+    while (test < samples_count_){
+      float **b;
+      int a = ov_read_float(&vorbis_file_, &b, samples_count_, &sec);
+      for (int i = 0; i < a; ++i) {
+        if(test+i>= samples_count_)break;
+        pcm[0][test+i] = b[0][i];
+        pcm[1][test+i] = b[1][i];
+      }
+      test+= a;
+    }
+    ov_pcm_seek(&vorbis_file_, sp);
+    //float *left, *right;
+    //left = pcm[0];
+    //right = pcm[1];
+    for (int i = 0; i < samples_count_; ++i) {
+      //left_samples_[i] = left[i] *0.5f*(1.0f-(float)cos(2.0f*M_PI*(float)(i)/(samples-1.0f)));
+      //right_samples_[i] = right[i] *0.5f*(1.0f-(float)cos(2.0f*M_PI*(float)(i)/(samples-1.0f)));
+      double_samples_[i] = pcm[0][i] *0.5f*(1.0f-(float)cos(2.0f*M_PI*(float)(i)/(samples_count_-1.0f)));
+      //double_samples_[i*2] = pcm[0][i] *0.5f*(1.0f-(float)cos(2.0f*M_PI*(float)(i)/(samples_count_-1.0f)));
+      //double_samples_[i*2+1] = pcm[1][i] *0.5f*(1.0f-(float)cos(2.0f*M_PI*(float)(i)/(samples_count_-1.0f)));
+    }
+  }
+
   if (state.BuffersQueued < MAX_BUFFER_COUNT - 1) {
 
     //Got to use this trick because otherwise all the bits wont play
@@ -268,21 +304,6 @@ void Audio::Update() {
       buffer.Flags = 0;   //Tell the source voice not to expect any data after this buffer
     }
     buffer.AudioBytes = STREAMING_BUFFER_SIZE;
-
-    if (samples_ == nullptr)samples_ = new double[STREAMING_BUFFER_SIZE / 2];
-    for (int i = 0; i < STREAMING_BUFFER_SIZE / 2; ++i) {
-      //samples_[i] =
-      //    (buffer.pAudioData[i * 2] | (buffer.pAudioData[i * 2 + 1] << 8))*1.0/128.0 * 0.5* (1.0 - cos(2.0 * M_PI * (double) (i) / (STREAMING_BUFFER_SIZE / 2 - 1.0)));
-      double t = (buffer.pAudioData[i * 2] | (buffer.pAudioData[i * 2 + 1] << 8));
-      samples_[i] = ( t* 1.0 / 128.0 - 1.0) * 0.5
-          * (1.0 - cos(2.0 * M_PI * (double) (i) / (STREAMING_BUFFER_SIZE / 2 - 1.0)));
-      if (samples_[i] > 1.0)samples_[i] = 1.0;
-      else if (samples_[i] < -1.0)samples_[i] = -1.0;
-      //samples_[i] = buffer.pAudioData[i] * 0.5f * (1.0f - cos(2.0f * M_PI * (float) (i) / (float) (STREAMING_BUFFER_SIZE - 1.0f)));
-      //samples_[i] = (buffer.pAudioData[i * 2] | (buffer.pAudioData[i * 2 + 1] << 8)) * 0.5f
-      //    * (1.0f - cos(2.0f * M_PI * (float) (i) / (float) (STREAMING_BUFFER_SIZE / 2 - 1.0f)));
-      //std::cout << "\n" << samples_[i];
-    }
 
     HRESULT hr;
     if (FAILED(hr = source_voice_->SubmitSourceBuffer(&buffer))) {

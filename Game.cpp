@@ -123,8 +123,8 @@ void Game::Loop() {
   update_chrono_start_ = new_time;
   update_chrono_accumulator_ += std::chrono::duration_cast<std::chrono::microseconds>(frame_time);
 
-  audio_manager_->Update();
   if (update_chrono_accumulator_ >= update_chrono_delta_) {
+    audio_manager_->Update();
     network_manager_->Update();
     if(scene_)scene_->Update();
     update_tick_++;
