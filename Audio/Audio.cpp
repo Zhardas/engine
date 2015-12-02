@@ -77,6 +77,8 @@ bool Audio::LoadSound(const char *szSoundFileName) {
   wfm.nBlockAlign = static_cast<WORD>(2 * wfm.nChannels);
   wfm.wFormatTag = 1;
 
+  GetSamples(0);
+
   DWORD pos = 0;
   int sec = 0;
   int ret = 1;
@@ -222,40 +224,7 @@ void Audio::Update() {
   XAUDIO2_VOICE_STATE state;
   source_voice_->GetState(&state);
 
-  if(state.SamplesPlayed > 0){
-    //if(left_samples_ == nullptr)left_samples_ = new float[samples];
-    //if(right_samples_ == nullptr)right_samples_ = new float[samples];
-    int sec = 0;
-    float **pcm = new float*[2];
-    pcm[0] = new float[samples_count_];
-    pcm[1] = new float[samples_count_];
-    auto sp = ov_pcm_tell(&vorbis_file_);
-    ov_pcm_seek(&vorbis_file_, state.SamplesPlayed);
-    //ov_pcm_seek(&vorbis_file_, sp-44100);
-    //std::cout << "\n" << sp << " - " << state.SamplesPlayed;
-    int test = 0;
-    while (test < samples_count_){
-      float **b;
-      int a = ov_read_float(&vorbis_file_, &b, samples_count_, &sec);
-      for (int i = 0; i < a; ++i) {
-        if(test+i>= samples_count_)break;
-        pcm[0][test+i] = b[0][i];
-        pcm[1][test+i] = b[1][i];
-      }
-      test+= a;
-    }
-    ov_pcm_seek(&vorbis_file_, sp);
-    //float *left, *right;
-    //left = pcm[0];
-    //right = pcm[1];
-    for (int i = 0; i < samples_count_; ++i) {
-      //left_samples_[i] = left[i] *0.5f*(1.0f-(float)cos(2.0f*M_PI*(float)(i)/(samples-1.0f)));
-      //right_samples_[i] = right[i] *0.5f*(1.0f-(float)cos(2.0f*M_PI*(float)(i)/(samples-1.0f)));
-      double_samples_[i] = pcm[0][i] *0.5f*(1.0f-(float)cos(2.0f*M_PI*(float)(i)/(samples_count_-1.0f)));
-      //double_samples_[i*2] = pcm[0][i] *0.5f*(1.0f-(float)cos(2.0f*M_PI*(float)(i)/(samples_count_-1.0f)));
-      //double_samples_[i*2+1] = pcm[1][i] *0.5f*(1.0f-(float)cos(2.0f*M_PI*(float)(i)/(samples_count_-1.0f)));
-    }
-  }
+  GetSamples(state.SamplesPlayed);
 
   if (state.BuffersQueued < MAX_BUFFER_COUNT - 1) {
 
@@ -314,4 +283,44 @@ void Audio::Update() {
     current_read_buffer_++;
     current_read_buffer_ %= MAX_BUFFER_COUNT;
   }
+}
+void Audio::GetSamples(uint64_t samples_played) {
+  auto sp = ov_pcm_tell(&vorbis_file_);
+  if(seek == sp){
+    advance = (samples_played - played);
+  }else{
+    advance = 0;
+    seek = sp;
+    played = samples_played;
+  }
+
+  int sec = 0;
+  float **pcm = new float *[2];
+  pcm[0] = new float[samples_count_];
+  pcm[1] = new float[samples_count_];
+  ov_pcm_seek(&vorbis_file_, seek + advance - 22050);
+  //ov_pcm_seek(&vorbis_file_, samples_played/441*512 - 22050);
+  int test = 0;
+  int samples_read = 1;
+  while (test < samples_count_ && samples_read) {
+    float **samples;
+    samples_read = ov_read_float(&vorbis_file_, &samples, samples_count_, &sec);
+    for (int i = 0; i < samples_read; ++i) {
+      if (test + i >= samples_count_)break;
+      pcm[0][test + i] = samples[0][i];
+      pcm[1][test + i] = samples[1][i];
+    }
+    //delete[] samples[0];
+    //delete[] samples[1];
+    //delete[] samples;
+    test += samples_read;
+  }
+  ov_pcm_seek(&vorbis_file_, sp);
+  for (int i = 0; i < samples_count_; ++i) {
+    double t = (1.0-cos(2.0*M_PI*i/(samples_count_-1.0)))/4.0;
+    double_samples_[i] = (pcm[0][i]+pcm[1][i]) *t;
+  }
+  delete[] pcm[0];
+  delete[] pcm[1];
+  delete[] pcm;
 }

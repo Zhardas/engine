@@ -32,11 +32,11 @@ class Audio {
   void ResetParams();
 
  public:
-  short* samples_ = nullptr;
-  //float* left_samples_ = nullptr;
-  //float* right_samples_ = nullptr;
+  uint64_t played = 0;
+  uint64_t advance = 0;
+  uint64_t seek = 0;
   double* double_samples_ = nullptr;
-  int samples_count_ = 4096;
+  int samples_count_ = 44100;
   bool destroy_after_playback_ = false;
 
   Audio(IXAudio2 *parent);
@@ -58,6 +58,8 @@ class Audio {
   void Pause();
 
   void Update();
+
+  void GetSamples(uint64_t samples_played);
 };
 
 
