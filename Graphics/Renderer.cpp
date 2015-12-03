@@ -62,7 +62,7 @@ void Renderer::DrawScene(std::shared_ptr<Scene> scene) {
           Draw(complex_obj, index, true);
         } else {
           // World transformation
-          D3DXVECTOR2 pivot = {obj->size().width / 2, obj->size().height / 2};
+          D3DXVECTOR2 pivot = {obj->size().width / 2, 0};
           D3DXVECTOR2 scaling = {obj->scale().width, obj->scale().height};
           D3DXVECTOR2 moving = {obj->position().x - Game::instance()->width() / 2,
                                 obj->position().y - Game::instance()->height() / 2};

@@ -285,7 +285,7 @@ void Audio::Update() {
   }
 }
 void Audio::GetSamples(uint64_t samples_played) {
-  auto sp = ov_pcm_tell(&vorbis_file_);
+  uint64_t sp = (uint64_t) ov_pcm_tell(&vorbis_file_);
   if(seek == sp){
     advance = (samples_played - played);
   }else{
