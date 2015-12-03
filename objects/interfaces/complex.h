@@ -2,7 +2,7 @@ class Complex;
 #ifndef OVERLORD_COMPLEX_H
 #define OVERLORD_COMPLEX_H
 #include <objects/drawable.h>
-#include <Graphics/Layers/Layer.h>
+#include <graphics/layers/layer.h>
 
 class Complex: public Drawable {
  public:

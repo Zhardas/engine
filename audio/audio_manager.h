@@ -7,7 +7,7 @@ class AudioManager;
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
 #include <list>
-#include "Audio.h"
+#include "audio.h"
 
 //Safely release and delete objects
 #define SafeRelease(pInterface) if(pInterface != NULL) {pInterface->Release(); pInterface=NULL;}

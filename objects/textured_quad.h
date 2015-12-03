@@ -13,7 +13,7 @@ class TexturedQuad: public Drawable {
   void CalcScaling();
  protected:
   std::string texture_ = "default.png";
-  DWORD color_ = 0xffffffff;
+
  public:
   TexturedQuad();
 
@@ -67,12 +67,8 @@ class TexturedQuad: public Drawable {
     return Drawable::Contains(pos);
   }
 
-  DWORD color() {
-    return color_;
-  }
-
-  void set_color(DWORD color) {
-    color_ = color;
+  void set_color(int index, DWORD argb) {
+    color_[index] = argb;
   }
   virtual void set_size(float width, float height) {
     size_.width = width;
@@ -86,6 +82,12 @@ class TexturedQuad: public Drawable {
   virtual void set_visible(bool visible) {
     visible_ = visible;
   }
+  DWORD color_[4] = {
+      0xffffffff,
+      0xffffffff,
+      0xffffffff,
+      0xffffffff
+  };
 };
 
 
