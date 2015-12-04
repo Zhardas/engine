@@ -70,6 +70,12 @@ class TexturedQuad: public Drawable {
   void set_color(int index, DWORD argb) {
     color_[index] = argb;
   }
+  void set_color(DWORD argb) {
+    color_[0] = argb;
+    color_[1] = argb;
+    color_[2] = argb;
+    color_[3] = argb;
+  }
   virtual void set_size(float width, float height) {
     size_.width = width;
     size_.height = height;
