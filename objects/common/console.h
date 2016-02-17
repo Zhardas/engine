@@ -28,8 +28,6 @@ class Console: public TexturedQuad {
 
   void set_visible(bool visible) { visible_ = visible; }
   bool visible() { return visible_; }
-  virtual void set_size(float width, float height) { }
-  virtual void set_position(float x, float y) { }
 };
 
 

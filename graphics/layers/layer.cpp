@@ -9,6 +9,9 @@ bool Layer::EventCall(Event event,
                       uint8_t key,
                       const Position &parameter,
                       std::shared_ptr<Drawable> drawable) {
+  for (auto complex : drawable->complex_list_) {
+    if (EventCall(event, key, parameter, complex))return true;
+  }
   switch (event) {
     case MOUSE_UP: {
       if (drawable->MouseUp(key, parameter)) {
@@ -47,7 +50,6 @@ bool Layer::EventCall(Event event,
 bool Layer::EventCall(Event event, uint8_t key, const Position &parameter) {
   for (std::list<std::shared_ptr<Drawable>>::reverse_iterator rit = drawable_list_.rbegin();
        rit != drawable_list_.rend(); ++rit) {
-    // TODO(Zhardas): Handle complex object events.
     if (EventCall(event, key, parameter, *rit))return true;
   }
   return false;

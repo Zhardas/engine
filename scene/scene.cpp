@@ -103,7 +103,6 @@ void Scene::EventCall(Event event, uint8_t key, Position *parameter) {
   }
   for (std::list<std::shared_ptr<Layer>>::reverse_iterator rit = layers_.rbegin();
        rit != layers_.rend(); ++rit) {
-    // TODO(Zhardas): Handle complex object events.
     if (static_cast<std::shared_ptr<Layer>>(*rit)->EventCall(event, key, pos))return;
   }
 }
