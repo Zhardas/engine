@@ -6,7 +6,9 @@ class Drawable;
 #include <string>
 #include <list>
 #include <functional>
+#include "game.h"
 #include "helper/types.h"
+#include "../graphics/renderer.h"
 
 class Drawable {
  protected:
@@ -16,55 +18,61 @@ class Drawable {
   Size scale_ = Size(1.0f, 1.0f);
   float rotation_ = 0.0f;
   bool visible_ = true;
+  bool destroy_after_animation_ = false;
 
  public:
+  uint8_t type_ = 0;
+  uint16_t id_ = 0;
+  bool remove_ = false;
+
   Drawable();
 
+  // Callback lists
+  std::list<std::function<bool(const uint8_t &, const Position &)>> events_mouse_up_ = {};
+  std::list<std::function<bool(const uint8_t &, const Position &)>> events_mouse_down_ = {};
+  std::list<std::function<bool(const Position &)>> events_mouse_move_ = {};
+  std::list<std::function<bool(const uint8_t &)>> events_key_up_ = {};
+  std::list<std::function<bool(const uint8_t &)>> events_key_down_ = {};
+  std::list<std::function<void(std::shared_ptr<Drawable>)>> events_collision_ = {};
+
+  // Collision
+  void Collide(std::shared_ptr<Drawable> collidable);
+
+  // Complex
+  std::list<std::shared_ptr<Drawable>> complex_list_ = {};
+  bool *reload_layer_ = nullptr;
+  void Add(std::shared_ptr<Drawable> drawable);
+  void Remove(std::shared_ptr<Drawable> drawable);
+
+  // Input events
+  bool MouseUp(const uint8_t &parameter, const Position &position);
+  bool MouseDown(const uint8_t &parameter, const Position &position);
+  bool MouseMove(const Position &position);
+  bool KeyUp(const uint8_t &parameter);
+  bool KeyDown(const uint8_t &parameter);
+
+  // Basic info
   virtual Size size() = 0;
-
-  virtual void set_size(Size size) {
-    set_size(size.width, size.height);
-  }
-
+  virtual void set_size(Size size);
   virtual void set_size(float width, float height) = 0;
-
   virtual Position position() = 0;
-
-  virtual void set_position(Position position) {
-    set_position(position.x, position.y);
-  }
-
+  virtual void set_position(Position position);
   virtual void set_position(float x, float y) = 0;
+  virtual void set_scale(Size scale);
+  virtual Size scale();
+  virtual Size scaled_size();
+  virtual void set_rotation(float rot);
+  virtual float rotation();
+  virtual bool visible();
+  virtual void set_visible(bool visible);
+  virtual bool Contains(const Position &pos);
 
-  virtual void set_scale(Size scale) {
-    scale_.width = scale.width;
-    scale_.height = scale.height;
-    size_scaled.width = size_.width * scale.width;
-    size_scaled.height = size_.width * scale.height;
-  }
-  virtual Size scale() { return scale_; }
+  // Update
+  virtual void Update();
 
-  virtual Size scaled_size() { return size_scaled; }
-
-  virtual void set_rotation(float rot) {
-    rotation_ = rot;
-  }
-
-  virtual float rotation() {
-    return rotation_;
-  }
-
-  virtual bool visible() { return visible_; }
-  virtual void set_visible(bool visible) = 0;
-
-  virtual bool Contains(const Position &pos) {
-    // TODO(Zhardas): Take scaling and rotation into account.
-    return pos.x >= position().x &&
-        pos.x <= position().x + size().width &&
-        pos.y >= position().y &&
-        pos.y <= position().y + size().height;
-  }
-  virtual void Update(){}
+  // Render
+  virtual void Draw(Renderer *renderer, uint32_t *index);
+  virtual void PrepareVertices(Renderer *renderer, v_3ct *vertices, uint32_t *index);
 };
 
 #endif  // OBJECTS_DRAWABLE_H_

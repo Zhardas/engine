@@ -107,14 +107,14 @@ void Game::SetDeviceOptions() {
   device_->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
   device_->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
 
-//  device_->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-//  device_->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-//  device_->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+  device_->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+  device_->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+  device_->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 
-//  device_->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
-//  device_->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
-//  device_->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_ANISOTROPIC);
-//  device_->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, 16);
+  device_->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
+  device_->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
+  device_->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_ANISOTROPIC);
+  device_->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, 16);
 }
 
 void Game::Loop() {
@@ -153,7 +153,7 @@ void Game::Initialize(std::string title) {
   std::cout << "success!";
 
   std::cout
-      << "\nDevice initialization: "; // TODO: Fix weird bug with std::cout repeating this line or use in-engine console.
+      << "\nDevice initialization: ";
   device_ = InitializeDevice();
   if (device_ != nullptr) {
     std::cout << "success!";
@@ -161,17 +161,13 @@ void Game::Initialize(std::string title) {
     std::cout << "FAILED!";
   }
 
-  std::cout << "\nRenderer initialization: ";
-  renderer_ = new Renderer();
-  std::cout << "success!";
+  renderer_ = new Renderer(device_);
+  std::cout << "Renderer initialization: success!";
 
   std::cout << "\nSetting device options: ";
   SetDeviceOptions();
   std::cout << "success!";
 
-  std::cout << "\nTexture manager initialization: ";
-  texture_manager_ = new TextureManager();
-  std::cout << "success!";
   std::cout
       << "\nAudio manager initialization: "; // TODO: Fix weird bug with std::cout repeating this line or use in-engine console.
   audio_manager_ = new AudioManager();
@@ -207,7 +203,6 @@ Game *Game::instance() {
 Game::~Game() {
   device_->Release();
   delete renderer_;
-  delete texture_manager_;
   delete audio_manager_;
   delete input_manager_;
   delete network_manager_;

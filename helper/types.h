@@ -9,6 +9,14 @@
 template<typename T>
 using removable_unique_ptr = std::unique_ptr<T, std::function<void(T*)>>;
 
+
+// Main vertex structure
+struct v_3ct {
+  float x, y, z;
+  uint32_t color;
+  float tu, tv;
+};
+
 struct Position {
   float x;
   float y;

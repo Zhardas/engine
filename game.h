@@ -14,7 +14,6 @@ class Game;
 #include <networking/network_manager.h>
 #include "input/input_manager.h"
 #include "graphics/renderer.h"
-#include "graphics/texture_manager.h"
 #include "scene/scene.h"
 #include "audio/audio_manager.h"
 #include "helper/types.h"
@@ -58,7 +57,6 @@ class Game {
   LPDIRECT3DDEVICE9 device_ = nullptr;
   std::shared_ptr<Scene> scene_;
   Renderer *renderer_ = nullptr;
-  TextureManager *texture_manager_ = nullptr;
   AudioManager *audio_manager_ = nullptr;
   InputManager *input_manager_ = nullptr;
   NetworkManager *network_manager_ = nullptr;

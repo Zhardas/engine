@@ -1,25 +1,19 @@
 class Button;
-#ifndef ENGINE_OBJECTS_COMMON_BUTTON_H_
-#define ENGINE_OBJECTS_COMMON_BUTTON_H_
-#include <objects/interfaces/interactive.h>
-#include <objects/interfaces/complex.h>
+#ifndef OBJECTS_COMMON_BUTTON_H_
+#define OBJECTS_COMMON_BUTTON_H_
 #include <objects/textured_quad.h>
 #include <objects/text.h>
 
-class Button: public Complex, public Interactive {
+class Button: public TexturedQuad {
  private:
  public:
-  std::unique_ptr<TexturedQuad> background_;
-  std::unique_ptr<Text> text_;
+  std::shared_ptr<Text> text_ = std::make_shared<Text>("Arial", 24, false, false);
 
   Button();
-  virtual Size size();
   virtual void set_size(float width, float height);
-  virtual Position position();
   virtual void set_position(float x, float y);
-  virtual void set_visible(bool visible);
   void AlignText();
   void set_text(std::string text);
 };
 
-#endif  // ENGINE_OBJECTS_COMMON_BUTTON_H_
+#endif  // OBJECTS_COMMON_BUTTON_H_

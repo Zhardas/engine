@@ -11,7 +11,7 @@ class Text;
 
 class Text: public Drawable {
  private:
-  std::string text_;
+  std::string text_ = "";
 
  public:
   byte color_alpha_ = 255;
@@ -23,21 +23,13 @@ class Text: public Drawable {
 
   Text(std::string font, int size, bool bold, bool italic);
 
-  virtual void set_visible(bool visible) {
-    visible_ = visible;
-  }
   void set_text(std::string text) {
     this->text_ = text;
     if (reset_size_)reset_size();
   }
-
   std::string text() { return text_; }
-
   Position position() { return position_; }
-
-  Size size() {
-    return size_;
-  }
+  Size size() { return size_; }
 
   void reset_size();
 
@@ -50,5 +42,8 @@ class Text: public Drawable {
   }
   void set_size(Size size);
   void set_position(float x, float y);
+
+  // Rendering
+  void Draw(Renderer *renderer, uint32_t *index);
 };
 #endif  // OBJECTS_TEXT_H_

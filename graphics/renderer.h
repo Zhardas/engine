@@ -1,7 +1,7 @@
 class Renderer;
 
-#ifndef HEADACHE_RENDERER_H
-#define HEADACHE_RENDERER_H
+#ifndef GRAPHICS_RENDERER_H_
+#define GRAPHICS_RENDERER_H_
 
 #include <windows.h>
 #include <d3dx9.h>
@@ -9,12 +9,15 @@ class Renderer;
 #include <list>
 #include <algorithm>
 #include "game.h"
-#include "objects/text.h"
-#include "objects/textured_quad.h"
-#include "graphics/Layers/layer.h"
+#include "texture_manager.h"
+//#include "objects/text.h"
+//#include "objects/textured_quad.h"
+#include "graphics/layers/layer.h"
 #include "scene/scene.h"
 
 class Renderer {
+ public:
+  // TODO(Zhardas): Make use of these avaliable vertex structures.
   struct v_3c {
     float x, y, z;
     DWORD color;
@@ -24,50 +27,35 @@ class Renderer {
   };
   struct v_3t {
     float x, y, z;
-
-    // tu and tv. They represent the
-    // orientation of the texture. Hence, we can control where the upper-left and lower-right is.
-
-    // A value of 0.0 is furthest left, or up. 1.0 is furthest right, or down. Hence, from 0.0 to
-    // 1.0 is a complete drawing of the texture. You can even specify 2.0, which will draw the
-    // texture twice.
-    float tu, tv;
-  };
-  struct v_3ct {
-    float x, y, z;
-    DWORD color;
-    // tu and tv. They represent the
-    // orientation of the texture. Hence, we can control where the upper-left and lower-right is.
-
-    // A value of 0.0 is furthest left, or up. 1.0 is furthest right, or down. Hence, from 0.0 to
-    // 1.0 is a complete drawing of the texture. You can even specify 2.0, which will draw the
-    // texture twice.
     float tu, tv;
   };
   struct color {
     byte r, g, b;
   };
-
   enum BufferType {
     STATIC,
     DYNAMIC
   };
 
+ private:
+  std::unique_ptr<TextureManager> texture_manager_;
+  LPDIRECT3DDEVICE9 device_;
+
   void SetUpCamera();
-
-  LPDIRECT3DVERTEXBUFFER9 GenerateVertexBuffer(BufferType type, std::list<Drawable *> &list);
-
-  void Draw(Drawable *drawable, UINT &index);
-  void Draw(Complex *complex_obj, UINT &index, bool parent_visible);
-  void GenerateVertices(v_3ct *vertices, UINT &index, Drawable* obj);
+  LPDIRECT3DVERTEXBUFFER9 GenerateVertexBuffer(BufferType type, std::list<std::shared_ptr<Drawable>> list);
+  void DrawComplex(std::shared_ptr<Drawable> complex_obj, UINT &index, bool parent_visible);
+  void GenerateVertices(v_3ct *vertices, uint32_t *index, std::shared_ptr<Drawable> obj);
+  uint32_t GetComplexVBObjectCount(std::shared_ptr<Drawable> obj);
 
  public:
-  color color_ = {72, 31, 39};
 
-  Renderer();
+  // Clear color.
+  color color_ = {72, 31, 39};
+  Renderer(LPDIRECT3DDEVICE9 device);
 
   void DrawScene(std::shared_ptr<Scene> scene);
+  void DrawTexture(uint32_t *index, std::string texture);
 };
 
 
-#endif //HEADACHE_RENDERER_H
+#endif // GRAPHICS_RENDERER_H_

@@ -46,11 +46,6 @@ add_library(headache2
         objects/camera.cpp
         objects/common/console.cpp
         objects/common/console.h
-        objects/interfaces/complex.h
-        objects/interfaces/animation.h
-        objects/interfaces/collidable.h
-        objects/interfaces/collider.h
-        objects/interfaces/interactive.h
         helper/helper.h
         networking/network_manager.cpp
         networking/network_manager.h

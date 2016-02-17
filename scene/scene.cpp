@@ -4,51 +4,60 @@ Scene::Scene() {
   camera_ = new Camera();
 }
 
-bool Scene::CheckComplexReload(Complex *obj) {
-  auto reload = false;
-  if (obj->reload_layer_) {
-    obj->reload_layer_ = false;
-    reload = true;
-  }
-  for (auto drawable : obj->complex_list_) {
-    if (auto complex = dynamic_cast<Complex *>(drawable)) {
-      if (CheckComplexReload(complex)) {
-        reload = true;
-      }
-    }
-  }
-  return reload;
-}
-
 void Scene::Update() {
   for (auto layer : layers_) {
+    std::list<std::shared_ptr<Drawable>> remove_list;
     for (auto obj : layer->drawable_list_) {
-      // Complex object layer reload check
-      if (layer->type() == Layer::STATIC && !layer->reload_) {
-        if (auto complex = dynamic_cast<Complex *>(obj)) {
-          if (CheckComplexReload(complex)) {
-            layer->reload_ = true;
-          }
-        }
-      }
       // Update
       obj->Update();
       // Collision
       CheckCollision(obj);
+      // Remove check
+      if (obj->remove_)remove_list.push_back(obj);
+    }
+    for (auto drawable : remove_list) {
+      layer->Remove(drawable);
     }
   }
 }
 
-void Scene::CheckCollision(Drawable *drawable) {
-  if (auto collider = dynamic_cast<Collider *>(drawable)) {
-    for (auto collide_layer : layers_) {
-      for (Drawable *collide_obj : collide_layer->drawable_list_) {
-        if (Collidable *collidable = dynamic_cast<Collidable *>(collide_obj)) {
-          collider->Collide(collidable);
-        }
-      }
+void Scene::CheckCollision(std::shared_ptr<Drawable> collider) {
+  for (auto collide_layer : layers_) {
+    for (auto collidable : collide_layer->drawable_list_) {
+      collider->Collide(collidable);
     }
   }
+}
+
+bool Scene::MouseUp(const uint8_t &parameter, const Position &position) {
+  for (auto func : events_mouse_up_) {
+    if (func(parameter, position))return true;
+  }
+  return false;
+}
+bool Scene::MouseDown(const uint8_t &parameter, const Position &position) {
+  for (auto func : events_mouse_down_) {
+    if (func(parameter, position))return true;
+  }
+  return false;
+}
+bool Scene::MouseMove(const Position &position) {
+  for (auto func : events_mouse_move_) {
+    if (func(position))return true;
+  }
+  return false;
+}
+bool Scene::KeyUp(const uint8_t &parameter) {
+  for (auto func : events_key_up_) {
+    if (func(parameter))return true;
+  }
+  return false;
+}
+bool Scene::KeyDown(const uint8_t &parameter) {
+  for (auto func : events_key_down_) {
+    if (func(parameter))return true;
+  }
+  return false;
 }
 
 void Scene::EventCall(Event event, uint8_t key, Position *parameter) {
@@ -62,19 +71,19 @@ void Scene::EventCall(Event event, uint8_t key, Position *parameter) {
   }
   switch (event) {
     case MOUSE_UP: {
-      if (MouseUp(key, parameter)) {
+      if (MouseUp(key, pos)) {
         return;
       }
       break;
     }
     case MOUSE_DOWN: {
-      if (MouseDown(key, parameter)) {
+      if (MouseDown(key, pos)) {
         return;
       }
       break;
     }
     case MOUSE_MOVE: {
-      if (MouseMove(parameter)) {
+      if (MouseMove(pos)) {
         return;
       }
       break;
@@ -92,9 +101,9 @@ void Scene::EventCall(Event event, uint8_t key, Position *parameter) {
       break;
     }
   }
-  std::for_each(layers_.rbegin(), layers_.rend(), [&event, &key, &pos](Layer *layer) {
-    if (layer->EventCall(event, key, &pos)) {
-      return;
-    }
-  });
+  for (std::list<std::shared_ptr<Layer>>::reverse_iterator rit = layers_.rbegin();
+       rit != layers_.rend(); ++rit) {
+    // TODO(Zhardas): Handle complex object events.
+    if (static_cast<std::shared_ptr<Layer>>(*rit)->EventCall(event, key, pos))return;
+  }
 }

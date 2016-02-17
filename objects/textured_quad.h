@@ -1,7 +1,7 @@
 class TexturedQuad;
 
-#ifndef HEADACHE_STATICDRAWABLE_H
-#define HEADACHE_STATICDRAWABLE_H
+#ifndef OBJECTS_TEXTURED_QUAD_H_
+#define OBJECTS_TEXTURED_QUAD_H_
 
 #include "drawable.h"
 #include "game.h"
@@ -10,13 +10,25 @@ class TexturedQuad;
 
 class TexturedQuad: public Drawable {
  private:
+  unsigned int animation_timer_ = 0;
   void CalcScaling();
  protected:
   std::string texture_ = "default.png";
 
  public:
-  TexturedQuad();
+  TexturedQuad() { }
 
+  // Animation
+  bool animated_ = false;
+  std::string texture_base_ = "default";
+  uint16_t texture_index_start_ = 0;
+  uint16_t texture_index_end_ = 1;
+  uint16_t texture_index_current_ = 0;
+  uint16_t animation_speed_ = 5;
+
+  virtual void Update();
+
+  // Generic
   void set_texture(std::string texture) {
     texture_ = texture;
   }
@@ -63,7 +75,7 @@ class TexturedQuad: public Drawable {
     return Drawable::rotation();
   }
 
-  bool Contains(Position &pos) {
+  bool Contains(const Position &pos) {
     return Drawable::Contains(pos);
   }
 
@@ -94,7 +106,11 @@ class TexturedQuad: public Drawable {
       0xffffffff,
       0xffffffff
   };
+
+  // Rendering
+  void Draw(Renderer *renderer, uint32_t *index);
+  void PrepareVertices(Renderer *renderer, v_3ct *vertices, uint32_t *index);
 };
 
 
-#endif //HEADACHE_STATICDRAWABLE_H
+#endif // OBJECTS_TEXTURED_QUAD_H_
