@@ -10,14 +10,13 @@ Console::Console() {
   textbox_->text_->color_red_ = 0;
   textbox_->text_->color_green_ = 128;
   textbox_->text_->color_blue_ = 0;
-  textbox_->text_->set_text("testing");
   textbox_->set_texture("dark_150.png");
   textbox_->set_size(Game::instance()->width(), TEXTBOX_HEIGHT);
   textbox_->set_position(0.0f, Game::instance()->height() - console_height);
   Add(textbox_);
 
   events_key_up_.push_back([this](const uint8_t &key) {
-    if (key == 222) {  // carol
+    if (key == Z_CAROL) {  // carol
       set_visible(!visible_);
       textbox_->is_active_ = visible();
       return true;

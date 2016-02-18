@@ -7,6 +7,8 @@ enum MouseButton {
     MOUSE_LEFT, MOUSE_MIDDLE, MOUSE_RIGHT
 };
 
+#define Z_CAROL 222
+
 #define Z_0    0x30
 #define Z_1    0x31
 #define Z_2    0x32

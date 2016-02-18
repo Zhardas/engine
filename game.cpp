@@ -16,7 +16,8 @@ LRESULT CALLBACK WindowsMessageCallback(HWND window_handle, UINT message, WPARAM
       break;
     };
     default: {
-      if ((message >= WM_MOUSEFIRST && message <= WM_MOUSELAST) || (message >= WM_KEYFIRST && message <= WM_KEYLAST)) {
+      if ((message >= WM_MOUSEFIRST && message <= WM_MOUSELAST) || (message >= WM_KEYFIRST && message <= WM_KEYLAST)
+          || message == WM_CHAR) {
         Game::instance()->input_manager_->ParseMessage(message, parameter1, parameter2);
       }
       break;
@@ -126,13 +127,13 @@ void Game::Loop() {
   if (update_chrono_accumulator_ >= update_chrono_delta_) {
     audio_manager_->Update();
     network_manager_->Update();
-    if(scene_)scene_->Update();
+    if (scene_)scene_->Update();
     update_tick_++;
     update_chrono_accumulator_.zero();
   }
   auto update_time = std::chrono::high_resolution_clock::now() - new_time;
-  if(update_time.count() > 0)update_time_ = update_time.count();
-  if(scene_)renderer_->DrawScene(scene_);
+  if (update_time.count() > 0)update_time_ = update_time.count();
+  if (scene_)renderer_->DrawScene(scene_);
   render_tick_++;
 
   // counter updates

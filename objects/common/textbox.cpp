@@ -7,7 +7,6 @@ TextBox::TextBox(std::string font, uint8_t font_size, bool bold, bool italic) :
   text_->color_blue_ = 0;
   text_->color_red_ = 0;
   text_->color_green_ = 0;
-  AlignText();
   events_mouse_up_.push_back([this](const uint8_t &button, const Position &pos) {
     if (button == 0) {
       if (Contains(pos)) {
@@ -25,12 +24,14 @@ TextBox::TextBox(std::string font, uint8_t font_size, bool bold, bool italic) :
     if (key == VK_BACK) {
       if (text_->text().length() > 0) {
         text_->set_text(text_->text().substr(0, text_->text().length() - 1));
+        AlignText();
         return true;
       }
-    } else if (key >= 32 && key <= 126) {
+    } else {
       std::stringstream ss;
       ss << text_->text() << key;
       text_->set_text(ss.str());
+      AlignText();
       return true;
     }
     return false;
