@@ -22,18 +22,18 @@ class AudioManager {
 
  public:
   AudioManager();
-
   ~AudioManager();
 
   bool InitializeAudio();
-
   void Update();
 
+  // Volume
   void AlterVolume(float fltVolume);
-
   void GetVolume(float &fltVolume);
 
+  // Audio object
   Audio *Generate();
+  void Remove(Audio *obj);
 };
 
 

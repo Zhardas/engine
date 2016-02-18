@@ -12,22 +12,15 @@ AudioManager::AudioManager() {
 #endif
 
   CoInitializeEx(NULL, COINIT_MULTITHREADED);
-
-  //LogInfo("<li>Audio created OK");
 }
 
 AudioManager::~AudioManager() {
 
   if (mastering_voice_ != NULL)
     mastering_voice_->DestroyVoice();
-
   SafeRelease(device_);
-
   while (!audio_list.empty()) delete audio_list.front(), audio_list.pop_front();
-
   CoUninitialize();
-
-  //LogInfo("<li>Audio destroyed OK");
 }
 
 bool AudioManager::InitializeAudio() {
@@ -71,4 +64,9 @@ Audio *AudioManager::Generate() {
   Audio *audio = new Audio(device_);
   audio_list.push_back(audio);
   return audio;
+}
+
+void AudioManager::Remove(Audio *obj) {
+  audio_list.remove(obj);
+  delete obj;
 }

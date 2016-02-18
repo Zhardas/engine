@@ -224,7 +224,7 @@ void Audio::Update() {
   XAUDIO2_VOICE_STATE state;
   source_voice_->GetState(&state);
 
-  GetSamples(state.SamplesPlayed);
+  if(gather_samples_)GetSamples(state.SamplesPlayed);
 
   if (state.BuffersQueued < MAX_BUFFER_COUNT - 1) {
 
@@ -286,9 +286,9 @@ void Audio::Update() {
 }
 void Audio::GetSamples(uint64_t samples_played) {
   uint64_t sp = (uint64_t) ov_pcm_tell(&vorbis_file_);
-  if(seek == sp){
+  if (seek == sp) {
     advance = (samples_played - played);
-  }else{
+  } else {
     advance = 0;
     seek = sp;
     played = samples_played;
@@ -317,8 +317,8 @@ void Audio::GetSamples(uint64_t samples_played) {
   }
   ov_pcm_seek(&vorbis_file_, sp);
   for (int i = 0; i < samples_count_; ++i) {
-    double t = (1.0-cos(2.0*M_PI*i/(samples_count_-1.0)))/4.0;
-    double_samples_[i] = (pcm[0][i]+pcm[1][i]) *t;
+    double t = (1.0 - cos(2.0 * M_PI * i / (samples_count_ - 1.0))) / 4.0;
+    double_samples_[i] = (pcm[0][i] + pcm[1][i]) * t;
   }
   delete[] pcm[0];
   delete[] pcm[1];

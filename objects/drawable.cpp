@@ -10,11 +10,13 @@ void Drawable::Collide(std::shared_ptr<Drawable> collidable) {
 }
 void Drawable::Add(std::shared_ptr<Drawable> drawable) {
   complex_list_.push_back(drawable);
+  is_complex_ = true;
   if (reload_layer_ != nullptr)*reload_layer_ = true;
 }
 void Drawable::Remove(std::shared_ptr<Drawable> drawable) {
   complex_list_.remove(drawable);
   if (reload_layer_ != nullptr)*reload_layer_ = true;
+  if (complex_list_.size() == 0)is_complex_ = false;
 }
 bool Drawable::MouseUp(const uint8_t &parameter, const Position &position) {
   for (auto func : events_mouse_up_) {
@@ -76,13 +78,20 @@ bool Drawable::Contains(const Position &pos) {
       pos.y <= position().y + size().height;
 }
 void Drawable::Update() {
+  if (!is_complex_ || remove_)return;
   std::list<std::shared_ptr<Drawable>> remove_list;
+  auto remove = false;
   for (auto obj : complex_list_) {
     obj->Update();
-    if (obj->remove_)remove_list.push_back(obj);
+    if (obj->remove_) {
+      remove_list.push_back(obj);
+      remove = true;
+    }
   }
-  for (auto drawable : remove_list) {
-    Remove(drawable);
+  if (remove) {
+    for (auto drawable : remove_list) {
+      Remove(drawable);
+    }
   }
 }
 void Drawable::Draw(Renderer *renderer, uint32_t *index) { }

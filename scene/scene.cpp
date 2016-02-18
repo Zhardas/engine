@@ -7,16 +7,22 @@ Scene::Scene() {
 void Scene::Update() {
   for (auto layer : layers_) {
     std::list<std::shared_ptr<Drawable>> remove_list;
+    bool remove = false;
     for (auto obj : layer->drawable_list_) {
       // Update
       obj->Update();
       // Collision
-      CheckCollision(obj);
+      //CheckCollision(obj);
       // Remove check
-      if (obj->remove_)remove_list.push_back(obj);
+      if (obj->remove_) {
+        remove_list.push_back(obj);
+        remove = true;
+      }
     }
-    for (auto drawable : remove_list) {
-      layer->Remove(drawable);
+    if (remove) {
+      for (auto drawable : remove_list) {
+        layer->Remove(drawable);
+      }
     }
   }
 }

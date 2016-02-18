@@ -85,7 +85,7 @@ void Renderer::DrawComplex(std::shared_ptr<Drawable> complex_obj, UINT &index, b
     index++;
   } else {
     // World transformation
-    D3DXVECTOR2 pivot = {complex_obj->size().width / 2, complex_obj->size().height / 2};
+    D3DXVECTOR2 pivot = {complex_obj->size().width / 2, 0};
     D3DXVECTOR2 scaling = {complex_obj->scale().width, complex_obj->scale().height};
     D3DXVECTOR2 moving = {complex_obj->position().x - Game::instance()->instance()->width() / 2,
                           complex_obj->position().y - Game::instance()->instance()->height() / 2};

@@ -73,6 +73,7 @@ class Drawable {
   // Render
   virtual void Draw(Renderer *renderer, uint32_t *index);
   virtual void PrepareVertices(Renderer *renderer, v_3ct *vertices, uint32_t *index);
+  bool is_complex_ = false;
 };
 
 #endif  // OBJECTS_DRAWABLE_H_

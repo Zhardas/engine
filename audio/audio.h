@@ -37,6 +37,7 @@ class Audio {
   uint64_t seek = 0;
   double* double_samples_ = nullptr;
   int samples_count_ = 44100;
+  bool gather_samples_ = false;
   bool destroy_after_playback_ = false;
 
   Audio(IXAudio2 *parent);

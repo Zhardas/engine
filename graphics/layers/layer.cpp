@@ -9,9 +9,6 @@ bool Layer::EventCall(Event event,
                       uint8_t key,
                       const Position &parameter,
                       std::shared_ptr<Drawable> drawable) {
-  for (auto complex : drawable->complex_list_) {
-    if (EventCall(event, key, parameter, complex))return true;
-  }
   switch (event) {
     case MOUSE_UP: {
       if (drawable->MouseUp(key, parameter)) {
@@ -42,6 +39,11 @@ bool Layer::EventCall(Event event,
         return true;
       }
       break;
+    }
+  }
+  if (drawable->is_complex_) {
+    for (auto complex : drawable->complex_list_) {
+      if (EventCall(event, key, parameter, complex))return true;
     }
   }
   return false;

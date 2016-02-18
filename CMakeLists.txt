@@ -13,7 +13,7 @@ link_directories(${PROJECT_SOURCE_DIR}/lib/dx/lib/x86/)
 link_directories(${PROJECT_SOURCE_DIR}/lib/vorbis/lib/)
 link_directories(${PROJECT_SOURCE_DIR}/lib/enet/lib/)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wno-unused-function")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg -std=c++14 -Wall -Wno-unused-function")
 
 add_library(headache2
         game.cpp
