@@ -8,7 +8,7 @@ class TextBox;
 class TextBox: public TexturedQuad {
  private:
  public:
-  std::shared_ptr<Text> text_;
+  std::unique_ptr<Text> text_;
   bool is_active_ = false;
 
   TextBox(std::string font = "Consolas", uint8_t font_size = 28, bool bold = false, bool italic = false);

@@ -7,6 +7,7 @@ Console::Console() {
   set_size(Game::instance()->width(), console_height);
   set_position(0.0f, Game::instance()->height() - console_height);
 
+  textbox_ = new TextBox("Consolas", font_size, false, false);
   textbox_->text_->color_red_ = 0;
   textbox_->text_->color_green_ = 128;
   textbox_->text_->color_blue_ = 0;

@@ -36,7 +36,7 @@ TextBox::TextBox(std::string font, uint8_t font_size, bool bold, bool italic) :
     }
     return false;
   });
-  complex_list_.push_back(text_);
+  complex_list_.push_back(std::move(text_));
 }
 void TextBox::set_size(float width, float height) {
   TexturedQuad::set_size(width, height);

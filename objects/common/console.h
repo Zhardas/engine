@@ -13,8 +13,7 @@ class Console;
 class Console: public TexturedQuad {
  private:
   const uint8_t font_size = 16;
-  std::shared_ptr<TextBox> textbox_ = std::make_shared<TextBox>("Consolas", font_size, false, false);
-
+  TextBox* textbox_ = nullptr;
  public:
   Console();
 

@@ -37,7 +37,7 @@ void Renderer::DrawScene(std::shared_ptr<Scene> scene) {
   view_matrix(3, 2) = cam_pos.z; // TODO(Zhardas): 3D: Check the assigned value.
   device->SetTransform(D3DTS_VIEW, &view_matrix);
 
-  for (auto layer : scene->GetLayers()) {
+  for (const auto &layer : *scene->GetLayers()) {
     // NOTE: Scene has a limit of 256 layers.
     UINT index = 0;
 
@@ -49,12 +49,12 @@ void Renderer::DrawScene(std::shared_ptr<Scene> scene) {
           if (layer->vertex_buffer_ != NULL) {
             layer->vertex_buffer_->Release();
           }
-          layer->vertex_buffer_ = GenerateVertexBuffer(STATIC, layer->drawable_list_);
+          layer->vertex_buffer_ = GenerateVertexBuffer(STATIC, &layer->drawable_list_);
         }
         break;
       }
       case Layer::DYNAMIC: {
-        layer->vertex_buffer_ = GenerateVertexBuffer(DYNAMIC, layer->drawable_list_);
+        layer->vertex_buffer_ = GenerateVertexBuffer(DYNAMIC, &layer->drawable_list_);
         break;
       }
     }
@@ -64,8 +64,8 @@ void Renderer::DrawScene(std::shared_ptr<Scene> scene) {
       device_->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
       device_->SetStreamSource(0, layer->vertex_buffer_, 0, sizeof(v_3ct));
 
-      for (auto obj : layer->drawable_list_) {
-        DrawComplex(obj, index, layer->visible_);
+      for (const auto &obj : layer->drawable_list_) {
+        DrawComplex(obj.get(), index, layer->visible_);
       }
     }
 
@@ -80,7 +80,7 @@ void Renderer::DrawScene(std::shared_ptr<Scene> scene) {
   device->Present(NULL, NULL, NULL, NULL);
 }
 
-void Renderer::DrawComplex(std::shared_ptr<Drawable> complex_obj, UINT &index, bool parent_visible) {
+void Renderer::DrawComplex(Drawable *complex_obj, UINT &index, bool parent_visible) {
   if (!parent_visible) {
     index++;
   } else {
@@ -102,43 +102,46 @@ void Renderer::DrawComplex(std::shared_ptr<Drawable> complex_obj, UINT &index, b
     D3DXMatrixIdentity(&matFinal);
     device_->SetTransform(D3DTS_WORLD, &matFinal);
   }
-  for (auto drawable_obj : complex_obj->complex_list_) {
-    DrawComplex(drawable_obj, index, (complex_obj->visible() && parent_visible));
+  for (const auto &drawable_obj : complex_obj->complex_list_) {
+    DrawComplex(drawable_obj.get(), index, (complex_obj->visible() && parent_visible));
   }
 }
 
-uint32_t Renderer::GetComplexVBObjectCount(std::shared_ptr<Drawable> obj) {
+uint32_t Renderer::GetComplexVBObjectCount(Drawable *obj) {
   uint32_t count = 1;
-  for (auto complex : obj->complex_list_) {
-    count += GetComplexVBObjectCount(complex);
+  if (obj->is_complex_) {
+    for (const auto &complex : obj->complex_list_) {
+      count += GetComplexVBObjectCount(complex.get());
+    }
   }
   return count;
 }
 
-void Renderer::GenerateVertices(v_3ct *vertices, uint32_t *index, std::shared_ptr<Drawable> obj) {
+void Renderer::GenerateVertices(v_3ct *vertices, uint32_t *index, Drawable *obj) {
   obj->PrepareVertices(this, vertices, index);
 
-  for (auto drawable : obj->complex_list_) {
-    GenerateVertices(vertices, index, drawable);
+  if (!obj->is_complex_)return;
+  for (const auto &drawable : obj->complex_list_) {
+    GenerateVertices(vertices, index, drawable.get());
   }
 }
 
 LPDIRECT3DVERTEXBUFFER9 Renderer::GenerateVertexBuffer(Renderer::BufferType type,
-                                                       std::list<std::shared_ptr<Drawable>> list) {
-  if (list.size() <= 0) {
+                                                       std::list<std::unique_ptr<Drawable>> *list) {
+  if (list->size() <= 0) {
     return NULL;
   }
   LPDIRECT3DVERTEXBUFFER9 vertex_buffer = nullptr;
   uint32_t object_count = 0;
   uint32_t index = 0;
 
-  for (auto obj : list) {
-    object_count += GetComplexVBObjectCount(obj);
+  for (const auto &obj : *list) {
+    object_count += GetComplexVBObjectCount(obj.get());
   }
 
   v_3ct vertices[4 * object_count];
-  for (std::shared_ptr<Drawable> obj : list) {
-    GenerateVertices(vertices, &index, obj);
+  for (const auto &obj : *list) {
+    GenerateVertices(vertices, &index, obj.get());
   }
   if (type == DYNAMIC) {
     if (FAILED(device_->CreateVertexBuffer(4 * index * sizeof(v_3ct),

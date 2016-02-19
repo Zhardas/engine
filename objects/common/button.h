@@ -7,7 +7,7 @@ class Button;
 class Button: public TexturedQuad {
  private:
  public:
-  std::shared_ptr<Text> text_ = std::make_shared<Text>("Arial", 24, false, false);
+  std::unique_ptr<Text> text_ = std::make_unique<Text>("Arial", 24, false, false);
 
   Button();
   virtual void set_size(float width, float height);

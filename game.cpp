@@ -78,7 +78,7 @@ LPDIRECT3DDEVICE9 Game::InitializeDevice() {
   dx_presentation_parameters.BackBufferFormat = D3DFMT_X8R8G8B8;
   dx_presentation_parameters.AutoDepthStencilFormat = D3DFMT_D16;
   dx_presentation_parameters.EnableAutoDepthStencil = true;
-  dx_presentation_parameters.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;//D3DPRESENT_INTERVAL_ONE;
+  dx_presentation_parameters.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
 
   if (FAILED(dx->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, window_handle_, D3DCREATE_HARDWARE_VERTEXPROCESSING,
                               &dx_presentation_parameters, &device))) {

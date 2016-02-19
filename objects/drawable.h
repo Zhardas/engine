@@ -33,16 +33,16 @@ class Drawable {
   std::list<std::function<bool(const Position &)>> events_mouse_move_ = {};
   std::list<std::function<bool(const uint8_t &)>> events_key_up_ = {};
   std::list<std::function<bool(const uint8_t &)>> events_key_down_ = {};
-  std::list<std::function<void(std::shared_ptr<Drawable>)>> events_collision_ = {};
+  std::list<std::function<void(Drawable *)>> events_collision_ = {};
 
   // Collision
-  void Collide(std::shared_ptr<Drawable> collidable);
+  void Collide(Drawable *collidable);
 
   // Complex
-  std::list<std::shared_ptr<Drawable>> complex_list_ = {};
+  std::list<std::unique_ptr<Drawable>> complex_list_ = {};
   bool *reload_layer_ = nullptr;
-  void Add(std::shared_ptr<Drawable> drawable);
-  void Remove(std::shared_ptr<Drawable> drawable);
+  void Add(Drawable *drawable);
+  void Remove(Drawable *drawable);
 
   // Input events
   bool MouseUp(const uint8_t &parameter, const Position &position);
@@ -66,13 +66,14 @@ class Drawable {
   virtual bool visible();
   virtual void set_visible(bool visible);
   virtual bool Contains(const Position &pos);
+  virtual void set_reload_ptr(bool *ptr);
 
   // Update
   virtual void Update();
 
   // Render
-  virtual void Draw(Renderer *renderer, uint32_t *index);
-  virtual void PrepareVertices(Renderer *renderer, v_3ct *vertices, uint32_t *index);
+  virtual void Draw(Renderer *renderer, uint32_t *index) { };
+  virtual void PrepareVertices(Renderer *renderer, v_3ct *vertices, uint32_t *index) { };
   bool is_complex_ = false;
 };
 

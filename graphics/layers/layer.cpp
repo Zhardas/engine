@@ -8,7 +8,7 @@ Layer::Layer(Type type) {
 bool Layer::EventCall(Event event,
                       uint8_t key,
                       const Position &parameter,
-                      std::shared_ptr<Drawable> drawable) {
+                      Drawable *drawable) {
   switch (event) {
     case MOUSE_UP: {
       if (drawable->MouseUp(key, parameter)) {
@@ -42,26 +42,28 @@ bool Layer::EventCall(Event event,
     }
   }
   if (drawable->is_complex_) {
-    for (auto complex : drawable->complex_list_) {
-      if (EventCall(event, key, parameter, complex))return true;
+    for (const auto &complex : drawable->complex_list_) {
+      if (EventCall(event, key, parameter, complex.get()))return true;
     }
   }
   return false;
 }
 
 bool Layer::EventCall(Event event, uint8_t key, const Position &parameter) {
-  for (std::list<std::shared_ptr<Drawable>>::reverse_iterator rit = drawable_list_.rbegin();
+  for (std::list<std::unique_ptr<Drawable>>::reverse_iterator rit = drawable_list_.rbegin();
        rit != drawable_list_.rend(); ++rit) {
-    if (EventCall(event, key, parameter, *rit))return true;
+    if (EventCall(event, key, parameter, rit->get()))return true;
   }
   return false;
 }
-void Layer::Add(std::shared_ptr<Drawable> obj) {
-  obj->reload_layer_ = &reload_;
-  drawable_list_.push_back(obj);
+void Layer::Add(Drawable *obj) {
+  obj->set_reload_ptr(&reload_);
+  drawable_list_.push_back(std::unique_ptr<Drawable>(obj));
   reload_ = true;
 }
-void Layer::Remove(std::shared_ptr<Drawable> obj) {
-  drawable_list_.remove(obj);
+void Layer::Remove(Drawable *obj) {
+  drawable_list_.remove_if([obj](const std::unique_ptr<Drawable> &ptr) {
+    return ptr.get() == obj;
+  });
   reload_ = true;
 }

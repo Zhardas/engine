@@ -1,36 +1,24 @@
 #include "./scene.h"
 
-Scene::Scene() {
-  camera_ = new Camera();
-}
-
 void Scene::Update() {
-  for (auto layer : layers_) {
-    std::list<std::shared_ptr<Drawable>> remove_list;
-    bool remove = false;
-    for (auto obj : layer->drawable_list_) {
+  for (const auto &layer : layers_) {
+    for (const auto &obj : layer->drawable_list_) {
       // Update
       obj->Update();
       // Collision
-      //CheckCollision(obj);
-      // Remove check
-      if (obj->remove_) {
-        remove_list.push_back(obj);
-        remove = true;
-      }
+      CheckCollision(obj.get());
     }
-    if (remove) {
-      for (auto drawable : remove_list) {
-        layer->Remove(drawable);
-      }
-    }
+    layer->drawable_list_.remove_if([](const std::unique_ptr<Drawable> &obj) {
+      return obj->remove_;
+    });
   }
 }
 
-void Scene::CheckCollision(std::shared_ptr<Drawable> collider) {
-  for (auto collide_layer : layers_) {
-    for (auto collidable : collide_layer->drawable_list_) {
-      collider->Collide(collidable);
+void Scene::CheckCollision(Drawable *collider) {
+  if (collider->type_ == 0)return;
+  for (const auto &collide_layer : layers_) {
+    for (const auto &collidable : collide_layer->drawable_list_) {
+      if (collidable->type_ > 0)collider->Collide(collidable.get());
     }
   }
 }
@@ -107,8 +95,16 @@ void Scene::EventCall(Event event, uint8_t key, Position *parameter) {
       break;
     }
   }
-  for (std::list<std::shared_ptr<Layer>>::reverse_iterator rit = layers_.rbegin();
+  for (auto rit = layers_.rbegin();
        rit != layers_.rend(); ++rit) {
-    if (static_cast<std::shared_ptr<Layer>>(*rit)->EventCall(event, key, pos))return;
+    if (rit->get()->EventCall(event, key, pos))return;
   }
+}
+void Scene::RemoveLayer(Layer *layer) {
+  layers_.remove_if([layer](const auto &ptr) {
+    return ptr.get() == layer;
+  });
+}
+void Scene::AddLayer(Layer *layer) {
+  layers_.push_back(std::unique_ptr<Layer>(layer));
 }

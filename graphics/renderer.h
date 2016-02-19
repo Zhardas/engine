@@ -42,10 +42,10 @@ class Renderer {
   LPDIRECT3DDEVICE9 device_;
 
   void SetUpCamera();
-  LPDIRECT3DVERTEXBUFFER9 GenerateVertexBuffer(BufferType type, std::list<std::shared_ptr<Drawable>> list);
-  void DrawComplex(std::shared_ptr<Drawable> complex_obj, UINT &index, bool parent_visible);
-  void GenerateVertices(v_3ct *vertices, uint32_t *index, std::shared_ptr<Drawable> obj);
-  uint32_t GetComplexVBObjectCount(std::shared_ptr<Drawable> obj);
+  LPDIRECT3DVERTEXBUFFER9 GenerateVertexBuffer(BufferType type, std::list<std::unique_ptr<Drawable>> *list);
+  void DrawComplex(Drawable* complex_obj, UINT &index, bool parent_visible);
+  void GenerateVertices(v_3ct *vertices, uint32_t *index, Drawable* obj);
+  uint32_t GetComplexVBObjectCount(Drawable* obj);
 
  public:
 

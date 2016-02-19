@@ -1,6 +1,8 @@
 class Layer;
-#ifndef HEADACHE_LAYER_H
-#define HEADACHE_LAYER_H
+
+#ifndef GRAPHICS_LAYERS_LAYER_H_
+#define GRAPHICS_LAYERS_LAYER_H_
+
 // TODO(Zhardas): Remove specific graphics API requirements in order to add other APIs later.
 #include <d3d9.h>
 #include <list>
@@ -15,7 +17,7 @@ class Layer {
     DYNAMIC = 1
   };
   LPDIRECT3DVERTEXBUFFER9 vertex_buffer_ = nullptr;
-  std::list<std::shared_ptr<Drawable>> drawable_list_ = {};
+  std::list<std::unique_ptr<Drawable>> drawable_list_;
   bool reload_ = true;
 
  private:
@@ -24,20 +26,17 @@ class Layer {
  public:
   bool visible_ = true;
 
-  Layer(Type type);
+  explicit Layer(Type type);
 
-  Type type() {
-    return type_;
-  }
+  Type type() { return type_; }
 
   bool EventCall(Event event,
                  uint8_t key,
                  const Position &parameter,
-                 std::shared_ptr<Drawable> drawable);
+                 Drawable *drawable);
   bool EventCall(Event event, uint8_t key, const Position &parameter);
-  void Add(std::shared_ptr<Drawable> obj);
-  void Remove(std::shared_ptr<Drawable> obj);
+  void Add(Drawable* obj);
+  void Remove(Drawable *obj);
 };
 
-
-#endif // HEADACHE_LAYER_H
+#endif // GRAPHICS_LAYERS_LAYER_H_

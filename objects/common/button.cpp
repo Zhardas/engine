@@ -10,7 +10,7 @@ void Button::set_position(float x, float y) {
 }
 Button::Button() {
   set_size(256.0f, 64.0f);
-  complex_list_.push_back(text_);
+  complex_list_.push_back(std::move(text_));
 }
 void Button::AlignText() {
   auto x_mod = size().width - text_->size().width;

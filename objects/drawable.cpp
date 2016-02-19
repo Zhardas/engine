@@ -3,18 +3,21 @@
 Drawable::Drawable() {
 
 }
-void Drawable::Collide(std::shared_ptr<Drawable> collidable) {
+void Drawable::Collide(Drawable* collidable) {
   for (auto collision : events_collision_) {
     collision(collidable);
   }
 }
-void Drawable::Add(std::shared_ptr<Drawable> drawable) {
-  complex_list_.push_back(drawable);
+void Drawable::Add(Drawable* drawable) {
+  drawable->set_reload_ptr(reload_layer_);
+  complex_list_.push_back(std::unique_ptr<Drawable>(drawable));
   is_complex_ = true;
   if (reload_layer_ != nullptr)*reload_layer_ = true;
 }
-void Drawable::Remove(std::shared_ptr<Drawable> drawable) {
-  complex_list_.remove(drawable);
+void Drawable::Remove(Drawable* drawable) {
+  complex_list_.remove_if([drawable](const auto &ptr){
+    return ptr.get() == drawable;
+  });
   if (reload_layer_ != nullptr)*reload_layer_ = true;
   if (complex_list_.size() == 0)is_complex_ = false;
 }
@@ -78,21 +81,19 @@ bool Drawable::Contains(const Position &pos) {
       pos.y <= position().y + size().height;
 }
 void Drawable::Update() {
-  if (!is_complex_ || remove_)return;
-  std::list<std::shared_ptr<Drawable>> remove_list;
-  auto remove = false;
-  for (auto obj : complex_list_) {
+  if (!is_complex_)return;
+  for (const auto &obj : complex_list_) {
     obj->Update();
-    if (obj->remove_) {
-      remove_list.push_back(obj);
-      remove = true;
-    }
   }
-  if (remove) {
-    for (auto drawable : remove_list) {
-      Remove(drawable);
+  complex_list_.remove_if([](const auto &ptr){
+    return ptr->remove_;
+  });
+}
+void Drawable::set_reload_ptr(bool *ptr) {
+  reload_layer_ = ptr;
+  if (is_complex_) {
+    for (const auto &obj : complex_list_) {
+      obj.get()->set_reload_ptr(ptr);
     }
   }
 }
-void Drawable::Draw(Renderer *renderer, uint32_t *index) { }
-void Drawable::PrepareVertices(Renderer *renderer, v_3ct *vertices, uint32_t *index) { }

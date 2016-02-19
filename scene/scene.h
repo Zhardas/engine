@@ -14,10 +14,10 @@ class Scene;
 
 class Scene {
  private:
-  std::list<std::shared_ptr<Layer>> layers_ = {};
+  std::list<std::unique_ptr<Layer>> layers_ = {};
 
  public:
-  Camera *camera_;
+  std::unique_ptr<Camera> camera_ = std::make_unique<Camera>();
 
   // Callback lists
   std::list<std::function<bool(const uint8_t &, const Position &position)>> events_mouse_up_ = {};
@@ -26,13 +26,13 @@ class Scene {
   std::list<std::function<bool(const uint8_t &)>> events_key_up_ = {};
   std::list<std::function<bool(const uint8_t &)>> events_key_down_ = {};
 
-  Scene();
+  Scene() { }
 
   // Update
   virtual void Update();
 
   // Collision
-  void CheckCollision(std::shared_ptr<Drawable> collider);
+  void CheckCollision(Drawable *collider);
 
   // Input events
   void EventCall(Event event, uint8_t key, Position *parameter);
@@ -43,9 +43,9 @@ class Scene {
   bool MouseMove(const Position &position);
 
   // Layers
-  std::list<std::shared_ptr<Layer>> GetLayers() { return layers_; }
-  void AddLayer(std::shared_ptr<Layer> layer) { layers_.push_back(layer); }
-  void RemoveLayer(std::shared_ptr<Layer> layer) { layers_.remove(layer); }
+  std::list<std::unique_ptr<Layer>> *GetLayers() { return &layers_; }
+  void AddLayer(Layer *layer);
+  void RemoveLayer(Layer *layer);
 
   // TODO(Zhardas): Make networking-related includes/methods/etc more "modular".
   virtual void Parse(ENetPacket *packet) { }
