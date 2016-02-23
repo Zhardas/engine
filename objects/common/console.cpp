@@ -1,4 +1,5 @@
 #include "console.h"
+
 Console::Console() {
   float console_height = Game::instance()->height() / 3;
   set_visible(false);

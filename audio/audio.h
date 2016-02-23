@@ -1,5 +1,5 @@
-#ifndef HEADACHE_AUDIO_H
-#define HEADACHE_AUDIO_H
+#ifndef AUDIO_AUDIO_H_
+#define AUDIO_AUDIO_H_
 
 #include <XAudio2.h>
 #include <vorbis/codec.h>
@@ -20,7 +20,6 @@ class Audio {
   IXAudio2SourceVoice *source_voice_ = nullptr;
   OggVorbis_File vorbis_file_;
   char buffers[MAX_BUFFER_COUNT][STREAMING_BUFFER_SIZE];
-  DWORD current_read_buffer_ = 0;
 
   bool is_file_opened_ = false;
   bool is_running_ = false;
@@ -32,36 +31,37 @@ class Audio {
   void ResetParams();
 
  public:
-  uint64_t played = 0;
-  uint64_t advance = 0;
-  uint64_t seek = 0;
-  double* double_samples_ = nullptr;
-  int samples_count_ = 44100;
-  bool gather_samples_ = false;
+  DWORD current_read_buffer_ = 0;
   bool destroy_after_playback_ = false;
 
   Audio(IXAudio2 *parent);
-
   ~Audio();
 
   bool LoadSound(const char *szSoundFileName);
 
+  // Volume
   void AlterVolume(float fltVolume);
-
   void GetVolume(float &fltVolume);
 
+  // Controls
   bool Play(bool loop);
-
   void Stop();
-
   bool IsPlaying();
-
   void Pause();
 
+  // Update
   void Update();
 
-  void GetSamples(uint64_t samples_played);
+  // Samples
+  double **GetSamples(double rate, int size);
+  uint64_t GetPlayedSamples() {
+    XAUDIO2_VOICE_STATE state;
+    source_voice_->GetState(&state);
+    return state.SamplesPlayed%total;
+  }
+  uint64_t total;
+  uint64_t sets;
 };
 
 
-#endif //HEADACHE_AUDIO_H
+#endif // AUDIO_AUDIO_H_

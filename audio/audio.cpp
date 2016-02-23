@@ -4,7 +4,7 @@
 Audio::Audio(IXAudio2 *parent) {
   device_ = parent;
   destroy_after_playback_ = false;
-  double_samples_ = new double[samples_count_];
+  //double_samples_ = new double[samples_count_];
 }
 
 Audio::~Audio() {
@@ -77,7 +77,8 @@ bool Audio::LoadSound(const char *szSoundFileName) {
   wfm.nBlockAlign = static_cast<WORD>(2 * wfm.nChannels);
   wfm.wFormatTag = 1;
 
-  GetSamples(0);
+  total = ov_pcm_total(&vorbis_file_, -1);
+  //GetSamples(0);
 
   DWORD pos = 0;
   int sec = 0;
@@ -224,8 +225,6 @@ void Audio::Update() {
   XAUDIO2_VOICE_STATE state;
   source_voice_->GetState(&state);
 
-  if(gather_samples_)GetSamples(state.SamplesPlayed);
-
   if (state.BuffersQueued < MAX_BUFFER_COUNT - 1) {
 
     //Got to use this trick because otherwise all the bits wont play
@@ -284,43 +283,40 @@ void Audio::Update() {
     current_read_buffer_ %= MAX_BUFFER_COUNT;
   }
 }
-void Audio::GetSamples(uint64_t samples_played) {
-  uint64_t sp = (uint64_t) ov_pcm_tell(&vorbis_file_);
-  if (seek == sp) {
-    advance = (samples_played - played);
-  } else {
-    advance = 0;
-    seek = sp;
-    played = samples_played;
-  }
 
-  int sec = 0;
-  float **pcm = new float *[2];
-  pcm[0] = new float[samples_count_];
-  pcm[1] = new float[samples_count_];
-  ov_pcm_seek(&vorbis_file_, seek + advance - 22050);
-  //ov_pcm_seek(&vorbis_file_, samples_played/441*512 - 22050);
-  int test = 0;
-  int samples_read = 1;
-  while (test < samples_count_ && samples_read) {
-    float **samples;
-    samples_read = ov_read_float(&vorbis_file_, &samples, samples_count_, &sec);
-    for (int i = 0; i < samples_read; ++i) {
-      if (test + i >= samples_count_)break;
-      pcm[0][test + i] = samples[0][i];
-      pcm[1][test + i] = samples[1][i];
+double **Audio::GetSamples(double rate, int size) {
+  sets = static_cast<uint64_t>(total / rate);
+  double **r = new double *[sets];
+
+  for (uint64_t j = 0; j < sets; ++j) {
+    r[j] = new double[size];
+    ov_pcm_seek(&vorbis_file_, static_cast<ogg_int64_t>(j * rate));
+
+    int sec = 0;
+    float **pcm = new float *[2];
+    pcm[0] = new float[size];
+    pcm[1] = new float[size];
+
+    int test = 0;
+    int samples_read = 1;
+    while (test < size && samples_read) {
+      float **samples;
+      samples_read = ov_read_float(&vorbis_file_, &samples, size, &sec);
+      for (int i = 0; i < samples_read; ++i) {
+        if (test + i >= size)break;
+        pcm[0][test + i] = samples[0][i];
+        pcm[1][test + i] = samples[1][i];
+      }
+      test += samples_read;
     }
-    //delete[] samples[0];
-    //delete[] samples[1];
-    //delete[] samples;
-    test += samples_read;
+    for (int i = 0; i < size; ++i) {
+      double t = (1.0 - cos(2.0 * M_PI * i / (size - 1.0))) / 4.0;
+      r[j][i] = (pcm[0][i] + pcm[1][i]) * t;
+    }
+    delete[] pcm[0];
+    delete[] pcm[1];
+    delete[] pcm;
   }
-  ov_pcm_seek(&vorbis_file_, sp);
-  for (int i = 0; i < samples_count_; ++i) {
-    double t = (1.0 - cos(2.0 * M_PI * i / (samples_count_ - 1.0))) / 4.0;
-    double_samples_[i] = (pcm[0][i] + pcm[1][i]) * t;
-  }
-  delete[] pcm[0];
-  delete[] pcm[1];
-  delete[] pcm;
+  ov_pcm_seek(&vorbis_file_, 0);
+  return r;
 }
