@@ -7,7 +7,7 @@ class Button;
 class Button: public TexturedQuad {
  private:
  public:
-  std::unique_ptr<Text> text_ = std::make_unique<Text>("Arial", 24, false, false);
+  Text* text_ = nullptr;
 
   Button();
   virtual void set_size(float width, float height);

@@ -1,7 +1,7 @@
 #include "textbox.h"
 
-TextBox::TextBox(std::string font, uint8_t font_size, bool bold, bool italic) :
-    text_(std::make_unique<Text>(font, font_size, bold, italic)) {
+TextBox::TextBox(std::string font, uint8_t font_size, bool bold, bool italic) {
+  text_ = new Text(font, font_size, bold, italic);
   set_texture("textbox.png");
   set_size(128.0f, 32.0f);
   text_->color_blue_ = 0;
@@ -36,7 +36,7 @@ TextBox::TextBox(std::string font, uint8_t font_size, bool bold, bool italic) :
     }
     return false;
   });
-  complex_list_.push_back(std::move(text_));
+  Add(text_);
 }
 void TextBox::set_size(float width, float height) {
   TexturedQuad::set_size(width, height);

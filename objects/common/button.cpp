@@ -1,16 +1,21 @@
 #include "./button.h"
 
 void Button::set_size(float width, float height) {
-  Drawable::set_size(width, height);
+  TexturedQuad::set_size(width, height);
   AlignText();
 }
 void Button::set_position(float x, float y) {
-  Drawable::set_position(x, y);
+  TexturedQuad::set_position(x, y);
   AlignText();
 }
 Button::Button() {
+  text_ = new Text("Arial", 24, false, false);
   set_size(256.0f, 64.0f);
-  complex_list_.push_back(std::move(text_));
+  set_texture("white.png");
+  text_->color_green_ = 0;
+  text_->color_red_ = 0;
+  text_->color_blue_ = 0;
+  Add(text_);
 }
 void Button::AlignText() {
   auto x_mod = size().width - text_->size().width;
