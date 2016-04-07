@@ -1,9 +1,6 @@
 #include "./game.h"
 
 Game::Game() {
-  width_ = 1280;
-  height_ = 720;
-
   srand(static_cast<unsigned int>(time(NULL)));
   update_chrono_start_ = std::chrono::high_resolution_clock::now();
   update_time_start_ = std::time(NULL);
@@ -147,7 +144,10 @@ void Game::Loop() {
   }
 }
 
-void Game::Initialize(std::string title) {
+void Game::Initialize(std::string title, uint16_t width, uint16_t height) {
+  width_ = width;
+  height_ = height;
+
   if (device_ != nullptr)return;
   std::cout << "\nWindow initialization: ";
   window_handle_ = InitializeWindow(title);

@@ -16,6 +16,14 @@ Button::Button() {
   text_->color_red_ = 0;
   text_->color_blue_ = 0;
   Add(text_);
+
+  events_mouse_up_.push_back([this](const uint8_t &mbutton, const Position &pos) {
+    if (mbutton == 0 && Contains(pos) && visible_) {
+      Click();
+      return true;
+    }
+    return false;
+  });
 }
 void Button::AlignText() {
   auto x_mod = size().width - text_->size().width;
@@ -26,3 +34,9 @@ void Button::set_text(std::string text) {
   text_->set_text(text);
   AlignText();
 }
+void Button::Click() {
+  for (const auto &f : events_onclick_) {
+    f();
+  }
+}
+

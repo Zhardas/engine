@@ -20,7 +20,7 @@ TextBox::TextBox(std::string font, uint8_t font_size, bool bold, bool italic) {
     return false;
   });
   events_key_down_.push_back([this](const uint8_t &key) {
-    if (!is_active_)return false;
+    if (!is_active_ || !is_editable)return false;
     if (key == VK_BACK) {
       if (text_->text().length() > 0) {
         text_->set_text(text_->text().substr(0, text_->text().length() - 1));

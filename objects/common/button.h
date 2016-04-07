@@ -9,11 +9,14 @@ class Button: public TexturedQuad {
  public:
   Text* text_ = nullptr;
 
+  std::list<std::function<void()>> events_onclick_ = {};
+
   Button();
   virtual void set_size(float width, float height);
   virtual void set_position(float x, float y);
   void AlignText();
   void set_text(std::string text);
+  void Click();
 };
 
 #endif  // OBJECTS_COMMON_BUTTON_H_

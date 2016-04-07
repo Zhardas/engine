@@ -11,6 +11,7 @@ class TextBox: public TexturedQuad {
  public:
   Text *text_ = nullptr;
   bool is_active_ = false;
+  bool is_editable = true;
 
   TextBox(std::string font = "Consolas", uint8_t font_size = 28, bool bold = false, bool italic = false);
   virtual void set_size(float width, float height);

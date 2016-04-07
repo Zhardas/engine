@@ -31,11 +31,11 @@ class Game {
  private:
   int64_t update_tick_ = 0;
   int64_t render_tick_ = 0;
-  bool running_;
-  int width_;
-  int height_;
-  bool online_;
-  HWND window_handle_;
+  bool running_ = false;
+  uint16_t width_ = 800;
+  uint16_t height_ = 600;
+  bool online_ = false;
+  HWND window_handle_ = nullptr;
   DWORD window_parameters_ = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE;
   std::chrono::high_resolution_clock::time_point update_chrono_start_;
   std::chrono::duration<float, std::ratio<1, 60> >
@@ -68,7 +68,7 @@ class Game {
 
   void SetDeviceOptions();
 
-  void Initialize(std::string title);
+  void Initialize(std::string title, uint16_t width, uint16_t height);
 
   int width() { return width_; }
   int height() { return height_; }
