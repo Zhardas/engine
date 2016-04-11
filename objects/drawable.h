@@ -20,6 +20,10 @@ class Drawable {
   bool visible_ = true;
   bool destroy_after_animation_ = false;
 
+  // Complex
+  void Add(Drawable *drawable);
+  void Remove(Drawable *drawable);
+
  public:
   uint8_t type_ = 0;
   uint16_t id_ = 0;
@@ -41,8 +45,6 @@ class Drawable {
   // Complex
   std::list<std::unique_ptr<Drawable>> complex_list_ = {};
   bool *reload_layer_ = nullptr;
-  void Add(Drawable *drawable);
-  void Remove(Drawable *drawable);
 
   // Input events
   bool MouseUp(const uint8_t &parameter, const Position &position);

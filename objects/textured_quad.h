@@ -3,15 +3,16 @@ class TexturedQuad;
 #ifndef OBJECTS_TEXTURED_QUAD_H_
 #define OBJECTS_TEXTURED_QUAD_H_
 
-#include "drawable.h"
-#include "game.h"
 #include <string>
 #include <functional>
+#include "./drawable.h"
+#include "../game.h"
 
 class TexturedQuad: public Drawable {
  private:
   unsigned int animation_timer_ = 0;
   void CalcScaling();
+
  protected:
   std::string texture_ = "default.png";
 

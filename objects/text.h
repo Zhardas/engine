@@ -21,7 +21,7 @@ class Text: public Drawable {
   std::unique_ptr<Font> font_;
   bool reset_size_ = true;
 
-  Text(std::string font, int size, bool bold, bool italic);
+  Text(std::string font = "Consolas", int size = 18, bool bold = false, bool italic = false);
 
   void set_text(std::string text) {
     this->text_ = text;

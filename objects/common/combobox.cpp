@@ -1,6 +1,6 @@
-#include "listbox.h"
+#include "combobox.h"
 
-Listbox::Listbox() {
+Combobox::Combobox() {
   Add(button);
   set_texture("textbox.png");
   button->set_texture("listbox_button.png");
@@ -28,27 +28,27 @@ Listbox::Listbox() {
     RefreshItemVisibility();
   });
 }
-void Listbox::set_size(float width, float height) {
+void Combobox::set_size(float width, float height) {
   TexturedQuad::set_size(width, height);
   button->set_size(height, height);
   button->set_position(position_.x, position_.y);
 }
-void Listbox::set_position(float x, float y) {
+void Combobox::set_position(float x, float y) {
   TexturedQuad::set_position(x, y);
   button->set_position(x, y);
 }
-void Listbox::add_item(Drawable *item) {
+void Combobox::AddItem(Drawable *item) {
   item->set_visible(items_visible_);
   items_.push_back(item);
   Add(item);
   RefreshItemPositions();
 }
-void Listbox::remove_item(Drawable *item) {
+void Combobox::RemoveItem(Drawable *item) {
   items_.remove(item);
   Remove(item);
   RefreshItemPositions();
 }
-void Listbox::RefreshItemPositions() {
+void Combobox::RefreshItemPositions() {
   auto i = 0;
   for (const auto &item : items_) {
     i++;
@@ -56,7 +56,7 @@ void Listbox::RefreshItemPositions() {
     item->set_position(position_.x + size_.height, position_.y - i * size_.height);
   }
 }
-void Listbox::RefreshItemVisibility() {
+void Combobox::RefreshItemVisibility() {
   for (const auto &item: items_) {
     item->set_visible(items_visible_);
   }
