@@ -9,12 +9,9 @@ void Button::set_position(float x, float y) {
   AlignText();
 }
 Button::Button() {
-  text_ = new Text("Arial", 24, false, false);
-  set_size(256.0f, 64.0f);
-  set_texture("white.png");
-  text_->color_green_ = 0;
-  text_->color_red_ = 0;
-  text_->color_blue_ = 0;
+  text_ = new Text();
+  set_size(102.0f, 26.0f);
+  set_texture("button.png");
   Add(text_);
 
   events_mouse_up_.push_back([this](const uint8_t &mbutton, const Position &pos) {

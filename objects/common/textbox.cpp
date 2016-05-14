@@ -2,8 +2,8 @@
 
 TextBox::TextBox(std::string font, uint8_t font_size, bool bold, bool italic) {
   text_ = new Text(font, font_size, bold, italic);
-  set_texture("textbox.png");
-  set_size(128.0f, 32.0f);
+  set_texture("box.png");
+  set_size(110.0f, 23.0f);
   text_->color_blue_ = 0;
   text_->color_red_ = 0;
   text_->color_green_ = 0;
@@ -37,6 +37,7 @@ TextBox::TextBox(std::string font, uint8_t font_size, bool bold, bool italic) {
     return false;
   });
   Add(text_);
+  AlignText();
 }
 void TextBox::set_size(float width, float height) {
   TexturedQuad::set_size(width, height);
@@ -48,5 +49,5 @@ void TextBox::set_position(float x, float y) {
 }
 void TextBox::AlignText() {
   auto y_mod = size().height - text_->size().height;
-  text_->set_position(position().x + 5.0f, position().y + y_mod / 3);
+  text_->set_position(position().x + 4.0f, position().y+y_mod/2);
 }

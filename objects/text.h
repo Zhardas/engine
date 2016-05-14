@@ -15,13 +15,13 @@ class Text: public Drawable {
 
  public:
   byte color_alpha_ = 255;
-  byte color_red_ = 255;
-  byte color_green_ = 255;
-  byte color_blue_ = 255;
+  byte color_red_ = 0;
+  byte color_green_ = 0;
+  byte color_blue_ = 0;
   std::unique_ptr<Font> font_;
   bool reset_size_ = true;
 
-  Text(std::string font = "Consolas", int size = 18, bool bold = false, bool italic = false);
+  Text(std::string font = "Segoe UI", int size = 18, bool bold = false, bool italic = false);
 
   void set_text(std::string text) {
     this->text_ = text;

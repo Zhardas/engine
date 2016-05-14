@@ -12,8 +12,8 @@ Checkbox::Checkbox() {
   tick_ = new TexturedQuad();
   tick_->set_texture("checkbox_tick.png");
   tick_->set_visible(checked_);
-  set_size(32.0f, 32.0f);
-  set_texture("white.png");
+  set_size(13.0f, 13.0f);
+  set_texture("checkbox.png");
   Add(tick_);
 
   events_mouse_up_.push_back([this](const uint8_t &button, const Position &pos) {

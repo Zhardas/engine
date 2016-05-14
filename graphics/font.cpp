@@ -2,7 +2,7 @@
 
 Font::Font(std::string facename, int height, bool bold, bool italic) {
   ID3DXFont *pure_font_ = NULL;
-  DWORD weight = FW_NORMAL;
+  DWORD weight = FW_REGULAR;
   if (bold)weight = FW_BOLD;
   D3DXCreateFont(
       Game::instance()->device_,     //D3D Device

@@ -58,6 +58,8 @@ add_library(headache2
         objects/common/checkbox.cpp
         objects/common/checkbox.h
         objects/common/combobox.cpp
-        objects/common/combobox.h)
+        objects/common/combobox.h
+        objects/common/combobox_item.cpp
+        objects/common/combobox_item.h)
 
 target_link_libraries(headache2 d3d9 d3dx9 dinput8 dxguid vorbis ogg vorbisfile enet Ws2_32 Winmm)

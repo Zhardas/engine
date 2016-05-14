@@ -6,18 +6,20 @@ class Combobox;
 #include <list>
 #include "../textured_quad.h"
 #include "./button.h"
+#include "./combobox_item.h"
 
 class Combobox: public TexturedQuad {
  private:
-  std::list<Drawable *> items_;
+  std::list<ComboboxItem *> items_;
   bool items_visible_ = false;
  public:
-  Button *button = new Button();
+  Button *button_ = new Button();
+  Text *text_ = new Text();
 
   Combobox();
 
-  void AddItem(Drawable *drawable);
-  void RemoveItem(Drawable *item);
+  void AddItem(ComboboxItem *item);
+  void RemoveItem(ComboboxItem *item);
 
   virtual void set_size(float width, float height);
   virtual void set_position(float x, float y);

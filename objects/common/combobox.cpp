@@ -1,49 +1,54 @@
 #include "combobox.h"
 
 Combobox::Combobox() {
-  Add(button);
-  set_texture("textbox.png");
-  button->set_texture("listbox_button.png");
-  set_size(256.0f, 32.0f);
+  text_->set_text("");
+  Add(text_);
+  text_->color_red_ = 0;
+  text_->color_green_ = 0;
+  text_->color_blue_ = 0;
+  Add(button_);
+  set_texture("box.png");
+  button_->set_texture("listbox_button.png");
+  set_size(110.0f, 23.0f);
 
-  button->events_mouse_up_.push_back([this](const uint8_t &mbutton, const Position &pos) {
-    bool item_clicked = false;
+  button_->events_mouse_up_.push_back([this](const uint8_t &mbutton, const Position &pos) {
+    auto clicked = false;
     if (mbutton == 0) {
       for (const auto &item : items_) {
-        if (item->Contains(pos)) {
-          item_clicked = true;
+        if (item->Contains(pos) && items_visible_) {
+          clicked = true;
+          text_->set_text(item->text_->text());
           break;
         }
       }
     }
-
-    if (!item_clicked) {
-      items_visible_ = false;
-      RefreshItemVisibility();
-    }
-    return false;
+    items_visible_ = false;
+    RefreshItemVisibility();
+    return clicked;
   });
-  button->events_onclick_.push_back([this]() {
+  button_->events_onclick_.push_back([this]() {
     items_visible_ = !items_visible_;
     RefreshItemVisibility();
   });
 }
 void Combobox::set_size(float width, float height) {
   TexturedQuad::set_size(width, height);
-  button->set_size(height, height);
-  button->set_position(position_.x, position_.y);
+  button_->set_size((height - 4.0f) / 19.0f * 17.0f, height - 4.0f);
+  button_->set_position(position_.x + width - button_->size().width - 2.0f, position_.y + 2.0f);
+  text_->set_position(position_.x, position_.y + size_.height);
 }
 void Combobox::set_position(float x, float y) {
   TexturedQuad::set_position(x, y);
-  button->set_position(x, y);
+  button_->set_position(position_.x + size().width - button_->size().width - 2.0f, position_.y + 2.0f);
+  text_->set_position(position_.x, position_.y + size_.height);
 }
-void Combobox::AddItem(Drawable *item) {
+void Combobox::AddItem(ComboboxItem *item) {
   item->set_visible(items_visible_);
   items_.push_back(item);
   Add(item);
   RefreshItemPositions();
 }
-void Combobox::RemoveItem(Drawable *item) {
+void Combobox::RemoveItem(ComboboxItem *item) {
   items_.remove(item);
   Remove(item);
   RefreshItemPositions();
@@ -52,8 +57,8 @@ void Combobox::RefreshItemPositions() {
   auto i = 0;
   for (const auto &item : items_) {
     i++;
-    item->set_size(size_.width - size_.height, size_.height);
-    item->set_position(position_.x + size_.height, position_.y - i * size_.height);
+    item->set_size(size_.width - button_->size().width, size_.height);
+    item->set_position(position_.x, position_.y - i * size_.height);
   }
 }
 void Combobox::RefreshItemVisibility() {
